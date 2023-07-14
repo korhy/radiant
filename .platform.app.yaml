@@ -44,9 +44,6 @@ workers:
 mounts:
     "/var": { source: local, source_path: var }
     
-variables:
-    php-ext:
-        mongodb: 1.16.1
 
 hooks:
     build: |
