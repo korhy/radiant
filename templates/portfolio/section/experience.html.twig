@@ -8,23 +8,19 @@
 				<li class="mb-12">
 					<div class="lg:flex lg:justify-between lg:gap-1">
 						<header class="sm:col-span-2 lg:w-1/5 lg:flex-col ">
-							{{ experience.from}}
+							{{ experience.startDate|date('M Y')}}
 							-
-							{{experience.to}}
+							{{experience.to??'maintenant'}}
 						</header>
 						<div class="sm:col-span-6 lg:w-4/5 lg:flex-col ">
-							<h3 class="font-medium leading-snug text-slate-100">{{ experience.position}}
+							<h3 class="font-medium leading-snug text-slate-100">{{ experience.position }}
 								-
 								{{experience.company}}</h3>
 							<p class="mt-2 text-sm leading-normal">
-								<ul class="list-none">
-									{% for elm in experience.description %}
-										<li>{{elm}}</li>
-									{% endfor %}
-								</ul>
+									{{ experience.description }}
 							</p>
 							<ul class="mt-2 flex flex-wrap">
-								{% for tag in experience.tags %}
+								{% for tag in experience.tags.tags %}
 									<li class="mr-1.5 mt-2">
 										<div class="flex items-center rounded-full border-2 border-amber-400 px-3 py-1 text-xs font-medium leading-5 text-amber-500 ">{{tag}}</div>
 									</li>

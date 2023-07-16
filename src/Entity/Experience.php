@@ -2,119 +2,122 @@
 
 namespace App\Entity;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use App\Repository\ExperienceRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 
-
-#[MongoDB\Document]
+#[ORM\Entity(repositoryClass: ExperienceRepository::class)]
 class Experience
 {
-    #[MongoDB\Id]
-    protected $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    #[MongoDB\Field(type: 'string')]
-    protected $company;
+    #[ORM\Column(length: 255)]
+    private ?string $company = null;
 
-    #[MongoDB\Field(type: 'string')]
-    protected $position;
+    #[ORM\Column(length: 255)]
+    private ?string $position = null;
 
-    #[MongoDB\Field(type: 'string')]
-    protected $description;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
-    #[MongoDB\Field(type: 'string')]
-    protected $url;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $url = null;
 
-    #[MongoDB\Field(type: 'string')]
-    protected $from;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $start_date = null;
 
-    #[MongoDB\Field(type: 'string')]
-    protected $to;
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $end_date = null;
 
-    #[MongoDB\Field(type: 'collection')]
-    protected $tags;
+    #[ORM\Column(nullable: true)]
+    private ?array $tags = null;
 
-    public function getId(): string
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCompany(): string
+    public function getCompany(): ?string
     {
         return $this->company;
     }
 
-    public function setCompany(string $company): Experience
+    public function setCompany(string $company): static
     {
         $this->company = $company;
 
         return $this;
     }
 
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): Experience
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getPosition(): string
+    public function getPosition(): ?string
     {
         return $this->position;
     }
 
-    public function setPosition(string $position): Experience
+    public function setPosition(string $position): static
     {
         $this->position = $position;
 
         return $this;
     }
 
-    public function getUrl(): string
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    public function setUrl(string $url): Experience
+    public function setUrl(?string $url): static
     {
         $this->url = $url;
 
         return $this;
     }
 
-    public function getFrom(): string
+    public function getStartDate(): ?\DateTimeInterface
     {
-        return $this->from;
+        return $this->start_date;
     }
 
-    public function setFrom(string $from): Experience
+    public function setStartDate(\DateTimeInterface $start_date): static
     {
-        $this->from = $from;
+        $this->start_date = $start_date;
 
         return $this;
     }
 
-    public function getTo(): string
+    public function getEndDate(): ?\DateTimeInterface
     {
-        return $this->to;
+        return $this->end_date;
     }
 
-    public function setTo(string $to): Experience
+    public function setEndDate(?\DateTimeInterface $end_date): static
     {
-        $this->to = $to;
+        $this->end_date = $end_date;
 
         return $this;
     }
 
-    public function getTags(): array
+    public function getTags(): ?array
     {
         return $this->tags;
     }
 
-    public function setTags(array $tags): Experience
+    public function setTags(?array $tags): static
     {
         $this->tags = $tags;
 
