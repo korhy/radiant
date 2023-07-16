@@ -17,7 +17,8 @@
 			</header>
 			<main class="pt-12 lg:w-1/2 lg:py-24">
 				{% include "portfolio/section/about.html.twig" %}
-				{% include "portfolio/section/experience.html.twig" %}
+				{% dump experiences %}
+				{% include "portfolio/section/experience.html.twig" with [experiences] %}
 				{% include "portfolio/section/projects.html.twig" %}
 			</main>
 		</div>
