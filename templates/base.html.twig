@@ -1,13 +1,13 @@
 <!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		{% block stylesheets %}
-			{{ encore_entry_link_tags('app') }}
-		{% endblock %}
-	</head>
-	<body class="antialiased text-slate-400 bg-gradient-to-tr from-bg-blue-950 from-50% to-slate-700">
-		{% block body %}{% endblock %}
-	</body>
+<html class="scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+</head>
+<body class="antialiased text-slate-400 bg-gradient-to-tr from-bg-blue-950 from-50% to-slate-700">
+{% block body %}{% endblock %}
+</body>
 </html>
