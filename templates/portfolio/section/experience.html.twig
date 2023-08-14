@@ -10,14 +10,14 @@
                         <header class="sm:col-span-2 lg:w-1/5 lg:flex-col ">
                             {{ experience.startDate|date('M Y') }}
                             -
-                            {{ experience.to??'maintenant' }}
+                            {{ experience.endDate?experience.endDate|date('M Y'):'maintenant' }}
                         </header>
                         <div class="sm:col-span-6 lg:w-4/5 lg:flex-col ">
                             <h3 class="font-medium leading-snug text-slate-100">{{ experience.position }}
                                 -
                                 {{ experience.company }}</h3>
                             <p class="mt-2 text-sm leading-normal">
-                                {{ experience.description }}
+                                {{ experience.description|raw }}
                             </p>
                             <ul class="mt-2 flex flex-wrap">
                                 {% for tag in experience.tags.tags %}
