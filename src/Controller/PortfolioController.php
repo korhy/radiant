@@ -15,10 +15,10 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PortfolioController extends AbstractController
 {
-    #[Route('/', name: 'homepage')]
-    public function index(EntityManagerInterface $entityManager) : Response
-    {
-        $experiences = $entityManager->getRepository(Experience::class)->findAll();
+	#[Route('/', name: 'homepage')]
+	public function index(EntityManagerInterface $entityManager): Response
+	{
+		$experiences = $entityManager->getRepository(Experience::class)->findAll();
 
         return $this->render('portfolio/layout.html.twig', [
             'experiences' => $experiences
