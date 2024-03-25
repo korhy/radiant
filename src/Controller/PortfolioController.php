@@ -20,6 +20,8 @@ class PortfolioController extends AbstractController
     {
         $experiences = $entityManager->getRepository(Experience::class)->findAll();
 
-        return $this->render('portfolio/layout.html.twig', ['experiences' => $experiences]);
+        return $this->render('portfolio/layout.html.twig', [
+            'experiences' => $experiences
+        ]);
     }
 }
