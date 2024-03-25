@@ -6,19 +6,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use App\Document\Experience as mExperience;
+use Doctrine\ODM\MongoDB\DocumentManager;
+
+use App\Entity\Experience;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 class PortfolioController extends AbstractController
 {
-    #[Route('/')]
-    public function index(): Response
-    {
+	#[Route('/', name: 'homepage')]
+	public function index(EntityManagerInterface $entityManager): Response
+	{
+		$experiences = $entityManager->getRepository(Experience::class)->findAll();
+
         return $this->render('portfolio/layout.html.twig', [
-            'articles' => [
-                [
-                    'title' => 'TEST',
-                    'body' => 'Body Test'
-                ]
-            ],
+            'experiences' => $experiences
         ]);
     }
 }
