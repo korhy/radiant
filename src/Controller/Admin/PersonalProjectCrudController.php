@@ -6,6 +6,7 @@ use App\Entity\PersonalProject;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class PersonalProjectCrudController extends AbstractCrudController
 {
@@ -21,6 +22,7 @@ class PersonalProjectCrudController extends AbstractCrudController
 			TextField::new('name'),
 			TextareaField::new('description'),
 			TextField::new('url'),
+			TextField::new('file')->setFormType(VichImageType::class),
 			TextareaField::new('jsonTags')
 		];
 	}
