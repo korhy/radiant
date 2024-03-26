@@ -23,6 +23,9 @@ class PersonalProject
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $file_name = null;
+
     #[ORM\Column(nullable: true)]
     private ?array $tags = null;
 
@@ -67,6 +70,18 @@ class PersonalProject
         return $this;
     }
 
+    public function getFileName(): ?string
+    {
+        return $this->file_name;
+    }
+
+    public function setFileName(?string $file_name): static
+    {
+        $this->file_name = $file_name;
+
+        return $this;
+    }
+
     public function getTags(): ?array
     {
         return $this->tags;
@@ -85,8 +100,8 @@ class PersonalProject
 	}
 
 	public function setJsonTags(string $jsonTags): static
-	{
-		$this->tags = json_decode($jsonTags, 1);
-		return $this;
-	}
+    {
+         		$this->tags = json_decode($jsonTags, 1);
+         		return $this;
+    }
 }
