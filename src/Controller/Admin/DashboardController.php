@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\Experience;
+use App\Entity\PersonalProject;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -50,6 +51,7 @@ class DashboardController extends AbstractDashboardController
 		//yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 		yield MenuItem::linktoRoute('Back to the website', 'fas fa-home', 'homepage');
 		yield MenuItem::linkToCrud('Experiences', 'fa-solid fa-book', Experience::class);
+		yield MenuItem::linkToCrud('Projects', 'fa-solid fa-list', PersonalProject::class);
 		// yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
 	}
 }

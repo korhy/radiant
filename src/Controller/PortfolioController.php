@@ -10,6 +10,7 @@ use App\Document\Experience as mExperience;
 use Doctrine\ODM\MongoDB\DocumentManager;
 
 use App\Entity\Experience;
+use App\Entity\PersonalProject;
 use Doctrine\ORM\EntityManagerInterface;
 
 
@@ -20,8 +21,11 @@ class PortfolioController extends AbstractController
 	{
 		$experiences = $entityManager->getRepository(Experience::class)->findAll();
 
+        $projetcs = $entityManager->getRepository(PersonalProject::class)->findAll();
+
         return $this->render('portfolio/layout.html.twig', [
-            'experiences' => $experiences
+            'experiences' => $experiences,
+            'projects' => $projetcs
         ]);
     }
 }

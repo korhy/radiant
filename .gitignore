@@ -27,4 +27,6 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 .idea
-.DS_Store.
+.DS_Store
+
+/public/images/
