@@ -123,4 +123,15 @@ class Experience
 
         return $this;
     }
+
+    public function getJsonTags(): ?string
+	{
+		return json_encode($this->tags, JSON_PRETTY_PRINT);
+	}
+
+	public function setJsonTags(string $jsonTags): static
+	{
+		$this->tags = json_decode($jsonTags, 1);
+		return $this;
+	}
 }
