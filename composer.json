@@ -46,7 +46,9 @@
         "symfony/webpack-encore-bundle": "^2.2",
         "symfony/yaml": "7.1.*",
         "symfonycorp/platformsh-meta": "^1.0",
+        "twig/cssinliner-extra": "^3.13",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/inky-extra": "^3.13",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^2.4"
     },
