@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\ContactDTO;
 use App\Form\Type\ContactType;
 use Symfony\Bridge\Twig\Mime\NotificationEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,28 +20,34 @@ class ContactController extends AbstractController
         private MessageBusInterface $bus,
         private MailerInterface $mailer,
         #[Autowire('%admin_email%')] private string $adminEmail
-    ) {}
+    ) {
+
+    }
 
     /**
      * @throws TransportExceptionInterface
      */
     #[Route('/contact', name: 'contact')]
-    public function index(Request $request): Response
+    public function contact(Request $request): Response
     {
-        $form = $this->createForm(ContactType::class);
+        $data = new ContactDTO();
+        $form = $this->createForm(ContactType::class, $data);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->mailer->send((new NotificationEmail())
-                ->subject('Nouveau message')
+                ->subject('Demande de contact')
                 ->htmlTemplate('email/contact.html.twig')
                 ->from($form->get('email')->getData())
                 ->to($this->adminEmail)
                 ->context(['contact' => $form->getData()]));
+
+            $this->addFlash('success', 'Votre demande de contact a bien été envoyé');
+            return $this->redirectToRoute('contact');
         }
 
         return $this->render('contact/index.html.twig', [
-            'contact_form' => $form
+            'form' => $form
         ]);
     }
 }
