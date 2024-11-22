@@ -14,7 +14,9 @@ class PortfolioController extends AbstractController
     #[Route('/', name: 'homepage')]
 	public function index(EntityManagerInterface $entityManager): Response
 	{
-		$experiences = $entityManager->getRepository(Experience::class)->findAll();
+		$experiences = $entityManager->getRepository(Experience::class)->findBy([],
+            ['start_date' => 'DESC']
+        );
 
         $projetcs = $entityManager->getRepository(PersonalProject::class)->findAll();
 
