@@ -1,0 +1,51 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Dependencies
+node_modules
+vendor
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+var/log/*
+
+# Cache
+var/cache/*
+.symfony.local.yaml
+
+# Testing
+tests
+phpunit.xml.dist
+
+# Documentation
+README.md
+docs/
+
+# Environment files (keep local copies out)
+.env.local
+.env.local.php
+.env.*.local
+
+# Build artifacts
+public/build/*
+!public/build/.gitkeep
+
+# Temporary files
+tmp/
+temp/
