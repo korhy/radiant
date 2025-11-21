@@ -75,3 +75,5 @@ Thumbs.db
 /npm-debug.log
 /yarn-error.log
 /pnpm-debug.log
+supervisord.pid
+supervisord.log
