@@ -7,7 +7,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'bg-blue-950' : '#23313e'
+        'bg-blue-950' : '#23313e',
+        'amber-400' : '#FCC175',
+        'amber-500' : '#faa734ff',
+        'amber-600' : '#E68A1A',
+        'amber-700' : '#B76A14',
+
       }
     },
   },
