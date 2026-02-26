@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .tile {
+        @apply flex items-center justify-center w-16 h-16 bg-slate-100 rounded-lg text-2xl font-bold text-slate-800 cursor-pointer hover:bg-slate-300 transition-colors;
+    }
+}
