@@ -20,5 +20,9 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "@hotwired/stimulus": "^3.2.2",
+        "@symfony/stimulus-bridge": "^3.2.3"
     }
 }
