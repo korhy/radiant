@@ -11,17 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ContactController extends AbstractController
 {
     public function __construct(
-        private MessageBusInterface $bus,
         private MailerInterface $mailer,
-        #[Autowire('%admin_email%')] private string $adminEmail
+        #[Autowire('%admin_email%')] private string $adminEmail,
     ) {
-
     }
 
     /**
@@ -43,11 +40,12 @@ class ContactController extends AbstractController
                 ->context(['contact' => $form->getData()]));
 
             $this->addFlash('success', 'Votre demande de contact a bien été envoyé');
+
             return $this->redirectToRoute('contact');
         }
 
         return $this->render('contact/index.html.twig', [
-            'form' => $form
+            'form' => $form,
         ]);
     }
 }

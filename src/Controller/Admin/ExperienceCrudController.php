@@ -16,15 +16,15 @@ class ExperienceCrudController extends AbstractCrudController
     }
 
     public function configureFields(string $pageName): iterable
-	{
-		return [
-			TextField::new('company'),
-			TextField::new('position'),
-			TextareaField::new('description'),
-			TextField::new('url'),
-			DateField::new('startDate'),
-			DateField::new('endDate'),
-			TextareaField::new('jsonTags')
-		];
-	}
+    {
+        return [
+            TextField::new('company'),
+            TextField::new('position'),
+            TextareaField::new('description'),
+            TextField::new('url'),
+            DateField::new('startDate'),
+            DateField::new('endDate'),
+            TextareaField::new('jsonTags'),
+        ];
+    }
 }

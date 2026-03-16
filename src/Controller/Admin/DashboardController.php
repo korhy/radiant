@@ -17,9 +17,9 @@ class DashboardController extends AbstractDashboardController
     public function index(): Response
     {
         $routeBuilder = $this->container->get(AdminUrlGenerator::class);
-		$url = $routeBuilder->setController(ExperienceCrudController::class)->generateUrl();
+        $url = $routeBuilder->setController(ExperienceCrudController::class)->generateUrl();
 
-		return $this->redirect($url);
+        return $this->redirect($url);
     }
 
     public function configureDashboard(): Dashboard
@@ -29,10 +29,9 @@ class DashboardController extends AbstractDashboardController
     }
 
     public function configureMenuItems(): iterable
-	{
-		yield MenuItem::linktoRoute('Back to the website', 'fas fa-home', 'homepage');
-		yield MenuItem::linkToCrud('Experiences', 'fa-solid fa-book', Experience::class);
-		yield MenuItem::linkToCrud('Projects', 'fa-solid fa-list', PersonalProject::class);
-	}
-
+    {
+        yield MenuItem::linktoRoute('Back to the website', 'fas fa-home', 'homepage');
+        yield MenuItem::linkToCrud('Experiences', 'fa-solid fa-book', Experience::class);
+        yield MenuItem::linkToCrud('Projects', 'fa-solid fa-list', PersonalProject::class);
+    }
 }
