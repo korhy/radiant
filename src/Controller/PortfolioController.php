@@ -12,9 +12,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class PortfolioController extends AbstractController
 {
     #[Route('/', name: 'homepage')]
-	public function index(EntityManagerInterface $entityManager): Response
-	{
-		$experiences = $entityManager->getRepository(Experience::class)->findBy([],
+    public function index(EntityManagerInterface $entityManager): Response
+    {
+        $experiences = $entityManager->getRepository(Experience::class)->findBy(
+            [],
             ['start_date' => 'DESC']
         );
 
@@ -22,7 +23,7 @@ class PortfolioController extends AbstractController
 
         return $this->render('portfolio/layout.html.twig', [
             'experiences' => $experiences,
-            'projects' => $projetcs
+            'projects' => $projetcs,
         ]);
     }
 }

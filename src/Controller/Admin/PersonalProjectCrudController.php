@@ -15,14 +15,14 @@ class PersonalProjectCrudController extends AbstractCrudController
         return PersonalProject::class;
     }
 
-	public function configureFields(string $pageName): iterable
-	{
-		return [
-			TextField::new('name'),
-			TextareaField::new('description'),
-			TextField::new('url'),
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('name'),
+            TextareaField::new('description'),
+            TextField::new('url'),
             TextField::new('file')->setFormType(VichImageType::class),
-			TextareaField::new('jsonTags')
-		];
-	}
+            TextareaField::new('jsonTags'),
+        ];
+    }
 }

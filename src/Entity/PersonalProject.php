@@ -116,15 +116,16 @@ class PersonalProject
     }
 
     public function getJsonTags(): ?string
-	{
-		return json_encode($this->tags, JSON_PRETTY_PRINT);
-	}
+    {
+        return json_encode($this->tags, JSON_PRETTY_PRINT);
+    }
 
-	public function setJsonTags(string $jsonTags): static
-	{
-		$this->tags = json_decode($jsonTags, 1);
-		return $this;
-	}
+    public function setJsonTags(string $jsonTags): static
+    {
+        $this->tags = json_decode($jsonTags, true);
+
+        return $this;
+    }
 
     /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -132,8 +133,6 @@ class PersonalProject
      * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
      * must be able to accept an instance of 'File' as the bundle will inject one here
      * during Doctrine hydration.
-     *
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
      */
     public function setFile(?File $file = null): void
     {
