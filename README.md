@@ -1,4 +1,4 @@
-![CI](https://github.com/korhy/cookbook/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/korhy/radiant/actions/workflows/ci.yml/badge.svg)
 
 # Radiant — Personal Portfolio
 
