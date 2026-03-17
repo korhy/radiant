@@ -54,10 +54,7 @@ class CookbookApiService
         }
 
         if ($statusCode >= 400) {
-            throw new \RuntimeException(sprintf(
-                'Cookbook API error %d on %s %s',
-                $statusCode, $method, $path
-            ));
+            throw new \RuntimeException(sprintf('Cookbook API error %d on %s %s', $statusCode, $method, $path));
         }
 
         return $response->toArray(false);
