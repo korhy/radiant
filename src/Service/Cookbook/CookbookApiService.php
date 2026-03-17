@@ -45,14 +45,22 @@ class CookbookApiService
 
         $response = $this->httpClient->request($method, $this->apiUrl.$path, $options);
 
-        // If token expired, retry once after clearing cache
-        if (401 === $response->getStatusCode() && $retry) {
+        $statusCode = $response->getStatusCode();
+
+        if (401 === $statusCode && $retry) {
             $this->cache->delete('cookbook_api_token');
 
             return $this->request($method, $path, $options, false);
         }
 
-        return $response->toArray();
+        if ($statusCode >= 400) {
+            throw new \RuntimeException(sprintf(
+                'Cookbook API error %d on %s %s',
+                $statusCode, $method, $path
+            ));
+        }
+
+        return $response->toArray(false);
     }
 
     public function getRecipes(int $page = 1): array
