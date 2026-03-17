@@ -1,4 +1,6 @@
 ![CI](https://github.com/korhy/radiant/actions/workflows/ci.yml/badge.svg)
+![Deploy](https://github.com/korhy/radiant/actions/workflows/deploy.yml/badge.svg)
+![Version](https://img.shields.io/github/v/tag/korhy/radiant?label=version)
 
 # Radiant — Personal Portfolio
 
