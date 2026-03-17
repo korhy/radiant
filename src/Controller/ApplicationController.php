@@ -24,7 +24,7 @@ class ApplicationController extends AbstractController
     ): Response {
         return $this->render('app/cookbook/index.html.twig', [
             'recipes' => $cookbookApiService->getRecipes(),
-            'apiDocUrl' => $apiUrl . '/api/' . $apiVersion . '/docs',
+            'apiDocUrl' => $apiUrl.'/api/'.$apiVersion.'/docs',
         ]);
     }
 
@@ -35,5 +35,4 @@ class ApplicationController extends AbstractController
             'recipe' => $cookbookApiService->getRecipe($id),
         ]);
     }
-
 }

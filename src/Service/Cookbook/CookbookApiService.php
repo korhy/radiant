@@ -20,14 +20,15 @@ class CookbookApiService
         private readonly string $apiPassword,
         #[Autowire(env: 'COOKBOOK_API_VERSION')]
         private readonly string $apiVersion,
-    ) {}
+    ) {
+    }
 
     private function getToken(): string
     {
         return $this->cache->get('cookbook_api_token', function (ItemInterface $item): string {
             $item->expiresAfter(3500);
 
-            $response = $this->httpClient->request('POST', $this->apiUrl . '/api/login_check', [
+            $response = $this->httpClient->request('POST', $this->apiUrl.'/api/login_check', [
                 'json' => [
                     'username' => $this->apiUsername,
                     'password' => $this->apiPassword,
@@ -40,13 +41,14 @@ class CookbookApiService
 
     private function request(string $method, string $path, array $options = [], bool $retry = true): array
     {
-        $options['headers']['Authorization'] = 'Bearer ' . $this->getToken();
+        $options['headers']['Authorization'] = 'Bearer '.$this->getToken();
 
-        $response = $this->httpClient->request($method, $this->apiUrl . $path, $options);
+        $response = $this->httpClient->request($method, $this->apiUrl.$path, $options);
 
-        // Si le token est expiré/invalide, on vide le cache et on réessaie une fois
+        // If token expired, retry once after clearing cache
         if (401 === $response->getStatusCode() && $retry) {
             $this->cache->delete('cookbook_api_token');
+
             return $this->request($method, $path, $options, false);
         }
 
@@ -55,11 +57,11 @@ class CookbookApiService
 
     public function getRecipes(int $page = 1): array
     {
-        return $this->request('GET', '/api/' . $this->apiVersion . '/recipes?page=' . $page);
+        return $this->request('GET', '/api/'.$this->apiVersion.'/recipes?page='.$page);
     }
 
     public function getRecipe(int $id): array
     {
-        return $this->request('GET', '/api/' . $this->apiVersion . '/recipes/' . $id);
+        return $this->request('GET', '/api/'.$this->apiVersion.'/recipes/'.$id);
     }
 }
