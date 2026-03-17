@@ -3,12 +3,16 @@
     Chaque entrée : { label, href, icon (chemin SVG asset ou inline) }
 #}
 {% set apps = [
+        {
+        label: 'Cookbook',
+        href: path('cookbook'),
+        icon: include('components/_icon_cookbook.html.twig')
+    },
     {
         label: 'Taquin',
         href: path('taquin'),
         icon: include('components/_icon_taquin.html.twig')
     },
-
 ] %}
 
 <div class="mt-10">
