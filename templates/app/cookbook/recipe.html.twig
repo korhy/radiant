@@ -1,0 +1,99 @@
+{# templates/app/cookbook/recipe.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ recipe.title }} — Cookbook{% endblock %}
+
+{% block body %}
+<div class="min-h-screen py-10 px-4">
+    <div class="max-w-2xl mx-auto flex flex-col gap-6">
+
+        {# Header #}
+        <div class="flex items-center gap-3">
+            <a href="{{ path('cookbook') }}"
+               class="text-slate-400 hover:text-white transition-colors">
+                ← Retour
+            </a>
+        </div>
+
+        {# Main card #}
+        <div class="bg-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+
+            {# Thumbnail #}
+            {% if recipe.thumbnail %}
+                <img src="{{ recipe.thumbnail }}"
+                     alt="{{ recipe.title }}"
+                     class="w-full h-56 object-cover">
+            {% else %}
+                <div class="w-full h-56 bg-slate-700 flex items-center justify-center">
+                    <span class="w-16 h-16 text-slate-500">
+                        {{ include('components/_icon_cookbook.html.twig') }}
+                    </span>
+                </div>
+            {% endif %}
+
+            <div class="p-6 flex flex-col gap-6">
+
+                {# Title + meta #}
+                <div class="flex flex-col gap-2">
+                    <h1 class="text-white text-2xl font-bold tracking-wide">{{ recipe.title }}</h1>
+                    <div class="flex items-center gap-3 flex-wrap">
+                        {% if recipe.category is defined and recipe.category %}
+                            <span class="bg-amber-500/20 text-amber-400 text-xs font-semibold px-3 py-1 rounded-full">
+                                {{ recipe.category.name }}
+                            </span>
+                        {% endif %}
+                        {% if recipe.duration %}
+                            <span class="text-slate-400 text-sm flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                                </svg>
+                                {{ recipe.duration }} min
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# Description #}
+                {% if recipe.description %}
+                    <p class="text-slate-300 text-sm leading-relaxed">{{ recipe.description }}</p>
+                {% endif %}
+
+                {# Ingredients #}
+                {% if recipe.recipeIngredients is defined and recipe.recipeIngredients is not empty %}
+                    <div>
+                        <h2 class="text-white font-semibold text-lg mb-3">Ingrédients</h2>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {% for ri in recipe.recipeIngredients %}
+                                <li class="flex items-center gap-2 bg-slate-700 rounded-lg px-3 py-2 text-sm">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
+                                    <span class="text-slate-200">{{ ri.ingredient.name }}</span>
+                                    {% if ri.quantity %}
+                                        <span class="ml-auto text-slate-400">{{ ri.quantity }}</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {# Instructions #}
+                {% if recipe.instructions is defined and recipe.instructions is not empty %}
+                    <div>
+                        <h2 class="text-white font-semibold text-lg mb-3">Instructions</h2>
+                        <ol class="flex flex-col gap-3">
+                            {% for instruction in recipe.instructions %}
+                                <li class="flex gap-4 bg-slate-700 rounded-lg px-4 py-3 text-sm text-slate-200">
+                                    <span class="text-amber-400 font-bold shrink-0">{{ loop.index }}</span>
+                                    <span class="leading-relaxed">{{ instruction.content }}</span>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
