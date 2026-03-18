@@ -70,6 +70,9 @@
                                     {% if ri.quantity %}
                                         <span class="ml-auto text-slate-400">{{ ri.quantity }}</span>
                                     {% endif %}
+                                    {% if ri.unit %}
+                                        <span class="text-slate-400">{{ ri.unit }}</span>
+                                    {% endif %}
                                 </li>
                             {% endfor %}
                         </ul>
