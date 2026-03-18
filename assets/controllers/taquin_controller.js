@@ -4,7 +4,7 @@ export default class extends Controller {
   static targets = ['grid', 'winOverlay'];
 
   connect() {
-    console.log('Taquin controller connected');
+    this.shuffle();
   }
 
   get gridEl() {
