@@ -37,7 +37,7 @@ class ApplicationController extends AbstractController
     public function cookbookRecipe(
         CookbookApiService $cookbookApiService,
         AppRepository $appRepository,
-        int $id
+        int $id,
     ): Response {
         return $this->render('app/cookbook/recipe.html.twig', [
             'recipe' => $cookbookApiService->getRecipe($id),
