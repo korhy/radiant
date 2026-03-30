@@ -1,32 +1,15 @@
-{#
-    Stream Deck — liens vers les apps développées.
-    Chaque entrée : { label, href, icon (chemin SVG asset ou inline) }
-#}
-{% set apps = [
-        {
-        label: 'Cookbook',
-        href: path('cookbook'),
-        icon: include('components/_icon_cookbook.html.twig')
-    },
-    {
-        label: 'Taquin',
-        href: path('taquin'),
-        icon: include('components/_icon_taquin.html.twig')
-    },
-] %}
-
 <div class="mt-10">
     <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Mes apps</p>
     <div class="grid grid-cols-4 gap-2">
-        {% for app in apps %}
-            <a href="{{ app.href }}"
+        {% for appEntry in apps %}
+            <a href="{{ path(appEntry.route) }}"
                rel="noreferrer noopener"
                class="group flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-700/50 bg-slate-800/60 text-slate-400 shadow-inner transition-all duration-200 hover:border-amber-500/40 hover:bg-slate-800 hover:text-amber-500 active:scale-95"
                style="aspect-ratio:1/1;">
                 <span class="h-6 w-6 transition-transform duration-200 group-hover:scale-110" aria-hidden="true">
-                    {{ app.icon|raw }}
+                    {{ include('components/_icon_' ~ appEntry.slug ~ '.html.twig') }}
                 </span>
-                <span class="text-[10px] font-semibold uppercase tracking-wider leading-none">{{ app.label }}</span>
+                <span class="text-[10px] font-semibold uppercase tracking-wider leading-none">{{ appEntry.label }}</span>
             </a>
         {% endfor %}
     </div>

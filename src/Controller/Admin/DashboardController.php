@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\App;
 use App\Entity\Experience;
 use App\Entity\PersonalProject;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -33,5 +34,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linktoRoute('Back to the website', 'fas fa-home', 'homepage');
         yield MenuItem::linkToCrud('Experiences', 'fa-solid fa-book', Experience::class);
         yield MenuItem::linkToCrud('Projects', 'fa-solid fa-list', PersonalProject::class);
+        yield MenuItem::linkToCrud('Apps', 'fa-solid fa-grid-2', App::class);
     }
 }
