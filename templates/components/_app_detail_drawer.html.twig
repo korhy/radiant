@@ -1,0 +1,164 @@
+{# templates/components/_app_detail_drawer.html.twig #}
+{% if app_detail is defined and app_detail is not null %}
+<div data-controller="app-detail-drawer">
+
+    {# Trigger #}
+    <button
+        data-action="click->app-detail-drawer#open"
+        class="fixed bottom-6 right-6 z-50 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-3 shadow-lg transition-colors"
+        title="Behind the scenes"
+    >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
+        </svg>
+    </button>
+
+    {# Overlay #}
+    <div
+        data-app-detail-drawer-target="overlay"
+        data-action="click->app-detail-drawer#close"
+        class="hidden fixed inset-0 bg-black/50 z-40"
+    ></div>
+
+    {# Drawer #}
+    <div
+        data-app-detail-drawer-target="drawer"
+        class="fixed top-0 right-0 h-full w-96 max-w-full bg-slate-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col"
+    >
+        {# Header #}
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-700 shrink-0">
+            <h2 class="text-white font-bold text-base tracking-wide flex items-center gap-2">
+                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+                Behind the scenes
+            </h2>
+            <button
+                data-action="click->app-detail-drawer#close"
+                class="text-slate-400 hover:text-white transition-colors"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        {# Tabs #}
+        <div class="flex border-b border-slate-700 shrink-0">
+            <button data-app-detail-drawer-target="tab" data-tab="stack"
+                data-action="click->app-detail-drawer#switchTab"
+                class="flex-1 py-3 text-xs font-medium transition-colors">
+                Présentation
+            </button>
+            <button data-app-detail-drawer-target="tab" data-tab="challenges"
+                data-action="click->app-detail-drawer#switchTab"
+                class="flex-1 py-3 text-xs font-medium transition-colors">
+                Défis
+            </button>
+            <button data-app-detail-drawer-target="tab" data-tab="improvements"
+                data-action="click->app-detail-drawer#switchTab"
+                class="flex-1 py-3 text-xs font-medium transition-colors">
+                À venir
+            </button>
+            <button data-app-detail-drawer-target="tab" data-tab="resources"
+                data-action="click->app-detail-drawer#switchTab"
+                class="flex-1 py-3 text-xs font-medium transition-colors">
+                Ressources
+            </button>
+        </div>
+
+        {# Content #}
+        <div class="flex-1 overflow-y-auto px-6 py-5">
+
+            {# Panel : Présentation #}
+            <div data-app-detail-drawer-target="panel" data-tab="stack">
+                {% if app_detail.description %}
+                    <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ app_detail.description }}</p>
+                {% endif %}
+                {% if app_detail.techStack %}
+                    {% set categories = {} %}
+                    {% for item in app_detail.techStack %}
+                        {% set cat = item.category ?? 'Autre' %}
+                        {% set categories = categories|merge({(cat): (categories[cat] ?? [])|merge([item.name])}) %}
+                    {% endfor %}
+                    <div class="flex flex-col gap-4">
+                        {% for category, items in categories %}
+                            <div>
+                                <p class="text-slate-500 text-xs uppercase tracking-wider mb-2">{{ category }}</p>
+                                <div class="flex flex-wrap gap-2">
+                                    {% for item in items %}
+                                        <span class="bg-slate-700 text-amber-500 text-xs px-3 py-1 rounded-full border border-amber-400">{{ item }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-slate-500 text-sm">Aucune information pour l'instant.</p>
+                {% endif %}
+            </div>
+
+            {# Panel : Défis #}
+            <div data-app-detail-drawer-target="panel" data-tab="challenges" class="hidden">
+                {% if app_detail.challenges %}
+                    <div class="flex flex-col gap-4">
+                        {% for item in app_detail.challenges %}
+                            <div class="border-l-2 border-amber-400 pl-4">
+                                <p class="text-white text-sm font-medium mb-1">{{ item.title }}</p>
+                                <p class="text-slate-400 text-sm leading-relaxed">{{ item.description }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-slate-500 text-sm">Aucune information pour l'instant.</p>
+                {% endif %}
+            </div>
+
+            {# Panel : Améliorations #}
+            <div data-app-detail-drawer-target="panel" data-tab="improvements" class="hidden">
+                {% if app_detail.improvements %}
+                    <ul class="flex flex-col gap-3">
+                        {% for item in app_detail.improvements %}
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1 w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                                <div>
+                                    <p class="text-white text-sm font-medium">{# item.title #}</p>
+                                    {% if item.description is defined and item.description %}
+                                        <p class="text-slate-400 text-sm leading-relaxed mt-0.5">{{ item.description }}</p>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-slate-500 text-sm">Aucune information pour l'instant.</p>
+                {% endif %}
+            </div>
+
+            {# Panel : Ressources #}
+            <div data-app-detail-drawer-target="panel" data-tab="resources" class="hidden">
+                {% if app_detail.resources %}
+                    <div class="flex flex-col gap-2">
+                        {% for item in app_detail.resources %}
+                            <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer"
+                                class="flex items-center gap-3 bg-slate-700 hover:bg-slate-600 rounded-lg px-4 py-3 transition-colors group">
+                                <svg class="w-4 h-4 text-slate-400 group-hover:text-amber-400 transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                                </svg>
+                                <span class="text-slate-200 text-sm group-hover:text-white transition-colors">{{ item.label }}</span>
+                                <svg class="w-3 h-3 text-slate-500 group-hover:text-slate-300 ml-auto transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                </svg>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-slate-500 text-sm">Aucune information pour l'instant.</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endif %}
