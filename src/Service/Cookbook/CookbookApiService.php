@@ -69,4 +69,14 @@ class CookbookApiService
     {
         return $this->request('GET', '/api/'.$this->apiVersion.'/recipes/'.$id);
     }
+
+    public function chat(string $message, array $history = []): array
+    {
+        return $this->request('POST', '/api/'.$this->apiVersion.'/recipe-chat', [
+            'json' => [
+                'query' => $message,
+                'history' => $history,
+            ],
+        ]);
+    }
 }

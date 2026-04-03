@@ -35,5 +35,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Experiences', 'fa-solid fa-book', Experience::class);
         yield MenuItem::linkToCrud('Projects', 'fa-solid fa-list', PersonalProject::class);
         yield MenuItem::linkToCrud('Apps', 'fa-solid fa-grid-2', App::class);
+        yield MenuItem::linkToRoute('Recipe Chat', 'fa-solid fa-comments', 'admin_recipe_chat');
     }
 }
