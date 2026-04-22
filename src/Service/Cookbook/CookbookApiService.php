@@ -60,9 +60,9 @@ class CookbookApiService
         return $response->toArray(false);
     }
 
-    public function getRecipes(int $page = 1): array
+    public function getRecipes(int $page = 1, int $itemsPerPage = 10): array
     {
-        return $this->request('GET', '/api/'.$this->apiVersion.'/recipes?page='.$page);
+        return $this->request('GET', '/api/'.$this->apiVersion.'/recipes?page='.$page.'&itemsPerPage='.$itemsPerPage);
     }
 
     public function getRecipe(int $id): array
