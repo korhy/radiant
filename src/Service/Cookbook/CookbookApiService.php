@@ -42,6 +42,7 @@ class CookbookApiService
     private function request(string $method, string $path, array $options = [], bool $retry = true): array
     {
         $options['headers']['Authorization'] = 'Bearer '.$this->getToken();
+        $options['headers']['Accept'] ??= 'application/ld+json';
 
         $response = $this->httpClient->request($method, $this->apiUrl.$path, $options);
 
