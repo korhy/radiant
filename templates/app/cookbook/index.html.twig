@@ -52,7 +52,8 @@
 
         {# Recipe cards #}
         {% if recipes is not empty %}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div data-controller="cookbook" data-cookbook-next-page-value="2">
+            <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {% for recipe in recipes %}
                     <a href="{{ path('cookbook_recipe', { id: recipe.id }) }}"
                        class="group bg-slate-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-amber-500/10 hover:-translate-y-1 transition-all duration-200">
@@ -93,6 +94,14 @@
 
                     </a>
                 {% endfor %}
+            </div>
+            {% if hasNextPage %}
+            <div data-cookbook-target="loadMoreContainer" class="flex justify-center mt-6">
+                <span data-cookbook-target="button" class="text-slate-500 text-sm animate-pulse">
+                    Chargement…
+                </span>
+            </div>
+            {% endif %}
             </div>
         {% else %}
             <div class="bg-slate-800 rounded-2xl p-12 text-center">
