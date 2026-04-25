@@ -7,13 +7,15 @@
 <div class="min-h-screen py-10 px-4">
     <div class="max-w-2xl mx-auto flex flex-col gap-6">
 
-        {# Header #}
-        <div class="flex items-center gap-3">
-            <a href="{{ path('cookbook') }}"
-               class="text-slate-400 hover:text-white transition-colors">
-                ← Retour
-            </a>
-        </div>
+        {# Navbar #}
+        {{ include('app/cookbook/navbar.html.twig') }}
+
+        {# Breadcrumb #}
+        {{ include('app/cookbook/breadcrumb.html.twig', { breadcrumbs: [
+            { label: 'Portfolio', path: path('homepage') },
+            { label: 'Cookbook', path: path('cookbook') },
+            { label: recipe.title, path: path('cookbook_recipe', { id: recipe.id }) },
+        ]}) }}
 
         {# Main card #}
         <div class="bg-slate-800 rounded-2xl shadow-2xl overflow-hidden">

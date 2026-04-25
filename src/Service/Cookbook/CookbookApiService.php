@@ -2,6 +2,7 @@
 
 namespace App\Service\Cookbook;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -20,6 +21,7 @@ class CookbookApiService
         private readonly string $apiPassword,
         #[Autowire(env: 'COOKBOOK_API_VERSION')]
         private readonly string $apiVersion,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -61,13 +63,26 @@ class CookbookApiService
         return $response->toArray(false);
     }
 
-    public function getRecipes(int $page = 1, int $itemsPerPage = 10): array
+    public function getRecipes(int $page = 1, int $itemsPerPage = 10, $filters = []): array
     {
-        return $this->request('GET', '/api/'.$this->apiVersion.'/recipes?page='.$page.'&itemsPerPage='.$itemsPerPage);
+        $this->logger->info('Fetching recipes', ['page' => $page, 'itemsPerPage' => $itemsPerPage, 'filters' => $filters]);
+
+        $query = http_build_query([
+            'page' => $page,
+            'itemsPerPage' => $itemsPerPage,
+            ...$filters,
+        ]);
+
+        return $this->request('GET', '/api/'.$this->apiVersion.'/recipes?'.$query);
     }
 
     public function getRecipe(int $id): array
     {
         return $this->request('GET', '/api/'.$this->apiVersion.'/recipes/'.$id);
+    }
+
+    public function getCategories(): array
+    {
+        return $this->request('GET', '/api/'.$this->apiVersion.'/categories');
     }
 }

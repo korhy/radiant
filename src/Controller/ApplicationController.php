@@ -29,10 +29,12 @@ class ApplicationController extends AbstractController
         #[Autowire(env: 'COOKBOOK_API_VERSION')] string $apiVersion,
     ): Response {
         $data = $cookbookApiService->getRecipes();
+        $categories = $cookbookApiService->getCategories();
 
         return $this->render('app/cookbook/index.html.twig', [
             'recipes' => $data['member'] ?? [],
             'hasNextPage' => isset($data['view']['next']),
+            'categories' => $categories['member'] ?? [],
             'apiDocUrl' => $apiUrl.'/api/'.$apiVersion.'/docs',
             'app_detail' => $appRepository->findBySlug('cookbook'),
         ]);
@@ -46,7 +48,17 @@ class ApplicationController extends AbstractController
         $page = max(1, (int) $request->query->get('page', 1));
         $itemsPerPage = max(1, (int) $request->query->get('itemsPerPage', 10));
 
-        $data = $cookbookApiService->getRecipes($page, $itemsPerPage);
+        $order = $request->query->all('order');
+
+        $filters = array_filter([
+            'title' => $request->query->get('query'),
+            'category' => $request->query->get('category'),
+            'order[title]' => $order['title'] ?? null,
+            'order[duration]' => $order['duration'] ?? null,
+            'order[createdAt]' => $order['createdAt'] ?? null,
+        ]);
+
+        $data = $cookbookApiService->getRecipes($page, $itemsPerPage, $filters);
 
         return $this->json([
             'recipes' => $data['member'] ?? [],
