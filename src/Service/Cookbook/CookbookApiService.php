@@ -70,7 +70,7 @@ class CookbookApiService
         $query = http_build_query([
             'page' => $page,
             'itemsPerPage' => $itemsPerPage,
-            ...$filters
+            ...$filters,
         ]);
 
         return $this->request('GET', '/api/'.$this->apiVersion.'/recipes?'.$query);
