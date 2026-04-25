@@ -53,7 +53,7 @@ class ApplicationController extends AbstractController
         $filters = array_filter([
             'title' => $request->query->get('query'),
             'category' => $request->query->get('category'),
-            'order[title]' => $order['title'] ?? null,
+            'order[slug]' => $order['title'] ?? null,
             'order[duration]' => $order['duration'] ?? null,
             'order[createdAt]' => $order['createdAt'] ?? null,
         ]);
