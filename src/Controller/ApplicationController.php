@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\AppRepository;
 use App\Service\Cookbook\CookbookApiService;
+use App\Service\Motus\MotusService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -64,6 +65,38 @@ class ApplicationController extends AbstractController
             'recipes' => $data['member'] ?? [],
             'hasNextPage' => isset($data['view']['next']),
             'nextPage' => isset($data['view']['next']) ? $page + 1 : null,
+        ]);
+    }
+
+    #[Route('/app/motus', name: 'motus')]
+    public function motus(MotusService $motusService, AppRepository $appRepository): Response
+    {
+        $word = $motusService->getWordOfTheDay();
+
+        return $this->render('app/motus/index.html.twig', [
+            'word_length' => mb_strlen($word),
+            'first_letter' => mb_substr($word, 0, 1),
+            'app_detail' => $appRepository->findBySlug('motus'),
+        ]);
+    }
+
+    #[Route('/app/motus/guess', name: 'motus_guess', methods: ['POST'])]
+    public function motusGuess(MotusService $motusService, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $guess = trim(strtoupper($data['guess'] ?? ''));
+        $word = $motusService->getWordOfTheDay();
+
+        if (mb_strlen($guess) !== mb_strlen($word)) {
+            return $this->json(['error' => 'Longueur incorrecte'], 400);
+        }
+
+        $result = $motusService->checkGuess($guess, $word);
+        $won = count(array_filter($result, fn ($r) => $r['state'] === 'correct')) === count($result);
+
+        return $this->json([
+            'result' => $result,
+            'won' => $won,
         ]);
     }
 

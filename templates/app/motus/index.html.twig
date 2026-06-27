@@ -1,0 +1,83 @@
+{# templates/app/motus/index.html.twig #}
+{% extends 'base.html.twig' %}
+{% block body_class %}overflow-hidden{% endblock %}
+
+{% block body %}
+<div class="flex justify-center items-start md:items-center min-h-screen pt-8 md:pt-0"
+    data-controller="motus"
+    data-motus-word-length-value="{{ word_length }}"
+    data-motus-first-letter-value="{{ first_letter }}"
+    data-motus-guess-url-value="{{ path('motus_guess') }}">
+
+    <div class="flex flex-col items-center gap-6 bg-slate-800 p-6 md:p-8 rounded-2xl shadow-2xl w-fit">
+
+
+        <h1 class="text-white text-2xl font-bold tracking-wide flex items-center gap-2 justify-center">
+            <span class="w-7 h-7">{{ include('components/_icon_motus.html.twig') }}</span>
+            Motus
+            <div class="relative group">
+                <span class="text-slate-400 hover:text-white cursor-help text-base">ⓘ</span>
+                <div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity
+                    absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64
+                    bg-slate-700 text-slate-300 text-sm font-normal rounded-lg p-3 shadow-xl z-10">
+                    <p>Devinez le mot du jour en {{ 6 }} essais.</p>
+                    <ul class="mt-2 space-y-1">
+                        <li><span class="inline-block w-3 h-3 rounded-sm bg-red-500 mr-1"></span> Bonne position</li>
+                        <li><span class="inline-block w-3 h-3 rounded-sm bg-yellow-400 mr-1"></span> Mauvaise position</li>
+                        <li><span class="inline-block w-3 h-3 rounded-sm bg-slate-600 mr-1"></span> Absent</li>
+                    </ul>
+                </div>
+            </div>
+        </h1>
+
+
+        <div data-motus-target="grid" class="flex flex-col gap-1.5"></div>
+
+
+        <p data-motus-target="message" class="text-slate-400 text-sm h-5 text-center"></p>
+
+
+        <div data-motus-target="keyboard" class="flex flex-col gap-1.5 items-center">
+            <div class="flex gap-1.5">
+                {% for letter in ['A','Z','E','R','T','Y','U','I','O','P'] %}
+                <button data-action="click->motus#keyPress" data-key="{{ letter }}"
+                    class="key w-8 h-10 bg-slate-600 hover:bg-slate-500 text-white text-xs font-bold rounded transition-colors cursor-pointer">
+                    {{ letter }}
+                </button>
+                {% endfor %}
+            </div>
+            <div class="flex gap-1.5">
+                {% for letter in ['Q','S','D','F','G','H','J','K','L','M'] %}
+                <button data-action="click->motus#keyPress" data-key="{{ letter }}"
+                    class="key w-8 h-10 bg-slate-600 hover:bg-slate-500 text-white text-xs font-bold rounded transition-colors cursor-pointer">
+                    {{ letter }}
+                </button>
+                {% endfor %}
+            </div>
+            <div class="flex gap-1.5 items-center">
+                <button data-action="click->motus#submit"
+                    class="h-10 px-3 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded transition-colors cursor-pointer">
+                    ENTRER
+                </button>
+                {% for letter in ['W','X','C','V','B','N'] %}
+                <button data-action="click->motus#keyPress" data-key="{{ letter }}"
+                    class="key w-8 h-10 bg-slate-600 hover:bg-slate-500 text-white text-xs font-bold rounded transition-colors cursor-pointer">
+                    {{ letter }}
+                </button>
+                {% endfor %}
+                <button data-action="click->motus#backspace"
+                    class="h-10 px-3 bg-slate-500 hover:bg-slate-400 text-white text-xs font-bold rounded transition-colors cursor-pointer">
+                    ⌫
+                </button>
+            </div>
+        </div>
+
+        <a href="{{ path('homepage') }}"
+            class="bg-slate-600 hover:bg-slate-700 text-white font-bold px-6 py-2 rounded-full transition-colors cursor-pointer text-center text-sm">
+            Retour
+        </a>
+    </div>
+</div>
+
+{{ include('components/_app_detail_drawer.html.twig') }}
+{% endblock %}
