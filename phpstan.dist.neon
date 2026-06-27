@@ -6,5 +6,7 @@ parameters:
         - public/
         - src/
         - tests/
+    excludePaths:
+        - config/reference.php
     ignoreErrors:
         - identifier: property.unusedType
