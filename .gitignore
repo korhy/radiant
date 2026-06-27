@@ -91,3 +91,4 @@ phpstan.neon
 ###< friendsofphp/php-cs-fixer ###
 .mcp.json
 CLAUDE.md
+/config/reference.php
