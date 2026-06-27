@@ -92,7 +92,7 @@ class ApplicationController extends AbstractController
         }
 
         $result = $motusService->checkGuess($guess, $word);
-        $won = count(array_filter($result, fn ($r) => $r['state'] === 'correct')) === count($result);
+        $won = count(array_filter($result, fn ($r) => 'correct' === $r['state'])) === count($result);
 
         return $this->json([
             'result' => $result,

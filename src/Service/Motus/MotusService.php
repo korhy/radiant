@@ -48,7 +48,7 @@ class MotusService
     /** @return string[] */
     private function getValidWords(): array
     {
-        return array_values(array_filter(self::WORDS, fn (string $w) => mb_strlen($w) === 6));
+        return array_values(array_filter(self::WORDS, fn (string $w) => 6 === mb_strlen($w)));
     }
 
     public function getWordOfTheDay(): string
@@ -70,14 +70,14 @@ class MotusService
         $result = array_fill(0, $len, null);
 
         $wordLetters = [];
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             $wordLetters[] = mb_substr($word, $i, 1);
         }
 
         $remaining = $wordLetters;
 
         // First pass: correct positions
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             $letter = mb_substr($guess, $i, 1);
             if ($letter === $wordLetters[$i]) {
                 $result[$i] = ['letter' => $letter, 'state' => 'correct'];
@@ -86,13 +86,13 @@ class MotusService
         }
 
         // Second pass: present but wrong position
-        for ($i = 0; $i < $len; $i++) {
-            if ($result[$i] !== null) {
+        for ($i = 0; $i < $len; ++$i) {
+            if (null !== $result[$i]) {
                 continue;
             }
             $letter = mb_substr($guess, $i, 1);
             $foundAt = array_search($letter, $remaining, true);
-            if ($foundAt !== false) {
+            if (false !== $foundAt) {
                 $result[$i] = ['letter' => $letter, 'state' => 'present'];
                 $remaining[$foundAt] = null;
             } else {
