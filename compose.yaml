@@ -36,6 +36,8 @@ services:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
     container_name: radiant_db
     restart: unless-stopped
+    ports:
+      - "5434:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-app}
       # You should definitely change the password in production

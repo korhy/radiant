@@ -49,11 +49,20 @@ export default class extends Controller {
             }
 
             const data = await response.json();
-            this.#appendRecipeCard(data.recipe);
+            const recipes = (data.recipes ?? (data.recipe ? [data.recipe] : []))
+                .filter(r => r?.title && r?.recipeIngredients);
+
+            if (recipes.length === 0) {
+                this.#appendError('Aucune recette trouvée. Essayez une autre formulation.');
+                this.#setLoading(false);
+                return;
+            }
+
+            recipes.forEach(recipe => this.#appendRecipeCard(recipe));
 
             this.conversationId = data.conversationId ?? null;
             this.history.push({ role: 'user', content: message });
-            this.history.push({ role: 'assistant', content: data.recipe.title });
+            this.history.push({ role: 'assistant', content: recipes.map(r => r.title).join(', ') });
 
         } catch {
             loadingEl.remove();
