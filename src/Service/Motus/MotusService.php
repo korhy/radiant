@@ -4,59 +4,60 @@ namespace App\Service\Motus;
 
 class MotusService
 {
+    /**
+     * Mots de 5 à 8 lettres, sans accents, mélangés une fois pour l'ordre du jour.
+     */
     private const WORDS = [
-        'MAISON', 'JARDIN', 'SOLEIL', 'FLEURS', 'CHEMIN', 'PLANTE', 'FORÊTS', 'PIERRE',
-        'RIVAGE', 'NUAGES', 'ÉTOILE', 'LUMIÈRE', 'SAISON', 'CHEVAL', 'MOUTON', 'LAPIN',
-        'POULET', 'CANARD', 'TIGRES', 'LIÈVRE', 'RENARD', 'CASTOR', 'HERBES', 'ARBRES',
-        'FRUITS', 'LÉGUME', 'POMMES', 'CERISES', 'CITRON', 'ORANGE', 'BANANE', 'RAISIN',
-        'FRAISE', 'MANGUE', 'POIRES', 'TOMATE', 'CARROT', 'RADIS',  'NAVET',  'OIGNON',
-        'AILLES', 'MOUTON', 'COCHON', 'CHATON', 'CHAUVE', 'BLONDES', 'BRUNES', 'TEINTE',
-        'VENTRE', 'ÉPAULE', 'GENOUX', 'COUDES', 'DOIGTS', 'POINGS', 'TALONS', 'NUQUES',
-        'BOUCHE', 'GORGES', 'LANGUE', 'DENTS',  'LÈVRES', 'JOUES',  'FRONTS', 'REGARDS',
-        'SOURIRE', 'LARMES', 'COLÈRE', 'TRISTESSE', 'BONHEUR', 'AMOURS', 'PASSIONS',
-        'RÊVES',  'ESPOIR', 'CONFIANCE', 'COURAGE', 'FORCES', 'ÉNERGIE', 'VOLONTÉ',
-        'TALENT', 'SUCCÈS', 'DÉFAITE', 'COMBAT', 'LUTTES', 'EFFORT', 'MÉRITES',
-        'VALEUR', 'BEAUTÉ', 'CHARME', 'GRÂCES', 'ÉLÉGANCE', 'STYLES', 'MODES',
-        'TABLES', 'CHAISES', 'ARMOIRE', 'BUFFET', 'TIROIR', 'VITRES', 'RIDEAUX',
-        'LAMPES', 'BOUGIES', 'MIROIR', 'CADRES', 'LIVRES', 'PAPIER', 'STYLOS',
-        'CRAYONS', 'CAHIER', 'AGENDA', 'AGENDA', 'PHOTOS', 'IMAGES', 'DESSINS',
-        'PEINTRE', 'MUSIQUE', 'GUITARE', 'VIOLON', 'PIANOS', 'FLÛTES', 'TAMBOUR',
-        'CHANTS', 'DANSES', 'BALLET', 'OPÉRAS', 'FILMS',  'CINÉMA', 'SCÈNES',
-        'ACTEUR', 'TROUPES', 'PIÈCES', 'RIDEAU', 'PUBLIC', 'BRAVO',  'RAPPEL',
-        'VOYAGE', 'TRAINS', 'AVIONS', 'BATEAUX', 'ROUTES', 'PONTS',  'TUNNELS',
-        'VILLES', 'CAPITALES', 'PAYS',   'MONDES', 'CARTES', 'BOUSSOLE', 'ÉTOILES',
-        'MARÉES', 'VAGUES', 'PLAGES', 'SABLES', 'ROCHERS', 'GROTTES', 'FALAISE',
-        'VOLCANS', 'DÉSERTS', 'STEPPES', 'TOUNDRA', 'GLACES',  'NEIGE',  'PLUIES',
-        'TEMPÊTE', 'ORAGEUX', 'GRÊLES', 'VENTES', 'BRISE',  'CALMES', 'SEREINS',
-        'REPAS',  'CUISINES', 'SAVEURS', 'ÉPICES', 'SAUCES', 'PLATS',  'DESSERTS',
-        'GÂTEAU', 'BISCUITS', 'CROÛTES', 'PÂTONS', 'FARINE', 'BEURRE', 'SUCRES',
-        'MIEL',   'SIROP',  'CARAMEL', 'CHOCOLAT', 'VANILLE', 'CANNELLE', 'ANIS',
-        'SPORTS', 'FOOTBALL', 'TENNIS', 'BOXE',   'JUDO',   'KARATÉ', 'NATATION',
-        'COURSE', 'CYCLISME', 'ESCALADE', 'PLONGEON', 'SAUT',  'LANCERS', 'DISQUES',
-        'ÉCOLE',  'CLASSES', 'ÉLÈVES', 'MAÎTRE', 'LEÇONS', 'DEVOIRS', 'EXAMENS',
-        'DIPLÔMES', 'MÉDECIN', 'HÔPITAL', 'SOINS',  'REMÈDES', 'PILULES', 'INJECTIONS',
-        'TRAVAIL', 'BUREAU', 'PROJETS', 'ÉQUIPES', 'RÉUNIONS', 'DÉLAIS', 'BUDGETS',
-        'ARGENT', 'MONNAIE', 'BILLETS', 'PIÈCES',  'MARCHÉS', 'BOUTIQUES', 'VITRINES',
-        'HABITS', 'MANTEAU', 'VESTES',  'CHEMISE', 'PANTALONS', 'ROBES',  'JUPES',
-        'SOULIERS', 'BOTTES', 'SANDALES', 'CEINTURES', 'SACS',   'PORTEFEUILLES',
-        'MONTRES', 'BAGUES',  'COLLIER', 'BRACELETS', 'BOUCLES', 'LUNETTES',
-        'ANIMAUX', 'NATURE',  'SCIENCES', 'HISTOIRE', 'CULTURES', 'LANGUES', 'PEUPLES',
-        'FAMILLES', 'PARENTS', 'ENFANTS', 'AMIGOS', 'VOISINS', 'SOCIÉTÉ', 'NATIONS',
-        'PAIX',   'GUERRES', 'DROITS',  'LIBERTÉ', 'JUSTICE', 'ÉGALITÉ', 'FRATERNITÉ',
+        'SIROP', 'JUSTICE', 'SPORTS', 'SCIENCE', 'VITRES', 'SCENES', 'DEFAITES', 'MIROIR',
+        'GANTS', 'BALLET', 'LAMPE', 'GORGES', 'CITRON', 'CLIENTES', 'VOITURE', 'JUPES',
+        'VITRINE', 'VIOLON', 'FRONTS', 'ENFANTS', 'FORCES', 'FRUIT', 'VESTE', 'VOISINS',
+        'TONNERRE', 'DELAIS', 'FORCE', 'BAGUE', 'GRELES', 'PLAGES', 'ORANGE', 'EPICES',
+        'COURAGE', 'LILAS', 'HABITS', 'TERRE', 'RAISIN', 'AMIGOS', 'LARMES', 'ROUGE',
+        'STYLO', 'CHANTS', 'CUISINE', 'PIECE', 'HEROS', 'BOUSSOLE', 'BOTTES', 'DOIGTS',
+        'FLEUR', 'ELEVES', 'MONTAGNE', 'POULE', 'PILULES', 'RIRES', 'CHEMIN', 'CANARD',
+        'PHOTO', 'ROUES', 'ROUTES', 'ROBES', 'LUNETTE', 'ESPOIR', 'IMAGE', 'PLUIES',
+        'VOYAGE', 'PORTE', 'BAGUES', 'POULET', 'BUREAU', 'CHOUX', 'TOUNDRA', 'LUTTES',
+        'BEAUTE', 'REVES', 'VAGUE', 'LANGUES', 'ARGENT', 'ROCHERS', 'GRACES', 'PEINTRE',
+        'BUFFET', 'CASCADES', 'JAUNE', 'VENTRE', 'KARATE', 'IMAGES', 'GLACES', 'VOLCANS',
+        'CHIEN', 'ARMOIRE', 'JARDIN', 'GUITARE', 'PATES', 'MONDES', 'MINUTES', 'GENOU',
+        'MELON', 'AIGLE', 'BATAILLE', 'LUNES', 'EPAULE', 'HISTOIRE', 'CADRE', 'PATONS',
+        'MONNAIES', 'VICTOIRE', 'REMEDES', 'VACHE', 'COLERE', 'OPERAS', 'BISCUIT', 'TERRASSE',
+        'PRAIRIES', 'PIERRE', 'SUCRE', 'PIANOS', 'LIONS', 'BRISE', 'RIVIERES', 'RADIS',
+        'TEMPETES', 'RENARD', 'MAINS', 'CHENE', 'VILLES', 'SEMAINE', 'HORIZONS', 'PLUIE',
+        'AVION', 'BEURRE', 'TRAIN', 'CAHIER', 'PLUME', 'LUMIERES', 'DANSES', 'VALEUR',
+        'CHATEAU', 'TIROIR', 'VENTES', 'JOURNAUX', 'POMMES', 'OIGNON', 'ACTEUR', 'ELEPHANT',
+        'FORETS', 'MERLE', 'TALENT', 'TEINTE', 'PAPILLON', 'LIVRES', 'FACTURES', 'CALME',
+        'AILLES', 'TENNIS', 'GROTTES', 'FRAISE', 'TORRENTS', 'RIDEAU', 'LEVRE', 'VANILLE',
+        'BILLETS', 'TROUPES', 'PLANETES', 'BRUNES', 'LANGUE', 'FARINE', 'COURSE', 'SUCCES',
+        'BLANC', 'COMBAT', 'AMOURS', 'TALON', 'POINGS', 'CLASSES', 'MAISON', 'BRUME',
+        'BONHEUR', 'SUCRES', 'RIVAGE', 'CARROT', 'AVIONS', 'BRUNE', 'JOURNEE', 'MANTEAU',
+        'SANDALE', 'FALAISE', 'VILLE', 'PEINE', 'IMMEUBLE', 'FAMILLE', 'COCHON', 'TALONS',
+        'GATEAU', 'LUMIERE', 'MARCHES', 'DESERTS', 'CHAMBRES', 'MARCHAND', 'TOMATE', 'CHARME',
+        'BRACELET', 'SOURIRE', 'POING', 'COUCHERS', 'ECRAN', 'LAMPES', 'PAPIER', 'NATURE',
+        'ORAGEUX', 'DANSE', 'NEIGE', 'VENDEURS', 'ROUTE', 'OURAGANS', 'PAYSAGES', 'MAITRE',
+        'CHEMINEE', 'BALEINES', 'SAPIN', 'BATEAUX', 'CRAYONS', 'SAUCE', 'BOUCHE', 'TABLE',
+        'GUERRES', 'COLLIER', 'CASTOR', 'FABLE', 'ESCARGOT', 'TABLES', 'POIRES', 'FENETRES',
+        'EFFORT', 'ROSES', 'CHANT', 'HERBES', 'PHOTOS', 'CONTE', 'JOIES', 'TORNADES',
+        'GRAIN', 'MUSIQUE', 'SAUCES', 'ARBRES', 'TUNNELS', 'CALMES', 'STEPPES', 'BATIMENT',
+        'MURES', 'DROITS', 'ESCALIER', 'MACHINE', 'LECONS', 'VERTE', 'CHEVAL', 'NATIONS',
+        'CINEMA', 'CULTURE', 'PLAGE', 'HORLOGE', 'RAPPEL', 'FENETRE', 'OBSCURES', 'JARDINS',
+        'DIPLOME', 'STYLES', 'CHATS', 'PERLE', 'DEVOIRS', 'PLANTE', 'CAMPAGNE', 'FRUITS',
+        'SCENE', 'ARAIGNEE', 'LIVRE', 'PIECES', 'NOIRE', 'LIBERTE', 'TEMPETE', 'VENTS',
+        'SOLEIL', 'BANANE', 'LIEVRE', 'GALAXIES', 'CEINTURE', 'JAMBE', 'CHATON', 'NUAGE',
+        'CAPITALE', 'DAUPHINS', 'PROJETS', 'LEGUME', 'TIGRES', 'EXAMENS', 'CHAUVE', 'CARTES',
+        'FONTAINE', 'BOTTE', 'LARME', 'BOUGIES', 'AMOUR', 'PUBLIC', 'ORAGE', 'ETOILE',
+        'MAREES', 'PIEDS', 'TRAINS', 'JOUES', 'ROMAN', 'CADRES', 'TAMBOUR', 'NUQUES',
+        'VAGUES', 'BOUTIQUE', 'SENTIERS', 'MANGUE', 'SAVEURS', 'GENOUX', 'NUAGES', 'FLEURS',
+        'AGENDA', 'SABLES', 'VACANCES', 'FLUTES', 'TIGRE', 'DESSINS', 'COUDES', 'COUDE',
+        'MYTHE', 'MONTRES', 'CHEMISE', 'VESTES', 'SAISON', 'MOUTON', 'STYLOS', 'SABLE',
+        'LEVRES', 'GIVRE',
     ];
-
-    /** @return string[] */
-    private function getValidWords(): array
-    {
-        return array_values(array_filter(self::WORDS, fn (string $w) => 6 === mb_strlen($w)));
-    }
 
     public function getWordOfTheDay(): string
     {
-        $words = $this->getValidWords();
         $day = (int) (new \DateTimeImmutable())->format('z');
 
-        return $words[$day % count($words)];
+        return self::WORDS[$day % count(self::WORDS)];
     }
 
     /**
