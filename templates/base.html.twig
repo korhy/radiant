@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="utf-8">
+    {% block viewport %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% endblock %}
     {% block stylesheets %}
     {{ encore_entry_link_tags('app') }}
     {% endblock %}
@@ -25,10 +27,10 @@
 {% endfor %}
 
 <body class="antialiased text-slate-400 bg-gradient-to-tr from-bg-blue-950 from-50% to-slate-700 {% block body_class %}{% endblock %}">
-    <div class="mx-auto min-h-screen max-w-screen-xl px-6 py-12 font-sans md:px-12 md:py-20 lg:px-24 lg:py-0">
+    <div class="{% block layout_wrapper_class %}mx-auto min-h-screen max-w-screen-xl px-6 py-12 font-sans md:px-12 md:py-20 lg:px-24 lg:py-0{% endblock %}">
         {% block body %}{% endblock %}
     </div>
-    <footer class="mx-auto max-w-screen-xl px-6 py-6 md:px-12 lg:px-24 border-t border-slate-800">
+    <footer class="{% block footer_class %}{% endblock %} mx-auto max-w-screen-xl px-6 py-6 md:px-12 lg:px-24 border-t border-slate-800">
         <p class="text-xs text-slate-500">
             © {{ "now"|date("Y") }} Clément BOUDINEL —
             <a href="{{ path('legal') }}" class="hover:text-amber-500 transition-colors">Mentions légales</a>

@@ -1,79 +1,94 @@
 {# templates/app/motus/index.html.twig #}
 {% extends 'base.html.twig' %}
-{% block body_class %}overflow-hidden{% endblock %}
+
+{# viewport-fit=cover : sans lui env(safe-area-inset-*) vaut 0 et la barre home
+   recouvre la dernière rangée du clavier. Surchargé ici uniquement. #}
+{% block viewport %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+{% endblock %}
+
+{# Sur mobile l'app occupe l'écran : on neutralise les marges du wrapper de base
+   et on masque le footer, qui rendrait le document scrollable. Desktop inchangé. #}
+{% block layout_wrapper_class %}font-sans md:mx-auto md:min-h-screen md:max-w-screen-xl md:px-12 md:py-20 lg:px-24 lg:py-0{% endblock %}
+{% block footer_class %}hidden md:block{% endblock %}
 
 {% block body %}
-<div class="flex justify-center items-start md:items-center min-h-screen pt-8 md:pt-0"
+<div class="motus-app md:flex md:justify-center md:items-center md:min-h-screen"
+    style="--motus-cols: {{ word_length }}"
     data-controller="motus"
     data-motus-word-length-value="{{ word_length }}"
     data-motus-first-letter-value="{{ first_letter }}"
     data-motus-guess-url-value="{{ path('motus_guess') }}">
 
-    <div class="flex flex-col items-center gap-6 bg-slate-800 p-6 md:p-8 rounded-2xl shadow-2xl w-fit">
+    <div class="motus-card md:flex md:flex-col md:items-center md:gap-6 md:bg-slate-800 md:p-8 md:rounded-2xl md:shadow-2xl md:w-fit">
 
+        {# md:contents efface la barre sur desktop : le h1 redevient enfant direct
+           de la carte, qui retrouve exactement ses cinq enfants flex d'origine. #}
+        <header class="motus-topbar md:contents">
 
-        <h1 class="text-white text-2xl font-bold tracking-wide flex items-center gap-2 justify-center">
-            <span class="w-7 h-7">{{ include('components/_icon_motus.html.twig') }}</span>
-            Motus
-            <div class="relative group">
-                <span class="text-slate-400 hover:text-white cursor-help text-base">ⓘ</span>
-                <div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity
-                    absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64
-                    bg-slate-700 text-slate-300 text-sm font-normal rounded-lg p-3 shadow-xl z-10">
-                    <p>Devinez le mot du jour en {{ 6 }} essais.</p>
-                    <ul class="mt-2 space-y-1">
-                        <li><span class="inline-block w-3 h-3 rounded-sm bg-red-500 mr-1"></span> Bonne position</li>
-                        <li><span class="inline-block w-3 h-3 rounded-sm bg-yellow-400 mr-1"></span> Mauvaise position</li>
-                        <li><span class="inline-block w-3 h-3 rounded-sm bg-slate-600 mr-1"></span> Absent</li>
-                    </ul>
+            <a href="{{ path('homepage') }}" class="motus-iconbtn md:hidden" aria-label="Retour à l'accueil">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                </svg>
+            </a>
+
+            <h1 class="motus-title md:text-2xl md:tracking-wide md:justify-center">
+                <span class="motus-title__icon">{{ include('components/_icon_motus.html.twig') }}</span>
+                Motus
+
+                {# Desktop : tooltip au survol #}
+                <span class="relative group hidden md:inline-block">
+                    <span class="text-slate-400 hover:text-white cursor-help text-base">ⓘ</span>
+                    <span class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity
+                        absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 block
+                        bg-slate-700 text-slate-300 text-sm font-normal rounded-lg p-3 shadow-xl z-10">
+                        {{ include('app/motus/_legend.html.twig') }}
+                    </span>
+                </span>
+            </h1>
+
+            {# Mobile : le survol n'existe pas, <details> est activable au tap et sans JS #}
+            <details class="motus-info md:hidden">
+                <summary class="motus-iconbtn" aria-label="Règles du jeu">ⓘ</summary>
+                <div class="motus-info__panel">
+                    {{ include('app/motus/_legend.html.twig') }}
                 </div>
-            </div>
-        </h1>
+            </details>
+        </header>
 
+        <div class="motus-stage md:contents">
+            <div data-motus-target="grid" class="motus-grid"></div>
+            <p data-motus-target="message" class="motus-message"></p>
+        </div>
 
-        <div data-motus-target="grid" class="flex flex-col gap-1.5"></div>
-
-
-        <p data-motus-target="message" class="text-slate-400 text-sm h-5 text-center"></p>
-
-
-        <div data-motus-target="keyboard" class="flex flex-col gap-1.5 items-center">
-            <div class="flex gap-1.5">
+        <div data-motus-target="keyboard" class="motus-keyboard md:flex md:flex-col md:gap-1.5 md:items-center">
+            <div class="motus-kbd-row md:flex md:gap-1.5">
                 {% for letter in ['A','Z','E','R','T','Y','U','I','O','P'] %}
-                <button data-action="click->motus#keyPress" data-key="{{ letter }}"
-                    class="key w-8 h-10 bg-slate-600 hover:bg-slate-500 text-white text-xs font-bold rounded transition-colors cursor-pointer">
-                    {{ letter }}
-                </button>
+                <button type="button" data-action="click->motus#keyPress" data-key="{{ letter }}"
+                    class="motus-key">{{ letter }}</button>
                 {% endfor %}
             </div>
-            <div class="flex gap-1.5">
+            <div class="motus-kbd-row md:flex md:gap-1.5">
                 {% for letter in ['Q','S','D','F','G','H','J','K','L','M'] %}
-                <button data-action="click->motus#keyPress" data-key="{{ letter }}"
-                    class="key w-8 h-10 bg-slate-600 hover:bg-slate-500 text-white text-xs font-bold rounded transition-colors cursor-pointer">
-                    {{ letter }}
-                </button>
+                <button type="button" data-action="click->motus#keyPress" data-key="{{ letter }}"
+                    class="motus-key">{{ letter }}</button>
                 {% endfor %}
             </div>
-            <div class="flex gap-1.5 items-center">
-                <button data-action="click->motus#submit"
-                    class="h-10 px-3 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded transition-colors cursor-pointer">
-                    ENTRER
-                </button>
+            <div class="motus-kbd-row md:flex md:gap-1.5 md:items-center">
+                <button type="button" data-action="click->motus#submit"
+                    class="motus-key motus-key--action motus-key--enter">ENTRER</button>
                 {% for letter in ['W','X','C','V','B','N'] %}
-                <button data-action="click->motus#keyPress" data-key="{{ letter }}"
-                    class="key w-8 h-10 bg-slate-600 hover:bg-slate-500 text-white text-xs font-bold rounded transition-colors cursor-pointer">
-                    {{ letter }}
-                </button>
+                <button type="button" data-action="click->motus#keyPress" data-key="{{ letter }}"
+                    class="motus-key">{{ letter }}</button>
                 {% endfor %}
-                <button data-action="click->motus#backspace"
-                    class="h-10 px-3 bg-slate-500 hover:bg-slate-400 text-white text-xs font-bold rounded transition-colors cursor-pointer">
-                    ⌫
-                </button>
+                <button type="button" data-action="click->motus#backspace"
+                    class="motus-key motus-key--action" aria-label="Effacer">⌫</button>
             </div>
         </div>
 
+        {# Desktop : la pilule Retour d'origine. Sur mobile c'est la flèche de la barre. #}
         <a href="{{ path('homepage') }}"
-            class="bg-slate-600 hover:bg-slate-700 text-white font-bold px-6 py-2 rounded-full transition-colors cursor-pointer text-center text-sm">
+            class="hidden md:inline-block bg-slate-600 hover:bg-slate-700 text-white font-bold px-6 py-2 rounded-full transition-colors cursor-pointer text-center text-sm">
             Retour
         </a>
     </div>
