@@ -3,6 +3,21 @@ import { Controller } from '@hotwired/stimulus';
 const MAX_ATTEMPTS = 6;
 const STORAGE_KEY = 'motus_session';
 
+// Tables littérales : ne jamais construire ces noms par concaténation.
+const CELL_STATE_CLASS = {
+    correct: 'motus-cell--correct',
+    present: 'motus-cell--present',
+    absent: 'motus-cell--absent',
+};
+const CELL_STATE_CLASSES = ['motus-cell--correct', 'motus-cell--present', 'motus-cell--absent'];
+
+const KEY_STATE_CLASS = {
+    correct: 'motus-key--correct',
+    present: 'motus-key--present',
+    absent: 'motus-key--absent',
+};
+const KEY_STATE_CLASSES = ['motus-key--correct', 'motus-key--present', 'motus-key--absent'];
+
 export default class extends Controller {
     static targets = ['grid', 'keyboard', 'message'];
     static values = {
@@ -107,7 +122,14 @@ export default class extends Controller {
 
     #onKeyDown = (e) => {
         if (this.#gameOver) return;
-        if (e.key === 'Enter') { this.#submitGuess(); return; }
+        if (e.key === 'Enter') {
+            // Un élément focusable déclenche déjà sa propre action sur Entrée
+            // (le <summary> du panneau d'info, une touche cliquée à la souris) :
+            // on ne la double pas. Les lettres, elles, restent toujours actives.
+            if (e.target.closest?.('summary, a, button')) return;
+            this.#submitGuess();
+            return;
+        }
         if (e.key === 'Backspace') { this.#removeLetter(); return; }
         const letter = e.key.toUpperCase();
         if (/^[A-Z]$/.test(letter)) this.#addLetter(letter);
@@ -117,18 +139,11 @@ export default class extends Controller {
         this.gridTarget.innerHTML = '';
         for (let row = 0; row < MAX_ATTEMPTS; row++) {
             const rowEl = document.createElement('div');
-            rowEl.classList.add('flex', 'gap-1.5');
+            rowEl.className = 'motus-row';
             rowEl.dataset.row = row;
             for (let col = 0; col < this.wordLengthValue; col++) {
                 const cell = document.createElement('div');
-                cell.classList.add(
-                    'w-10', 'h-10', 'md:w-12', 'md:h-12',
-                    'flex', 'items-center', 'justify-center',
-                    'rounded', 'text-white', 'font-bold', 'text-lg',
-                    'border-2', 'border-slate-600', 'bg-slate-700',
-                    'transition-colors', 'duration-300',
-                    'uppercase'
-                );
+                cell.className = 'motus-cell';
                 cell.dataset.row = row;
                 cell.dataset.col = col;
                 rowEl.appendChild(cell);
@@ -162,7 +177,7 @@ export default class extends Controller {
             const cell = this.#getCell(row, col);
             cell.textContent = this.#currentGuess[col] ?? '';
             if (col === 0) {
-                cell.classList.add('bg-red-500', 'border-red-500');
+                cell.classList.add('motus-cell--correct');
             }
         }
     }
@@ -217,14 +232,8 @@ export default class extends Controller {
         result.forEach(({ letter, state }, col) => {
             const cell = this.#getCell(row, col);
             cell.textContent = letter;
-            cell.classList.remove('bg-slate-700', 'border-slate-600');
-            if (state === 'correct') {
-                cell.classList.add('bg-red-500', 'border-red-500');
-            } else if (state === 'present') {
-                cell.classList.add('bg-yellow-400', 'border-yellow-400', 'text-slate-900');
-            } else {
-                cell.classList.add('bg-slate-600', 'border-slate-600');
-            }
+            cell.classList.remove(...CELL_STATE_CLASSES);
+            cell.classList.add(CELL_STATE_CLASS[state] ?? CELL_STATE_CLASS.absent);
         });
     }
 
@@ -236,10 +245,8 @@ export default class extends Controller {
             const current = btn.dataset.state ?? 'none';
             if ((priority[state] ?? 0) > (priority[current] ?? 0)) {
                 btn.dataset.state = state;
-                btn.classList.remove('bg-slate-600', 'bg-red-500', 'bg-yellow-400', 'bg-slate-500');
-                if (state === 'correct') btn.classList.add('bg-red-500');
-                else if (state === 'present') btn.classList.add('bg-yellow-400', 'text-slate-900');
-                else btn.classList.add('bg-slate-500', 'opacity-50');
+                btn.classList.remove(...KEY_STATE_CLASSES);
+                btn.classList.add(KEY_STATE_CLASS[state] ?? KEY_STATE_CLASS.absent);
             }
         });
     }

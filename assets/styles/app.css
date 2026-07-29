@@ -7,3 +7,330 @@
         @apply flex items-center justify-center w-16 h-16 bg-slate-100 rounded-lg text-2xl font-bold text-slate-800 cursor-pointer hover:bg-slate-300 transition-colors;
     }
 }
+
+/* ============================================================================
+   MOTUS
+   Volontairement hors de @layer components : Tailwind élague les règles d'un
+   layer dont le sélecteur n'apparaît pas dans `content`, or ces classes sont
+   posées depuis le JS. Hors layer, aucun risque de purge.
+   Les media queries mobile et desktop sont disjointes, donc ce bloc n'entre
+   jamais en conflit avec les utilitaires `md:` posés dans le Twig.
+   ========================================================================= */
+
+/* ---------- États des cellules et des touches (tous breakpoints) ---------- */
+
+.motus-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #334155; /* slate-700 */
+    border: 2px solid #475569; /* slate-600 */
+    border-radius: 0.25rem;
+    transition: background-color .3s, border-color .3s;
+}
+
+/* Bien placée : carré rouge plein */
+.motus-cell--correct {
+    background-color: #ef4444; /* red-500 */
+    border-color: #ef4444;
+    color: #fff;
+}
+
+/* Mal placée : case jaune pleine, même silhouette que le rouge */
+.motus-cell--present {
+    background-color: #facc15; /* yellow-400 */
+    border-color: #facc15;
+    color: #0f172a; /* slate-900 */
+}
+
+.motus-cell--absent {
+    background-color: #475569; /* slate-600 */
+    border-color: #475569;
+    color: #fff;
+}
+
+.motus-key {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    background-color: #475569; /* slate-600 */
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color .15s;
+    touch-action: manipulation; /* tue le double-tap zoom, garde le pinch-to-zoom */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.motus-key--correct { background-color: #ef4444; }
+
+.motus-key--present {
+    background-color: #facc15;
+    color: #0f172a;
+}
+
+/* Touche éliminée : l'effacement vient du fond assombri, pas d'une opacité
+   qui délavait aussi la lettre (contraste 3,4:1, illisible sur mobile). */
+.motus-key--absent {
+    background-color: #334155; /* slate-700 */
+    color: #cbd5e1; /* slate-300 */
+}
+
+.motus-key--enter { background-color: #faa734ff; } /* amber-500 du thème */
+
+@media (hover: hover) {
+    .motus-key:hover { background-color: #64748b; }
+    .motus-key--correct:hover { background-color: #ef4444; }
+    .motus-key--present:hover { background-color: #facc15; }
+    .motus-key--absent:hover { background-color: #334155; }
+    .motus-key--enter:hover { background-color: #E68A1A; }
+}
+
+/* Pastilles de légende : reprennent la forme, pas seulement la couleur */
+.motus-swatch {
+    display: inline-block;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 3px;
+}
+.motus-swatch--correct { background-color: #ef4444; }
+.motus-swatch--present { background-color: #facc15; }
+.motus-swatch--absent { background-color: #475569; }
+
+/* ---------- Desktop : reproduit l'apparence d'origine à l'identique ---------- */
+
+@media (min-width: 768px) {
+    .motus-app { --motus-gap: 0.375rem; } /* = gap-1.5 */
+
+    .motus-grid { display: flex; flex-direction: column; gap: var(--motus-gap); }
+    .motus-row { display: flex; gap: var(--motus-gap); }
+
+    .motus-cell { width: 3rem; height: 3rem; font-size: 1.125rem; }
+
+    .motus-key { width: 2rem; height: 2.5rem; font-size: .75rem; }
+    .motus-key--action { width: auto; padding-inline: .75rem; }
+
+    .motus-title { display: flex; align-items: center; gap: .5rem; color: #fff; font-weight: 700; }
+    .motus-title__icon { width: 1.75rem; height: 1.75rem; }
+
+    .motus-message { height: 1.25rem; color: #94a3b8; font-size: .875rem; text-align: center; }
+}
+
+/* ---------- Mobile : layout plein écran ---------- */
+
+@media (max-width: 767.98px) {
+    .motus-app {
+        /* --motus-cols est injecté en style inline par le Twig (5 à 8) */
+        --motus-gap: 4px;
+        --motus-pad: 6px;
+        --motus-key-h: 46px;
+        --motus-key-gap: 5px;
+        --motus-kbd-pad: 8px;
+        --motus-msg-h: 40px;
+        --motus-vpad: 8px;
+
+        /* Le fallback 0px est obligatoire : sans lui, env() invalide le calc()
+           sur les navigateurs sans support. */
+        --motus-safe-t: env(safe-area-inset-top, 0px);
+        --motus-safe-b: env(safe-area-inset-bottom, 0px);
+        --motus-safe-l: env(safe-area-inset-left, 0px);
+        --motus-safe-r: env(safe-area-inset-right, 0px);
+
+        --motus-header-h: calc(52px + var(--motus-safe-t));
+        --motus-kbd-h: calc(3 * var(--motus-key-h) + 2 * var(--motus-key-gap)
+            + 2 * var(--motus-kbd-pad) + var(--motus-safe-b));
+
+        /* vh en premier : un UA sans svh invalide la seconde déclaration
+           à l'analyse et conserve celle-ci. */
+        --motus-grid-h: calc(100vh - var(--motus-header-h) - var(--motus-kbd-h)
+            - var(--motus-msg-h) - 2 * var(--motus-vpad) - 12px);
+        --motus-grid-h: calc(100svh - var(--motus-header-h) - var(--motus-kbd-h)
+            - var(--motus-msg-h) - 2 * var(--motus-vpad) - 12px);
+
+        /* Plafond à 3rem = 48px = md:w-12 : continuité exacte au breakpoint */
+        --motus-cell-cap: min(calc((var(--motus-grid-h) - 5 * var(--motus-gap)) / 6), 3rem);
+
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        height: 100svh;
+        padding-left: var(--motus-safe-l);
+        padding-right: var(--motus-safe-r);
+        /* `clip` et pas `hidden` : `hidden` forcerait overflow-y à auto et
+           créerait un conteneur de défilement qui avalerait le pull-to-refresh. */
+        overflow-x: clip;
+        touch-action: manipulation;
+    }
+
+    .motus-card {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 0;
+        width: 100%;
+    }
+
+    /* Barre de titre */
+    .motus-topbar {
+        position: relative; /* ancre le panneau d'info */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .5rem;
+        flex: 0 0 auto;
+        height: var(--motus-header-h);
+        padding: var(--motus-safe-t) 12px 0;
+    }
+
+    .motus-title {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        min-width: 0;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.0625rem;
+        letter-spacing: .01em;
+    }
+    .motus-title__icon { width: 1.25rem; height: 1.25rem; flex: none; }
+
+    .motus-iconbtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 9999px;
+        background-color: #334155;
+        color: #cbd5e1;
+        cursor: pointer;
+        list-style: none; /* pour <summary> */
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+    .motus-iconbtn::-webkit-details-marker { display: none; }
+
+    .motus-info { position: relative; flex: none; }
+    .motus-info__panel {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        z-index: 30;
+        width: min(280px, calc(100vw - 24px));
+        max-height: 60svh;
+        overflow-y: auto;
+        overscroll-behavior: contain; /* le scroll du panneau ne remonte pas au document */
+        padding: .75rem;
+        border-radius: .5rem;
+        background-color: #334155;
+        color: #cbd5e1;
+        font-size: .875rem;
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / .4);
+    }
+
+    /* Zone centrale */
+    .motus-stage {
+        flex: 1 1 auto;
+        min-height: 0; /* sans ça la grille pousse le clavier hors écran */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: var(--motus-vpad) var(--motus-pad);
+    }
+
+    .motus-grid { display: flex; flex-direction: column; gap: var(--motus-gap); width: 100%; }
+    .motus-row { display: flex; gap: var(--motus-gap); width: 100%; justify-content: center; }
+    .motus-cell {
+        flex: 1 1 0;
+        min-width: 0;
+        aspect-ratio: 1;
+        max-width: var(--motus-cell-cap); /* aspect-ratio propage le plafond à la hauteur */
+        /* La hauteur min-content du texte l'emporterait sur aspect-ratio et
+           rendrait la cellule rectangulaire : on borne la police au plafond
+           de la cellule, et line-height:1 supprime la marge du line-box. */
+        font-size: min(clamp(1rem, 4.4vw, 1.25rem), calc(var(--motus-cell-cap) * .52));
+        line-height: 1;
+    }
+
+    .motus-message {
+        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: var(--motus-msg-h);
+        padding-inline: 1rem;
+        color: #94a3b8;
+        font-size: .75rem;
+        line-height: 1.35;
+        text-align: center;
+    }
+
+    /* Clavier ancré en bas */
+    .motus-keyboard {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: var(--motus-key-gap);
+        width: 100%;
+        background-color: #1e293b; /* slate-800 */
+        padding: var(--motus-kbd-pad) var(--motus-pad);
+        padding-bottom: calc(var(--motus-kbd-pad) + var(--motus-safe-b));
+    }
+    .motus-kbd-row { display: flex; gap: var(--motus-key-gap); width: 100%; }
+    .motus-key {
+        flex: 1 1 0;
+        min-width: 0;
+        height: var(--motus-key-h); /* 46px, au-dessus des 44px recommandés */
+        font-size: .875rem;
+    }
+    .motus-key--action {
+        flex: 1.5 1 0;
+        padding-inline: 2px;
+        font-size: clamp(9px, 2.6vw, 11px);
+        letter-spacing: -.01em;
+    }
+}
+
+/* Paysage court : la hauteur manque, la largeur est en excès. Le clavier passe
+   à côté de la grille plutôt qu'en dessous, ce qui rend les deux utilisables
+   sans descendre les touches sous 44 px. */
+@media (max-width: 767.98px) and (orientation: landscape) and (max-height: 460px) {
+    .motus-app {
+        --motus-header-h: calc(40px + var(--motus-safe-t));
+        --motus-msg-h: 0px;
+        /* Le clavier n'est plus empilé sous la grille : il ne consomme plus de hauteur */
+        --motus-grid-h: calc(100vh - var(--motus-header-h) - 2 * var(--motus-vpad));
+        --motus-grid-h: calc(100svh - var(--motus-header-h) - 2 * var(--motus-vpad));
+    }
+
+    .motus-card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto minmax(0, 1fr);
+        grid-template-areas:
+            "top top"
+            "stage kbd";
+    }
+    .motus-topbar { grid-area: top; }
+    .motus-stage { grid-area: stage; }
+    .motus-keyboard {
+        grid-area: kbd;
+        justify-content: center;
+        background-color: transparent;
+        padding-right: calc(var(--motus-pad) + var(--motus-safe-r));
+    }
+
+    .motus-message { display: none; }
+}

@@ -1,0 +1,14 @@
+{# templates/app/motus/_legend.html.twig #}
+{# Inclus deux fois : tooltip au survol sur desktop, panneau <details> sur mobile. #}
+<p>Devinez le mot du jour en {{ 6 }} essais.</p>
+<ul class="mt-2 space-y-1.5">
+    <li class="flex items-center gap-2">
+        <span class="motus-swatch motus-swatch--correct"></span> Bonne position
+    </li>
+    <li class="flex items-center gap-2">
+        <span class="motus-swatch motus-swatch--present"></span> Mauvaise position
+    </li>
+    <li class="flex items-center gap-2">
+        <span class="motus-swatch motus-swatch--absent"></span> Absent
+    </li>
+</ul>
