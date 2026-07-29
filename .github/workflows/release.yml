@@ -1,0 +1,109 @@
+name: Release
+
+# Même déclencheur que Deploy : on ne tague que du code qui a passé la CI.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # workflow_run checkout la HEAD de la branche par défaut : on force
+          # le commit exact qui a déclenché la CI.
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Compute next version
+        id: version
+        run: |
+          set -euo pipefail
+
+          if git describe --exact-match --tags HEAD >/dev/null 2>&1; then
+            echo "Commit déjà tagué, rien à faire."
+            echo "bump=none" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # On ignore les tags mal formés (ex : v1.2.O avec la lettre O)
+          LAST=$(git tag --list 'v*' --merged HEAD --sort=-v:refname \
+                 | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1 || true)
+
+          if [ -z "$LAST" ]; then
+            MAJOR=0; MINOR=0; PATCH=0
+            RANGE=""
+          else
+            V=${LAST#v}
+            MAJOR=${V%%.*}
+            REST=${V#*.}
+            MINOR=${REST%%.*}
+            PATCH=${REST##*.}
+            RANGE="$LAST..HEAD"
+          fi
+
+          # Le type se lit sur le sujet uniquement : un corps de commit citant
+          # un « feat: » (changelog collé, etc.) ne doit pas déclencher un bump.
+          # Seul BREAKING CHANGE se cherche dans le corps, c'est sa place.
+          SUBJECTS=$(git log --format='%s' $RANGE)
+          BODIES=$(git log --format='%b' $RANGE)
+
+          if printf '%s\n' "$BODIES" | grep -qE '^BREAKING CHANGE:' \
+             || printf '%s\n' "$SUBJECTS" | grep -qE '^[a-z]+(\([^)]*\))?!:'; then
+            BUMP=major; MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0
+          elif printf '%s\n' "$SUBJECTS" | grep -qE '^feat(\([^)]*\))?:'; then
+            BUMP=minor; MINOR=$((MINOR + 1)); PATCH=0
+          elif printf '%s\n' "$SUBJECTS" | grep -qE '^fix(\([^)]*\))?:'; then
+            BUMP=patch; PATCH=$((PATCH + 1))
+          else
+            echo "Aucun commit feat/fix depuis ${LAST:-le début}, pas de release."
+            echo "bump=none" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          NEW="v$MAJOR.$MINOR.$PATCH"
+          echo "$LAST -> $NEW ($BUMP)"
+
+          {
+            echo "bump=$BUMP"
+            echo "tag=$NEW"
+            echo "previous=${LAST:-aucun}"
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "notes<<EOF"
+            git log --format='- %s' $RANGE
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create and push tag
+        if: steps.version.outputs.bump != 'none'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          NOTES: ${{ steps.version.outputs.notes }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release $TAG" -m "$NOTES"
+          git push origin "$TAG"
+
+      - name: Summary
+        if: steps.version.outputs.bump != 'none'
+        run: |
+          {
+            echo "### ${{ steps.version.outputs.tag }}"
+            echo ""
+            echo "Bump \`${{ steps.version.outputs.bump }}\` depuis \`${{ steps.version.outputs.previous }}\`."
+            echo ""
+            echo "${{ steps.version.outputs.notes }}"
+          } >> "$GITHUB_STEP_SUMMARY"
