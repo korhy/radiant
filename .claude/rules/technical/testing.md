@@ -58,8 +58,8 @@ Aligning CI onto Postgres is a worthwhile change — propose it separately.
 ## Running
 
 ```bash
-docker compose exec app php bin/phpunit
-docker compose exec app php bin/phpunit tests/Service/Motus/MotusServiceTest.php
+make phpunit
+make phpunit TEST=tests/Service/Motus/MotusServiceTest.php
 ```
 
 ## Browser checks

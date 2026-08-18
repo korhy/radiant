@@ -117,10 +117,10 @@ respected.
 ## Step 8 — Verify
 
 ```bash
-docker compose exec app php bin/console cache:clear
-docker compose exec app vendor/bin/php-cs-fixer fix
-docker compose exec app php -d memory_limit=-1 vendor/bin/phpstan analyse
-npm run watch
+make cc
+make php-cs-fixer-fix
+make phpstan
+make watch
 ```
 
 Then **load two pages**, not one:

@@ -147,22 +147,26 @@ Two operational traps worth knowing before you change anything:
 
 ## 🚀 Useful commands
 
-There is **no Makefile**; everything runs in the app container (`docker compose up -d` first).
+The `Makefile` wraps the common tasks — run `make help` for the full list. Targets that touch PHP
+run inside the app container for you, so `make up` first.
 
 ```bash
-docker compose up -d                                          # start app (:8080), Postgres, Mailpit (:8025)
-docker compose exec app php bin/console cache:clear           # clear the Symfony cache
-docker compose exec app vendor/bin/php-cs-fixer fix --dry-run --diff   # check PHP style (@Symfony)
-docker compose exec app vendor/bin/php-cs-fixer fix           # autofix PHP style
-docker compose exec app php -d memory_limit=-1 vendor/bin/phpstan analyse   # static analysis (level 5)
-docker compose exec app php bin/phpunit                       # run the PHPUnit suite
-docker compose exec app php bin/console make:migration        # generate a migration (review the SQL!)
-docker compose exec app php bin/console doctrine:migrations:migrate
-docker compose exec database psql -U app                      # psql shell
-
-npm run watch                                                 # rebuild assets on change
-npm run dev                                                   # one-off dev build
+make up              # start the stack (app :8080, Postgres, Mailpit :8025)
+make cc              # clear the Symfony cache
+make console C="debug:router"   # any console command
+make php-cs-fixer    # check PHP code style (@Symfony)  / -fix to autofix
+make phpstan         # static analysis (level 5)
+make lint            # both linters
+make phpunit         # run the PHPUnit suite (TEST=path for a subset)
+make ci              # exactly what .github/workflows/ci.yml runs
+make db-migration    # generate a migration (review the SQL!)
+make db-migrate      # apply pending migrations
+make psql            # psql shell on the dev database
+make watch           # rebuild assets on change
 ```
+
+**Assets targets run on the host, not in the container** — an in-container `npm install` rewrites
+`package-lock.json`'s `name` field to the container workdir and produces a bogus lockfile diff.
 
 > Assets ship from **CI**, not from your machine: `deploy.yml` runs `npm ci && npm run build` and
 > uploads `public/build/` (which is git-ignored). Locally use `npm run dev` / `npm run watch` —
