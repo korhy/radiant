@@ -1,0 +1,30 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Symfony App",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up"],
+      "port": 8080,
+      "autoPort": false
+    },
+    {
+      "name": "Mailpit",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up"],
+      "port": 8025
+    },
+    {
+      "name": "Webpack watch",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "exec", "app", "npm", "run", "watch"],
+      "port": 0
+    },
+    {
+      "name": "Webpack dev-server (HMR)",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "exec", "app", "npm", "run", "dev-server"],
+      "port": 0
+    }
+  ]
+}
