@@ -48,19 +48,22 @@ cd radiant
 cp .env .env.local
 # Edit .env.local with your values (database, mailer, etc.)
 
-# Start containers
-docker compose up -d
+# Start containers (app :8080, PostgreSQL, Mailpit :8025)
+make up
 
 # Install PHP dependencies
-docker compose exec app composer install
+make install
 
 # Run database migrations
-docker compose exec app php bin/console doctrine:migrations:migrate
+make db-migrate
 
-# Install JS dependencies and build assets
-docker compose exec app npm install
-docker compose exec app npm run build
+# Install JS dependencies and build assets — on the host, not in the container
+npm install
+npm run dev
 ```
+
+> `npm` runs on the **host**. Installing inside the container rewrites `package-lock.json`'s `name`
+> field to the container workdir, producing a bogus lockfile diff.
 
 The app is available at [http://localhost:8080](http://localhost:8080).
 
@@ -68,27 +71,32 @@ The app is available at [http://localhost:8080](http://localhost:8080).
 
 ```bash
 # Start containers
-docker compose up -d
+make up
 
 # Watch assets (auto-rebuild on change)
-docker compose exec app npm run watch
+make watch
 
 # Symfony console
-docker compose exec app php bin/console <command>
+make console C="<command>"
 ```
 
 ### Useful commands
 
+Run `make help` for the full list.
+
 ```bash
 # Clear cache
-docker compose exec app php bin/console cache:clear
+make cc
 
-# Create a migration after entity changes
-docker compose exec app php bin/console make:migration
-docker compose exec app php bin/console doctrine:migrations:migrate
+# Create and apply a migration after entity changes
+make db-migration     # review the generated SQL before applying it
+make db-migrate
 
 # Access PostgreSQL
-docker compose exec database psql -U app
+make psql
+
+# Quality gate — exactly what CI runs (php-cs-fixer, PHPStan, PHPUnit)
+make ci
 ```
 
 ## Project Structure

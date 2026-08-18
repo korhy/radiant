@@ -15,22 +15,26 @@ paths:
 > matching linter locally on the files you touched and make sure it exits with **0 errors** before
 > handing off or committing.
 
-**There is no Makefile in this project.** Every command runs inside the app container.
+Commands come from the **`Makefile`** (`make help` for the list); the PHP targets run inside the app
+container for you, so bring the stack up with `make up` first.
 
 ## Rule — run the linter that covers what you touched
 
 | You touched… | Check | Autofix |
 |---|---|---|
-| any `.php` | `docker compose exec app vendor/bin/php-cs-fixer fix --dry-run --diff` | `docker compose exec app vendor/bin/php-cs-fixer fix` |
-| `src/`, `config/`, `bin/`, `public/`, `tests/` | `docker compose exec app php -d memory_limit=-1 vendor/bin/phpstan analyse` | — (fix the code) |
-| before a commit | both of the above + `docker compose exec app php bin/phpunit` | — |
+| any `.php` | `make php-cs-fixer` | `make php-cs-fixer-fix` |
+| `src/`, `config/`, `bin/`, `public/`, `tests/` | `make phpstan` | — (fix the code) |
+| both at once | `make lint` | — |
+| before a commit | `make ci` | — |
 
-These three are **exactly** what `.github/workflows/ci.yml` runs. If they pass locally, CI passes.
+**`make ci` runs exactly what `.github/workflows/ci.yml` runs** — php-cs-fixer, PHPStan, PHPUnit. If
+it passes locally, CI passes.
 
-> **Why `-d memory_limit=-1` on PHPStan.** The container's PHP is capped at **128M** and PHPStan's
-> parallel workers exhaust it, failing with `Child process error (exit code 255): Allowed memory size
-> exhausted` — a false alarm that says nothing about your code. CI doesn't hit this (the GitHub
-> runner has no such cap), so the workflow file omits the flag. Locally, always pass it.
+> **Why `make phpstan` isn't just `vendor/bin/phpstan analyse`.** The container's PHP is capped at
+> **128M** and PHPStan's parallel workers exhaust it, failing with `Child process error (exit code
+> 255): Allowed memory size exhausted` — a false alarm that says nothing about your code. The target
+> passes `-d memory_limit=-1` for you. CI doesn't hit this (the GitHub runner has no such cap), so
+> the workflow file omits the flag. Run the target, not the raw binary.
 
 - **PHP style** is `@Symfony` via **PHP-CS-Fixer** (`.php-cs-fixer.dist.php`). The finder excludes
   `var/`, `migrations/`, `config/bundles.php` and `config/reference.php`.
