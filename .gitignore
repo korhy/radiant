@@ -90,5 +90,14 @@ phpstan.neon
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 .mcp.json
-CLAUDE.md
 /config/reference.php
+
+###> claude code ###
+# The global core.excludesFile (/Users/clement/code/.gitignore) ignores /.claude.
+# The workspace (CLAUDE.md rules & skills) is versioned on purpose — re-include it,
+# then re-ignore the machine-local and generated bits.
+!/.claude/
+/.claude/settings.local.json
+/.claude/scheduled_tasks.lock
+/.claude/skills/playwright-skill/node_modules/
+###< claude code ###
