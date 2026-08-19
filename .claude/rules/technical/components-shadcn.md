@@ -77,10 +77,10 @@ split them.
    > hard requirement, so it comes back with an actual consumer this time. Turbo and Live Components
    > stay removed — the kit needs neither.
 3. **Install the toolkit — pinned to the 2.x line**: `composer require --dev symfony/ux-toolkit:^2.36`.
-   > **Version ceiling, verified 2026-08-19.** `symfony/ux-toolkit` **3.x requires PHP >= 8.4 and
-   > Symfony ^7.4|^8.0**. This project is PHP 8.2 (CI runs 8.2) on Symfony 7.3, so only the 2.x line
-   > (`php >=8.1`, `symfony/* ^6.4|^7.0|^8.0`) resolves. Moving to 3.x is a PHP/Symfony upgrade, not a
-   > front-end change — re-check the constraint before assuming the ceiling still holds.
+   > **Version ceiling, verified 2026-08-19.** `symfony/ux-toolkit` **3.x requires PHP >= 8.4**. The
+   > Symfony half of that requirement (`^7.4|^8.0`) is satisfied since the 7.4 upgrade, so **PHP is
+   > the only remaining blocker** — CI runs 8.2. Moving to 3.x is a PHP upgrade, not a front-end
+   > change. Re-check the constraint before assuming the ceiling still holds.
 4. **Install the components' runtime dependencies.** They are dev-dependencies of the toolkit but
    **runtime** dependencies of the copied components, so they go in `require`, not `require-dev`:
    `twig/html-extra`, `tales-from-a-dev/twig-tailwind-extra` (provides `tailwind_merge`),

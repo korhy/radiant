@@ -6,7 +6,7 @@ paths:
 
 # Radiant — business rules
 
-**Radiant** is a personal portfolio built with Symfony 7.3. It serves a database-driven CV
+**Radiant** is a personal portfolio built with Symfony 7.4. It serves a database-driven CV
 (experiences, personal projects) and a **"Stream Deck"** — a grid of self-contained mini-apps
 (Taquin, Motus, Cookbook) reachable from the homepage. A back-office built on **EasyAdmin 4** is the
 only way content is edited. The site is a **showcase of the author's development skills**: code
