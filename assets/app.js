@@ -1,10 +1,9 @@
-import './bootstrap.js';
 /*
- * Welcome to your app's main JavaScript file!
+ * Point d'entrée JS du site, compilé par Webpack Encore et injecté par
+ * `encore_entry_script_tags('app')` dans base.html.twig.
  *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
+ * Les contrôleurs Stimulus sont enregistrés à la main dans bootstrap.js :
+ * un contrôleur absent de ce fichier ne tourne jamais.
  */
+import './bootstrap.js';
 import './styles/app.css';
-
-//console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
