@@ -10,7 +10,7 @@ Personal portfolio and web application built with Symfony 7, featuring a dynamic
 
 | Layer | Technology |
 |---|---|
-| Backend | PHP 8.2, Symfony 7.3 |
+| Backend | PHP 8.2, Symfony 7.4 |
 | ORM | Doctrine ORM + PostgreSQL |
 | Frontend | Twig, Tailwind CSS v3, Stimulus (Hotwire) |
 | Build | Webpack Encore, PostCSS |

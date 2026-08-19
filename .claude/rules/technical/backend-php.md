@@ -1,5 +1,5 @@
 ---
-description: Backend conventions — PHP 8.2+, Symfony 7.3, Doctrine ORM 3 on PostgreSQL, DI, typing.
+description: Backend conventions — PHP 8.2+, Symfony 7.4, Doctrine ORM 3 on PostgreSQL, DI, typing.
 paths:
   - "**/*.php"
   - "**/composer.json"
