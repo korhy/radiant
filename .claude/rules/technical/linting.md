@@ -40,9 +40,9 @@ PHPStan, PHPUnit. If it passes locally, CI passes.
 - **PHP style** is `@Symfony` via **PHP-CS-Fixer** (`.php-cs-fixer.dist.php`). The finder excludes
   `var/`, `migrations/`, `config/bundles.php` and `config/reference.php`.
 - **Twig style** is **twig-cs-fixer** (`.twig-cs-fixer.php`) — the standard ruleset over
-  `templates/`. The templates are indented with **4 spaces**, which is already the `Indent` rule's
-  default, so nothing is overridden here (the sibling *gestion-bachelor* indents with tabs and has to
-  override it — don't copy that override across).
+  `templates/`. The templates are indented with **4 spaces**, already the `Indent` rule's default, so
+  the ruleset overrides nothing. Keep it that way: an override exists to match a convention, and this
+  project's convention is the default.
 - **Static analysis** is **PHPStan level 5** (`phpstan.dist.neon`) over `bin/ config/ public/ src/ tests/`.
 
 Autofix the mechanical issues instead of hand-editing whitespace.
@@ -59,9 +59,9 @@ Consequences for how you work:
   inconsistent about semicolons — follow the file you're in, don't reformat it wholesale).
 - Verify front-end changes by **loading the page**, not by trusting the build.
 
-Closing this gap means porting *gestion-bachelor*'s `eslint.config.mjs` + `.prettierrc` and the
-`lint`/`format` npm scripts, then adding a `javascript` job to `ci.yml`. Worthwhile, but a change of
-its own — propose it, don't smuggle it into a feature branch.
+Closing this gap means adding **ESLint** + **Prettier** configs, `lint`/`format` npm scripts, and a
+`javascript` job in `ci.yml`. Worthwhile, but a change of its own — propose it, don't smuggle it into
+a feature branch.
 
 ## Notes
 - **Config lives in code — don't loosen it casually.** Disabling a rule to make the linter green is a

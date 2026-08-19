@@ -42,8 +42,7 @@ migration below, which does exactly that.
 ## Target state — the shadcn kit, adopted with Tailwind 4
 
 The intent is to build UI from the **Symfony UX Toolkit shadcn kit**
-(<https://ux.symfony.com/toolkit/kits/shadcn>), the way the sibling *gestion-bachelor* project
-already does. Once it lands, the standard becomes gestion-bachelor's:
+(<https://ux.symfony.com/toolkit/kits/shadcn>). Once it lands, the standard becomes:
 
 - **Every visual component starts from the kit.** Don't hand-write a component out of raw Tailwind
   when the kit ships one — install it and compose from it.
@@ -98,8 +97,8 @@ The palette decision is the same decision in both steps, so it is taken once. É
 3. **Install the toolkit — pinned to the 2.x line**: `composer require --dev symfony/ux-toolkit:^2.36`.
    > **Version ceiling, verified 2026-08-19.** `symfony/ux-toolkit` **3.x requires PHP >= 8.4 and
    > Symfony ^7.4|^8.0**. This project is PHP 8.2 (CI runs 8.2) on Symfony 7.3, so only the 2.x line
-   > (`php >=8.1`, `symfony/* ^6.4|^7.0|^8.0`) resolves. gestion-bachelor pins `^2.36` for the same
-   > reason despite running PHP 8.4. Moving to 3.x is a PHP/Symfony upgrade, not a front-end change.
+   > (`php >=8.1`, `symfony/* ^6.4|^7.0|^8.0`) resolves. Moving to 3.x is a PHP/Symfony upgrade, not a
+   > front-end change — re-check the constraint before assuming the ceiling still holds.
 4. **Install the components' runtime dependencies.** They are dev-dependencies of the toolkit but
    **runtime** dependencies of the copied components, so they go in `require`, not `require-dev`:
    `twig/html-extra`, `tales-from-a-dev/twig-tailwind-extra` (provides `tailwind_merge`),
@@ -107,12 +106,13 @@ The palette decision is the same decision in both steps, so it is taken once. É
 5. **Install the kit's CSS package**: `npm install tw-animate-css`, imported from
    `assets/styles/app.css` right after `@import 'tailwindcss'`.
    > There is **no `shadcn` npm package** to install — that is the React CLI, unrelated to the Symfony
-   > kit. gestion-bachelor's `package.json` carries `tw-animate-css` and nothing else for this.
+   > kit. `tw-animate-css` is the only npm dependency the kit adds.
 6. **Reconcile the palette.** The project overrides `amber-400/500/600/700` and adds `bg-blue-950`;
    shadcn drives everything from `--primary`, `--background`, `--accent`, `--ring`… Decide how the
    dark-slate + amber identity maps onto those tokens **before** installing any component, or the
-   first one will look foreign. gestion-bachelor's `assets/styles/app.css` is the worked example:
-   brand colours land in `:root` (`--primary`, `--secondary`) and in an `@theme inline` block.
+   first one will look foreign. The shape to aim for: raw brand colours defined once in `:root`
+   (`--primary`, `--secondary`…), and an `@theme inline` block mapping them to the Tailwind utility
+   names. Rebrand by editing the tokens, never the components.
 
 ### Migration strategy — the "Legacy move"
 
@@ -141,5 +141,3 @@ branch.
 - Partial conventions & accessibility: [frontend-twig.md](frontend-twig.md)
 - Tailwind setup, purge traps and the v4 outline: [frontend-styling.md](frontend-styling.md)
 - Interactivity: [ux-stimulus-turbo.md](ux-stimulus-turbo.md)
-- Worked reference: the sibling *gestion-bachelor* project's own
-  `.claude/rules/technical/components-shadcn.md` and its `/shadcn-migrate` skill

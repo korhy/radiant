@@ -88,8 +88,7 @@ of [the audit](../../../docs/audit/audit-2026-08-18.md) covers both.
 The Tailwind half involves at minimum:
 
 1. `npm install tailwindcss@^4 @tailwindcss/postcss` and drop `autoprefixer` from
-   `postcss.config.js` in favour of `@tailwindcss/postcss` (gestion-bachelor's `postcss.config.mjs`
-   is a two-line worked example — the plugin is the only entry left).
+   `postcss.config.js` in favour of `@tailwindcss/postcss` — which becomes the file's only plugin.
 2. Replace the `@tailwind base/components/utilities` directives with `@import 'tailwindcss'`.
 3. Delete `tailwind.config.js`, porting the colour overrides into a CSS `@theme` block — decided
    jointly with the shadcn token mapping, not before it.
