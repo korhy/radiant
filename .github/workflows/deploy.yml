@@ -43,7 +43,16 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
-            git pull origin main
+            # `git pull` fusionne, donc il peut entrer en conflit : le 2026-08-19,
+            # un composer.json modifié localement sur le serveur a bloqué le
+            # déploiement en pleine course et laissé la production en 500.
+            # `reset --hard` est idempotent : l'arbre devient une copie exacte de
+            # main, quoi qu'il contienne.
+            #
+            # Pas de `git clean` ici : public/.htaccess et composer.phar ne sont
+            # pas versionnés et doivent survivre.
+            git fetch origin main
+            git reset --hard origin/main
             APP_ENV=prod php composer.phar install --no-dev --optimize-autoloader
             APP_ENV=prod php bin/console doctrine:migrations:migrate --no-interaction
             APP_ENV=prod php bin/console cache:clear
