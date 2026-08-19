@@ -7,6 +7,8 @@ parameters:
         - src/
         - tests/
     excludePaths:
-        - config/reference.php
+        # (?) : le fichier n'est plus versionné, il n'existe donc pas dans un
+        # checkout neuf. Sans ce marqueur, PHPStan échoue sur un chemin absent.
+        - config/reference.php (?)
     ignoreErrors:
         - identifier: property.unusedType
