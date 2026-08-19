@@ -51,6 +51,16 @@ jobs:
             #
             # Pas de `git clean` ici : public/.htaccess et composer.phar ne sont
             # pas versionnés et doivent survivre.
+            # Garde-fou, AVANT toute modification de l'arbre. Un déploiement qui
+            # s'arrête à mi-parcours laisse la production avec du code neuf sur un
+            # schéma ancien : c'est le pire état possible. Si l'utilisateur
+            # PostgreSQL ne peut pas créer de table, une migration échouerait —
+            # on refuse donc de commencer, plutôt que de casser en cours de route.
+            # (1/0 lève une erreur SQL, donc un code de sortie non nul.)
+            APP_ENV=prod php bin/console doctrine:query:sql \
+              "SELECT 1/(has_schema_privilege(current_user,'public','CREATE'))::int" >/dev/null 2>&1 \
+              || { echo "::error::Deploiement interrompu : l'utilisateur PostgreSQL ne peut pas creer de table dans le schema public. Une migration echouerait a mi-parcours. Rien n'a ete modifie sur le serveur."; exit 1; }
+
             git fetch origin main
             git reset --hard origin/main
             APP_ENV=prod php composer.phar install --no-dev --optimize-autoloader
