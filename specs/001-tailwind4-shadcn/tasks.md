@@ -63,15 +63,15 @@ mini-apps. Livrable sans aucun composant du kit.
 
 - [X] T013 [US1] Appliquer les 6 renommages listés en T005 dans `templates/**` et `assets/controllers/*.js` : `outline-none` → `outline-hidden`, `shadow` → `shadow-sm`. Si l'outil de migration officiel de Tailwind est employé, **relire son diff intégralement** plutôt que lui faire confiance
 - [X] T014 [US1] **Sans objet, vérifié le 2026-08-19.** Les 18 bordures annoncées étaient un artefact de comptage par jeton : contrôle fait par élément, toutes portent déjà un `border-<couleur>`. Zéro correction nécessaire
-- [ ] T015 [US1] Remplacer les usages de `bg-bg-blue-950` (double préfixation héritée) par le token correspondant dans `templates/**`
-- [ ] T016 [US1] Vérifier Motus à l'écran : jouer un mot, contrôler les trois états en couleur **et** en relief non chromatique — contrat C4, ces classes viennent du JavaScript (SC-002)
-- [ ] T017 [US1] Vérifier le Cookbook : faire défiler jusqu'au chargement d'une page suivante, les cartes ajoutées à l'exécution doivent être stylées comme les initiales
-- [ ] T018 [US1] Vérifier le Taquin au clavier : le contour de focus est visible sur les tuiles — c'est le contrôle des `outline-none` renommés
-- [ ] T019 [US1] Vérifier le formulaire de contact : les champs gardent une bordure visible et un contraste conforme (WCAG 1.4.11)
-- [ ] T020 [US1] Vérifier que `/admin` est visuellement inchangé — contrat C5, séparation avec le back-office
-- [ ] T021 [US1] Comparer les 24 écrans au relevé de T004 et consigner les écarts délibérés dans `specs/001-tailwind4-shadcn/baseline/diff.md` (SC-001)
+- [X] T015 [US1] Remplacer les usages de `bg-bg-blue-950` (double préfixation héritée) par le token correspondant dans `templates/**`
+- [X] T016 [US1] Vérifier Motus à l'écran : jouer un mot, contrôler les trois états en couleur **et** en relief non chromatique — contrat C4, ces classes viennent du JavaScript (SC-002)
+- [X] T017 [US1] Vérifier le Cookbook : faire défiler jusqu'au chargement d'une page suivante, les cartes ajoutées à l'exécution doivent être stylées comme les initiales
+- [X] T018 [US1] Vérifier le Taquin au clavier : le contour de focus est visible sur les tuiles — c'est le contrôle des `outline-none` renommés
+- [X] T019 [US1] Vérifier le formulaire de contact : les champs gardent une bordure visible et un contraste conforme (WCAG 1.4.11)
+- [X] T020 [US1] Vérifier que `/admin` est visuellement inchangé — contrat C5, séparation avec le back-office
+- [X] T021 [US1] Comparer les 24 écrans au relevé de T004 et consigner les écarts délibérés dans `specs/001-tailwind4-shadcn/baseline/diff.md` (SC-001)
 - [X] T022 [US1] **Fait le 2026-08-19.** Reconstruire en production et vérifier que `public/build/app.*.css` reste sous **15 Ko gzippés** (SC-006, NFR-001). Mesuré : **9 707 octets** — conforme
-- [ ] T023 [US1] `make ci` puis livrer la tranche — **vert ne vaut pas validation ici**, seules T016 à T022 valident
+- [X] T023 [US1] `make ci` puis livrer la tranche — **vert ne vaut pas validation ici**, seules T016 à T022 valident
 
 **Checkpoint**: le site tourne sous Tailwind 4, à rendu identique. Livrable en l'état.
 

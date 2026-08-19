@@ -13,7 +13,7 @@
     <link rel="icon" href="{{ asset('images/favicon.svg') }}" />
 </head>
 
-<body class="antialiased text-slate-400 bg-gradient-to-tr from-bg-blue-950 from-50% to-slate-700 {% block body_class %}{% endblock %}">
+<body class="antialiased text-slate-400 bg-gradient-to-tr from-night from-50% to-slate-700 {% block body_class %}{% endblock %}">
     {# read and display all flash messages #}
     {% for label, messages in app.flashes %}
     {% for message in messages %}

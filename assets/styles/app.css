@@ -12,7 +12,7 @@
    désigne ici l'ambre du portfolio, pas celui de la palette par défaut. Valeurs
    reprises telles quelles de l'ancien tailwind.config.js. */
 @theme {
-    --color-bg-blue-950: #23313e;
+    --color-night: #23313e;
     --color-amber-400: #FCC175;
     --color-amber-500: #faa734ff;
     --color-amber-600: #E68A1A;
