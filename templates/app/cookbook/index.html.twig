@@ -10,9 +10,9 @@
         {{ include('app/cookbook/navbar.html.twig') }}
 
         {# Breadcrumb #}
-        {{ include('app/cookbook/breadcrumb.html.twig', { breadcrumbs: [
-        { label: 'Portfolio', path: path('homepage') },
-        { label: 'Cookbook', path: path('cookbook') },
+        {{ include('app/cookbook/breadcrumb.html.twig', {breadcrumbs: [
+        {label: 'Portfolio', path: path('homepage')},
+        {label: 'Cookbook', path: path('cookbook')},
         ]}) }}
 
         {# Filters & sorts #}
@@ -59,7 +59,7 @@
             {% if recipes is not empty %}
             <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
                 {% for recipe in recipes %}
-                <a href="{{ path('cookbook_recipe', { id: recipe.id }) }}"
+                <a href="{{ path('cookbook_recipe', {id: recipe.id}) }}"
                     class="group bg-slate-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-amber-500/10 hover:-translate-y-1 transition-all duration-200">
 
                     {# Thumbnail #}
