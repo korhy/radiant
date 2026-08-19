@@ -37,7 +37,7 @@ en développement.
 
 ---
 
-## R2 — Surface réelle des ruptures de Tailwind 4 : 24 occurrences
+## R2 — Surface réelle des ruptures de Tailwind 4 : 6 occurrences
 
 **Décision** : traiter les renommages par une passe mécanique, avant toute autre modification.
 
@@ -47,14 +47,21 @@ en développement.
 |---|---|---|---|
 | `outline-none` | `outline-hidden` | 4 | Le contour de focus disparaît → **régression d'accessibilité** |
 | `shadow` | `shadow-sm` | 2 | Ombre plus marquée qu'avant |
-| Bordures **sans couleur** (`border`, `border-b`, `border-2`, `border-t`, `border-l-2`) | inchangées, mais la couleur par défaut passe de `gray-200` à `currentColor` | 18 | Bordures qui prennent la couleur du texte → visuellement fausses |
+| Bordures sans couleur | inchangées, mais la couleur par défaut passe de `gray-200` à `currentColor` | **0** | — |
 
 **Aucune** occurrence de `bg-opacity-*`, `text-opacity-*`, `flex-shrink-*`, `flex-grow-*`,
 `overflow-ellipsis`, ni de `rounded`/`blur`/`ring` nus. La surface est **beaucoup plus étroite** que
 ce que laissait craindre l'ampleur du lot.
 
-**Le plus dangereux est le troisième** : il ne se voit pas dans un diff, seulement à l'écran, et les
-18 emplacements sont dispersés.
+> **Corrigé le 2026-08-19, à l'exécution de T007-T012.** Le relevé initial annonçait 18 bordures
+> sans couleur. C'était un artefact de comptage : il dénombrait les jetons `border`, `border-b`…
+> sans vérifier si le **même élément** portait déjà un `border-<couleur>`. Vérification faite par
+> élément, il y en a **zéro** — les 18 en avaient toutes une. La surface réelle de renommage est donc
+> de **6 occurrences**, pas 24, et le risque le plus redouté du lot n'existe pas.
+
+**Ce qui reste dangereux** est plus étroit qu'annoncé : les 4 `focus:outline-none`. Sous Tailwind 4,
+`outline-none` supprime réellement le contour, là où il posait auparavant un contour transparent
+préservant la visibilité du focus en mode contrastes forcés.
 
 ---
 

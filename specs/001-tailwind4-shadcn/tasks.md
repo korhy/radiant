@@ -41,16 +41,16 @@ Cette phase se fait avant toute modification du moteur.
 
 **Purpose**: bascule mécanique, sans intention visuelle. Bloque US1, US2 et US3.
 
-**⚠️ T008 et T009 vont dans le même commit que T010.** `outline-hidden` n'existe pas en Tailwind 3
+**⚠️ T008 à T010 vont dans le même commit que T013.** `outline-hidden` n'existe pas en Tailwind 3
 et `outline-none` change de sens en Tailwind 4 : livrer la bascule sans les renommages laisserait le
 site sans contour de focus.
 
-- [ ] T007 Installer `tailwindcss@^4` et `@tailwindcss/postcss`, retirer `tailwindcss@3` et `autoprefixer` de `package.json`
-- [ ] T008 Réécrire `postcss.config.js` avec `@tailwindcss/postcss` pour unique plugin — Tailwind 4 intègre le préfixage ([research.md](research.md) R3)
-- [ ] T009 Dans `assets/styles/app.css`, remplacer les trois directives `@tailwind` par `@import 'tailwindcss'`, et déclarer `@source '../../templates'` **et** `@source '../../assets'` — ce second est ce qui couvre les utilitaires posés par JavaScript, contrat C4
-- [ ] T010 Porter les surcharges de `tailwind.config.js` (`amber-400/500/600/700`, `bg-blue-950`) dans un bloc `@theme` de `assets/styles/app.css`, **à valeurs identiques**, puis supprimer `tailwind.config.js`
-- [ ] T011 Laisser le bloc Motus (`assets/styles/app.css` lignes 11-347) **inchangé et hors `@layer`** — Tailwind 4 n'élague pas le CSS de l'auteur, la contrainte de Tailwind 3 disparaît ([research.md](research.md) R1). Ne pas « ranger » ce bloc dans ce lot
-- [ ] T012 Vérifier que `npm run dev` et `npm run build` passent tous les deux sans erreur
+- [X] T007 Installer `tailwindcss@^4` et `@tailwindcss/postcss`, retirer `tailwindcss@3` et `autoprefixer` de `package.json`
+- [X] T008 Réécrire `postcss.config.js` avec `@tailwindcss/postcss` pour unique plugin — Tailwind 4 intègre le préfixage ([research.md](research.md) R3)
+- [X] T009 Dans `assets/styles/app.css`, remplacer les trois directives `@tailwind` par `@import 'tailwindcss'`, et déclarer `@source '../../templates'` **et** `@source '../../assets'` — ce second est ce qui couvre les utilitaires posés par JavaScript, contrat C4
+- [X] T010 Porter les surcharges de `tailwind.config.js` (`amber-400/500/600/700`, `bg-blue-950`) dans un bloc `@theme` de `assets/styles/app.css`, **à valeurs identiques**, puis supprimer `tailwind.config.js`
+- [X] T011 Laisser le bloc Motus (`assets/styles/app.css` lignes 11-347) **inchangé et hors `@layer`** — Tailwind 4 n'élague pas le CSS de l'auteur, la contrainte de Tailwind 3 disparaît ([research.md](research.md) R1). Ne pas « ranger » ce bloc dans ce lot
+- [X] T012 Vérifier que `npm run dev` et `npm run build` passent tous les deux sans erreur
 
 ---
 
@@ -61,8 +61,8 @@ site sans contour de focus.
 **Independent Test**: comparer les 24 écrans au relevé de référence et rejouer les parcours des
 mini-apps. Livrable sans aucun composant du kit.
 
-- [ ] T013 [US1] Appliquer les 24 renommages listés en T005 dans `templates/**` et `assets/controllers/*.js` : `outline-none` → `outline-hidden`, `shadow` → `shadow-sm`. Si l'outil de migration officiel de Tailwind est employé, **relire son diff intégralement** plutôt que lui faire confiance
-- [ ] T014 [US1] Donner une couleur explicite aux 18 bordures qui n'en ont pas — la couleur par défaut passe de `gray-200` à `currentColor` en Tailwind 4, et l'écart ne se voit dans aucun diff
+- [X] T013 [US1] Appliquer les 6 renommages listés en T005 dans `templates/**` et `assets/controllers/*.js` : `outline-none` → `outline-hidden`, `shadow` → `shadow-sm`. Si l'outil de migration officiel de Tailwind est employé, **relire son diff intégralement** plutôt que lui faire confiance
+- [X] T014 [US1] **Sans objet, vérifié le 2026-08-19.** Les 18 bordures annoncées étaient un artefact de comptage par jeton : contrôle fait par élément, toutes portent déjà un `border-<couleur>`. Zéro correction nécessaire
 - [ ] T015 [US1] Remplacer les usages de `bg-bg-blue-950` (double préfixation héritée) par le token correspondant dans `templates/**`
 - [ ] T016 [US1] Vérifier Motus à l'écran : jouer un mot, contrôler les trois états en couleur **et** en relief non chromatique — contrat C4, ces classes viennent du JavaScript (SC-002)
 - [ ] T017 [US1] Vérifier le Cookbook : faire défiler jusqu'au chargement d'une page suivante, les cartes ajoutées à l'exécution doivent être stylées comme les initiales

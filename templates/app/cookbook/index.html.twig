@@ -21,11 +21,11 @@
 
             <div class="flex flex-col sm:flex-row gap-3">
                 <input data-cookbook-target="searchInput" type="search" placeholder="Rechercher une recette…"
-                    class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors">
+                    class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-hidden focus:border-amber-500 transition-colors">
 
                 <div class="relative">
                     <select data-cookbook-target="categorySelect"
-                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 pr-10 py-2 text-sm text-white focus:outline-none focus:border-amber-500 transition-colors appearance-none">
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 pr-10 py-2 text-sm text-white focus:outline-hidden focus:border-amber-500 transition-colors appearance-none">
                         <option value="">Toutes les catégories</option>
                         {% for category in categories %}
                         <option value="{{ category.id }}">{{ category.name }}</option>

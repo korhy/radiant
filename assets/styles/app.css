@@ -1,6 +1,23 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* Sources déclarées explicitement plutôt que laissées à la détection automatique.
+   `assets` n'est pas facultatif : trois contrôleurs Stimulus posent des utilitaires
+   à l'exécution — la carte recette du Cookbook, les bascules du panneau « Behind the
+   scenes » — et ces classes n'apparaissent dans aucun gabarit. Sans cette ligne elles
+   ne seraient pas générées, sans la moindre erreur. */
+@source '../../templates';
+@source '../../assets';
+
+/* La palette du site. Ces noms écrasent délibérément ceux de Tailwind : `amber-500`
+   désigne ici l'ambre du portfolio, pas celui de la palette par défaut. Valeurs
+   reprises telles quelles de l'ancien tailwind.config.js. */
+@theme {
+    --color-bg-blue-950: #23313e;
+    --color-amber-400: #FCC175;
+    --color-amber-500: #faa734ff;
+    --color-amber-600: #E68A1A;
+    --color-amber-700: #B76A14;
+}
 
 @layer components {
     .tile {
