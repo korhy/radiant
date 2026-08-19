@@ -59,7 +59,6 @@ Thumbs.db
 /dist/
 
 # Ignore environment variables files
-.env
 .env.local
 .env.*.local
 .env.testing
@@ -67,7 +66,6 @@ Thumbs.db
 
 # Ignore Composer files
 /composer.phar
-/composer.lock
 /vendor/
 
 # Ignore Node.js files
