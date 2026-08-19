@@ -12,10 +12,14 @@ APP = $(EXEC) app
 CONSOLE = $(APP) php bin/console
 COMPOSER = $(APP) composer
 PHP_CS_FIXER = $(APP) vendor/bin/php-cs-fixer
+TWIG_CS_FIXER = $(APP) vendor/bin/twig-cs-fixer
 # PHPStan's parallel workers exhaust the container's 128M cap and die with exit code 255, which says
 # nothing about the code. CI has no such cap, hence the flag lives here and not in the workflow.
 PHPSTAN = $(APP) php -d memory_limit=-1 vendor/bin/phpstan
-PHPUNIT = $(APP) php bin/phpunit
+# Le conteneur exporte APP_ENV=dev et DATABASE_URL (Postgres) comme *vraies* variables
+# d'environnement : elles priment sur .env.test, donc sans ces -e le kernel de test boote
+# en dev et les tests visent la base de dev. La CI, elle, les fixe explicitement.
+PHPUNIT = $(EXEC) -e APP_ENV=test -e DATABASE_URL='sqlite:///%kernel.project_dir%/var/test.db' app php bin/phpunit
 
 # npm runs on the HOST, never in the container: an in-container install rewrites package-lock.json's
 # "name" field to the container workdir, producing a bogus lockfile diff.
@@ -108,8 +112,16 @@ php-cs-fixer-fix: ## Fix PHP code style
 phpstan: ## Run static analysis (level 5)
 	$(PHPSTAN) analyse
 
+.PHONY: twig-cs-fixer
+twig-cs-fixer: ## Check Twig code style
+	$(TWIG_CS_FIXER) lint
+
+.PHONY: twig-cs-fixer-fix
+twig-cs-fixer-fix: ## Fix Twig code style
+	$(TWIG_CS_FIXER) lint --fix
+
 .PHONY: lint
-lint: php-cs-fixer phpstan ## Run every linter (Twig/JS/CSS have no gate — review them by hand)
+lint: php-cs-fixer twig-cs-fixer phpstan ## Run every linter (JS/CSS have no gate — review them by hand)
 
 ## —— Tests —————————————————————————————————————————————————————————
 .PHONY: phpunit
@@ -117,4 +129,4 @@ phpunit: ## Run the test suite (use TEST=path for a subset)
 	$(PHPUNIT) $(if $(TEST),$(TEST),)
 
 .PHONY: ci
-ci: php-cs-fixer phpstan phpunit ## Run exactly what .github/workflows/ci.yml runs
+ci: php-cs-fixer twig-cs-fixer phpstan phpunit ## Run exactly what .github/workflows/ci.yml runs
