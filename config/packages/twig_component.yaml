@@ -1,0 +1,6 @@
+# symfony/ux-twig-component arrive comme dépendance d'EasyAdmin : le bundle est
+# donc actif même si le projet n'écrit aucun composant. Sans cette option, il
+# émet une dépréciation. Le mapping vers App\Twig\Components\ a été retiré, lui,
+# car src/Twig/Components/ n'a jamais existé.
+twig_component:
+    anonymous_template_directory: 'components/'
