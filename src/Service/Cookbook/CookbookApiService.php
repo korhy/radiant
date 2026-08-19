@@ -10,7 +10,7 @@ use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class CookbookApiService
+final class CookbookApiService
 {
     public function __construct(
         private readonly HttpClientInterface $httpClient,
@@ -43,6 +43,11 @@ class CookbookApiService
         });
     }
 
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>
+     */
     private function request(string $method, string $path, array $options = [], bool $retry = true): array
     {
         $options['headers']['Authorization'] = 'Bearer '.$this->getToken();
@@ -65,7 +70,12 @@ class CookbookApiService
         return $response->toArray(false);
     }
 
-    public function getRecipes(int $page = 1, int $itemsPerPage = 10, $filters = []): array
+    /**
+     * @param array<string, scalar|null> $filters
+     *
+     * @return array<string, mixed>
+     */
+    public function getRecipes(int $page = 1, int $itemsPerPage = 10, array $filters = []): array
     {
         $this->logger->info('Fetching recipes', ['page' => $page, 'itemsPerPage' => $itemsPerPage, 'filters' => $filters]);
 
@@ -78,13 +88,28 @@ class CookbookApiService
         return $this->request('GET', '/api/'.$this->apiVersion.'/recipes?'.$query);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getRecipe(int $id): array
     {
         return $this->request('GET', '/api/'.$this->apiVersion.'/recipes/'.$id);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getCategories(): array
     {
         return $this->request('GET', '/api/'.$this->apiVersion.'/categories');
+    }
+
+    /**
+     * L'URL publique de la documentation de l'API consommée. Elle se construisait
+     * dans le contrôleur à partir de deux #[Autowire(env:)] dupliqués.
+     */
+    public function getDocUrl(): string
+    {
+        return $this->apiUrl.'/api/'.$this->apiVersion.'/docs';
     }
 }
