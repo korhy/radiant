@@ -66,13 +66,13 @@
 
         <div data-motus-target="keyboard" class="motus-keyboard md:flex md:flex-col md:gap-1.5 md:items-center">
             <div class="motus-kbd-row md:flex md:gap-1.5">
-                {% for letter in ['A','Z','E','R','T','Y','U','I','O','P'] %}
+                {% for letter in ['A', 'Z', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'] %}
                 <button type="button" data-action="click->motus#keyPress" data-key="{{ letter }}"
                     class="motus-key">{{ letter }}</button>
                 {% endfor %}
             </div>
             <div class="motus-kbd-row md:flex md:gap-1.5">
-                {% for letter in ['Q','S','D','F','G','H','J','K','L','M'] %}
+                {% for letter in ['Q', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M'] %}
                 <button type="button" data-action="click->motus#keyPress" data-key="{{ letter }}"
                     class="motus-key">{{ letter }}</button>
                 {% endfor %}
@@ -80,7 +80,7 @@
             <div class="motus-kbd-row md:flex md:gap-1.5 md:items-center">
                 <button type="button" data-action="click->motus#submit"
                     class="motus-key motus-key--action motus-key--enter">ENTRER</button>
-                {% for letter in ['W','X','C','V','B','N'] %}
+                {% for letter in ['W', 'X', 'C', 'V', 'B', 'N'] %}
                 <button type="button" data-action="click->motus#keyPress" data-key="{{ letter }}"
                     class="motus-key">{{ letter }}</button>
                 {% endfor %}
@@ -97,5 +97,5 @@
     </div>
 </div>
 
-{{ include('components/_app_detail_drawer.html.twig', { hide_drawer_btn_on_mobile: true }) }}
+{{ include('components/_app_detail_drawer.html.twig', {hide_drawer_btn_on_mobile: true}) }}
 {% endblock %}

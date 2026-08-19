@@ -100,7 +100,7 @@ L'audit du 2026-08-18 (`docs/audit/audit-2026-08-18.md`) a traité les étapes 0
   rate limiting ni anti-spam.
 - **Les messages de validation s'affichent en anglais** (`default_locale: en`) sur un site français.
 - **Les colonnes JSON `tags`** emballent le tableau dans une clé `tags` redondante.
-- **Migration Tailwind 3 → 4**, préalable à shadcn.
+- **Migration Tailwind 3 → 4 *et* adoption du kit shadcn**, traitées comme un seul lot (Étape 5).
 
 Ce qui a été corrigé et ne doit pas être re-signalé : `declare(strict_types=1)` (imposé par
 php-cs-fixer), la casse des propriétés d'entité, la typo `$projetcs`, le code mort (AssetMapper,

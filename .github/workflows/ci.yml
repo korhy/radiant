@@ -32,6 +32,9 @@ jobs:
       - name: PHP CS Fixer (dry-run)
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
+      - name: Twig CS Fixer
+        run: vendor/bin/twig-cs-fixer lint
+
       - name: PHPStan
         run: vendor/bin/phpstan analyse
 

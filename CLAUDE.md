@@ -44,12 +44,12 @@ only when relevant.
     ├── symfony-best-practices.md  # Official Symfony best practices, reconciled with this stack
     ├── naming.md                  # English identifiers everywhere; French only for user-facing text
     ├── security.md                # Authorization, secrets, input sanitization, API credentials
-    ├── linting.md                 # Pre-CI gate: php-cs-fixer + PHPStan (and what has no gate)
+    ├── linting.md                 # Pre-CI gate: php-cs-fixer + twig-cs-fixer + PHPStan
     ├── testing.md                 # PHPUnit, opt-in critical-only, the SQLite-vs-Postgres caveat
     ├── easyadmin.md               # EasyAdmin 4 CRUD, dashboard menu, JSON-column textarea pattern
     ├── frontend-twig.md           # Twig partials, Webpack Encore, accessibility (RGAA/EAA)
     ├── frontend-styling.md        # Tailwind 3 utility-first, purge traps, the Tailwind 4 target
-    ├── components-shadcn.md       # Current partial convention + the shadcn target & prerequisites
+    ├── components-shadcn.md       # Current partial convention + the shadcn/Tailwind 4 target
     ├── ux-stimulus-turbo.md       # Stimulus vs Turbo, MANUAL controller registration
     └── deployment.md              # Auto-running migrations, CI-built assets, commit-driven releases
 ```
@@ -84,8 +84,9 @@ Non-trivial features go through **[spec-kit](https://github.com/github/spec-kit)
 The **constitution is not recreated**: `.specify/memory/constitution.md` is a thin pointer — this
 file plus `.claude/rules/**` are the real governing rules.
 
-Good first candidates: the **Tailwind 3 → 4 migration** (prerequisite for shadcn), and a first
-**smoke-test suite** for the key routes.
+The next candidate is **Étape 5 — Tailwind 3 → 4 *and* the shadcn kit, as a single migration**: the
+kit is Tailwind 4-native and the palette would otherwise be mapped onto CSS tokens twice. See
+[components-shadcn.md](.claude/rules/technical/components-shadcn.md).
 
 ---
 
@@ -96,13 +97,17 @@ Good first candidates: the **Tailwind 3 → 4 migration** (prerequisite for shad
 - **Doctrine** ORM 3 / DBAL 3 + migrations, on **PostgreSQL 16**
 - **EasyAdmin 4** for the back-office · **VichUploader** for file uploads
 - **Twig** 3 + **Symfony UX**: **Stimulus only**. Turbo was removed on 2026-08-19 — it was declared
-  but never loaded. No Live Components, no Twig Components (the config was removed too)
+  but never loaded. No Live Components, no Twig Components (the config was removed too). Twig
+  Components come back with the shadcn kit, which requires them; Turbo and Live Components don't
 - **Tailwind CSS 3.4** via PostCSS, configured in `tailwind.config.js` — **not** Tailwind 4, and
-  **no shadcn kit** (see `components-shadcn.md` for the target and its prerequisites)
+  **no shadcn kit**. Both land together in Étape 5, not one after the other (see
+  `components-shadcn.md` for the plan and the `symfony/ux-toolkit` 2.x version ceiling)
 - **Webpack Encore** for assets — the dormant AssetMapper setup was removed on 2026-08-19
 - **Mailjet** mailer for the contact form
 - **Tests**: PHPUnit — 37 tests since 2026-08-19 (Motus, client Cookbook, routes publiques,
   accessibilité). Voir [testing.md](.claude/rules/technical/testing.md)
+- **Linters**: php-cs-fixer (`@Symfony`), **twig-cs-fixer** and PHPStan level 5 — all three gated in
+  CI. JS/CSS still have none
 
 Two operational traps worth knowing before you change anything:
 
@@ -138,9 +143,9 @@ Two operational traps worth knowing before you change anything:
    see [radiant.md](.claude/rules/business/radiant.md).
 10. **Conventional Commits are load-bearing**: `release.yml` parses the commit subject to auto-tag
     semver (`feat:` → minor, `fix:` → patch, `type!:` → major). Write the subject deliberately.
-11. **A change is not done until its linter passes** — php-cs-fixer and PHPStan, the same two CI
-    runs. Twig/JS/CSS have **no** automated gate, so review them by hand and load the page. See
-    [linting.md](.claude/rules/technical/linting.md).
+11. **A change is not done until its linter passes** — php-cs-fixer, twig-cs-fixer and PHPStan, the
+    same three CI runs. **JS/CSS** still have no automated gate, so review them by hand and load the
+    page. See [linting.md](.claude/rules/technical/linting.md).
 12. **Accessibility is an acceptance criterion**, not polish (RGAA/EAA → WCAG 2.1 AA) — see
     [frontend-twig.md](.claude/rules/technical/frontend-twig.md).
 
@@ -156,8 +161,9 @@ make up              # start the stack (app :8080, Postgres, Mailpit :8025)
 make cc              # clear the Symfony cache
 make console C="debug:router"   # any console command
 make php-cs-fixer    # check PHP code style (@Symfony)  / -fix to autofix
+make twig-cs-fixer   # check Twig code style              / -fix to autofix
 make phpstan         # static analysis (level 5)
-make lint            # both linters
+make lint            # all three linters
 make phpunit         # run the PHPUnit suite (TEST=path for a subset)
 make ci              # exactly what .github/workflows/ci.yml runs
 make db-migration    # generate a migration (review the SQL!)
