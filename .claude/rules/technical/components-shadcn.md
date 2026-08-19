@@ -1,19 +1,10 @@
 ---
-description: Component standard — reuse before writing markup, one partial one responsibility, data passed explicitly. shadcn kit is the target but is NOT installed: never render <twig:X>. Legacy migration strategy.
+description: Component standard — every UI component starts from the Symfony UX Toolkit shadcn kit. Modals use Dialog. Reuse over duplication. Legacy migration strategy.
 paths:
   - "**/*.twig"
   - "**/src/Twig/Components/**/*.php"
   - "**/assets/controllers/**/*.js"
 ---
-
-# Components — current state and the shadcn target
-
-> ## ⚠️ shadcn is NOT installed in this project (yet)
->
-> `symfony/ux-toolkit` is **not** a dependency, `symfony/ux-twig-component` is **not** installed,
-> there is no `templates/components/ui/`, and nothing renders as `<twig:Button>`. **Do not write code
-> that assumes shadcn components exist.** Until the migration below is done, follow "Today's
-> convention".
 
 ## Today's convention
 
