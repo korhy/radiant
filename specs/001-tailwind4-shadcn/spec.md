@@ -68,15 +68,20 @@ est employé, sans autre modification.
    tous les éléments accentués suivent, sur toutes les pages.
 2. **Given** un composant fraîchement installé depuis le kit, **When** il est affiché sans
    personnalisation, **Then** il adopte l'identité du site et non celle du kit.
+3. **Given** un visiteur dont le système est réglé en clair, **When** il ouvre le site, **Then** il
+   obtient le thème clair, avec les mêmes contenus et les mêmes contrastes conformes qu'en sombre.
+4. **Given** un visiteur qui bascule la préférence de son système, **When** le site est déjà
+   ouvert, **Then** l'apparence suit sans rechargement ni perte de l'état en cours (partie de Motus,
+   grille du Taquin, saisie du formulaire).
 
 ---
 
-### User Story 3 - Le tiroir « Dans les coulisses » devient un composant du kit (Priority: P3)
+### User Story 3 - Le panneau « Behind the scenes » devient un composant du kit (Priority: P3)
 
-Un visiteur ouvre le tiroir qui explique comment une mini-app est faite, navigue entre ses onglets
+Un visiteur ouvre le panneau qui explique comment une mini-app est faite, navigue entre ses onglets
 au clavier, le ferme avec Échap, et retrouve le focus là où il l'avait laissé.
 
-**Why this priority**: c'est la démonstration que le kit apporte quelque chose. Ce tiroir
+**Why this priority**: c'est la démonstration que le kit apporte quelque chose. Ce panneau
 réimplémente aujourd'hui à la main un comportement de dialogue modal — piège au focus, retrait de
 l'arbre d'accessibilité quand il est fermé, navigation entre onglets — que le composant du kit
 fournit et maintient à notre place.
@@ -86,14 +91,14 @@ passe automatisée d'accessibilité, sur les trois mini-apps qui l'incluent.
 
 **Acceptance Scenarios**:
 
-1. **Given** une page de mini-app, **When** le visiteur ouvre le tiroir au clavier, **Then** le
+1. **Given** une page de mini-app, **When** le visiteur ouvre le panneau au clavier, **Then** le
    focus entre dedans et n'en sort pas tant qu'il est ouvert.
-2. **Given** le tiroir ouvert, **When** le visiteur presse Échap, **Then** il se ferme et le focus
+2. **Given** le panneau ouvert, **When** le visiteur presse Échap, **Then** il se ferme et le focus
    revient sur l'élément qui l'avait ouvert.
-3. **Given** le tiroir fermé, **When** le visiteur navigue à la tabulation, **Then** aucun de ses
+3. **Given** le panneau fermé, **When** le visiteur navigue à la tabulation, **Then** aucun de ses
    éléments n'est atteignable ni annoncé.
-4. **Given** les quatre sections de contenu du tiroir, **When** le visiteur passe de l'une à
-   l'autre, **Then** la navigation fonctionne aux flèches et l'onglet actif est annoncé comme tel.
+4. **Given** les quatre onglets du panneau, **When** le visiteur passe de l'un à l'autre, **Then**
+   la navigation fonctionne aux flèches et l'onglet actif est annoncé comme tel.
 
 ---
 
@@ -128,7 +133,7 @@ passe automatisée d'accessibilité, sur les trois mini-apps qui l'incluent.
   de fond se fasse en un seul endroit.
 - **FR-004**: Un composant installé depuis le kit MUST adopter l'identité du site sans
   personnalisation à chaque appel.
-- **FR-005**: Le tiroir « Dans les coulisses » MUST être rendu par le composant de dialogue du kit,
+- **FR-005**: Le panneau « Behind the scenes » MUST être rendu par le composant de dialogue du kit,
   et MUST conserver au minimum le comportement clavier actuel : piège au focus, fermeture par Échap,
   retour du focus à l'élément déclencheur, retrait de l'arbre d'accessibilité à l'état fermé,
   navigation entre onglets aux flèches.
@@ -159,7 +164,7 @@ passe automatisée d'accessibilité, sur les trois mini-apps qui l'incluent.
 
 Aucune donnée métier n'est touchée. Les seules entités concernées le sont **indirectement** : la
 grille d'accueil et le tiroir lisent les mini-apps enregistrées, dont les colonnes JSON alimentent
-les quatre sections du tiroir. Leur structure ne change pas.
+les quatre onglets du panneau. Leur structure ne change pas.
 
 ## Success Criteria *(mandatory)*
 
@@ -168,21 +173,25 @@ les quatre sections du tiroir. Leur structure ne change pas.
 - **SC-001**: Sur les neuf pages publiques et aux trois largeurs de référence, **aucune différence
   visuelle perceptible** avant/après — hors changements délibérés, qui sont listés nommément.
 - **SC-002**: Les trois états de Motus restent distinguables **en niveaux de gris**, donc sans
-  recourir à la couleur.
+  recourir à la couleur — dans les deux thèmes.
 - **SC-003**: Les trois mini-apps et le formulaire de contact sont **intégralement utilisables au
   clavier seul**, sans piège au focus involontaire.
 - **SC-004**: Une passe automatisée d'accessibilité ne remonte **aucune violation de niveau AA** sur
-  les pages modifiées — au minimum autant qu'avant, l'objectif étant d'améliorer.
+  les pages modifiées, **dans les deux thèmes** — au minimum autant qu'avant, l'objectif étant
+  d'améliorer.
 - **SC-005**: Changer la couleur d'accent en **un seul endroit** se répercute sur l'ensemble du
-  site.
+  site, dans les deux thèmes.
+- **SC-008**: Les neuf pages publiques sont vérifiées **dans les deux thèmes** aux trois largeurs de
+  référence — soit 54 écrans, contre 27 si le thème était figé.
 - **SC-006**: La feuille de style livrée ne dépasse pas 120 % de son poids actuel.
-- **SC-007**: Le tiroir « Dans les coulisses » n'est plus atteignable au clavier lorsqu'il est
+- **SC-007**: Le panneau « Behind the scenes » n'est plus atteignable au clavier lorsqu'il est
   fermé, sur les trois mini-apps.
 
 ## Assumptions
 
-- **Le lot ne change pas l'identité visuelle**, il change la manière dont elle est exprimée. Toute
-  évolution esthétique est une décision séparée.
+- **Le lot ne change pas l'identité visuelle en thème sombre**, il change la manière dont elle est
+  exprimée. **Le thème clair, lui, est une création** : il n'existe aujourd'hui nulle part, et ses
+  valeurs sont à décider — c'est la seule part de conception esthétique du lot.
 - **Le périmètre s'arrête aux pages publiques.** Le back-office n'est pas retouché.
 - **Aucune traduction n'est introduite.** Les textes restent écrits en français dans les gabarits.
 - **Le kit reste sur la ligne compatible avec la version de PHP compilée par l'intégration
@@ -208,12 +217,18 @@ les quatre sections du tiroir. Leur structure ne change pas.
 | Le thème de formulaire n'est pas prévu pour cette version | Il a déjà supprimé les bordures des champs par le passé | Régression de contraste, donc de conformité |
 | Rien ne détecte une régression de style | Ni linter, ni test visuel, ni test de bout en bout | Le défaut part en production et n'est vu que par un visiteur |
 | Le déploiement est automatique au merge | Toute intégration continue verte sur la branche principale déclenche une livraison | Aucune fenêtre de relecture entre le merge et la mise en ligne |
+| Le thème clair double la surface à vérifier | Il n'existe nulle part aujourd'hui : chaque écran, chaque état de Motus et chaque champ de formulaire est à contrôler une seconde fois | Un thème livré à moitié, avec des contrastes non conformes là où personne n'a regardé |
+| Le thème clair est le seul endroit où l'on *conçoit* | Le reste du lot reproduit l'existant ; ici il n'y a pas de référence avant/après | Dérive esthétique non intentionnelle, invisible aux critères de non-régression |
 
-## Clarifications nécessaires
+## Clarifications tranchées le 2026-08-19
 
-- **FR-013**: L'étendue de la composantisation dans ce lot est
-  [NEEDS CLARIFICATION: se limite-t-on au tiroir modal, ou reprend-on aussi les éléments récurrents
-  — boutons, cartes, pastilles de tags, champs de formulaire ?]
-- **FR-014**: Le traitement des thèmes clair et sombre est
-  [NEEDS CLARIFICATION: le site est aujourd'hui en ardoise sombre figée, alors que le kit livre une
-  paire clair/sombre. Fige-t-on un thème unique, ou ouvre-t-on la bascule ?]
+- **FR-013**: La composantisation de ce lot MUST se limiter au panneau « Behind the scenes ». Les
+  éléments récurrents — pastilles de tags, boutons, en-têtes de section, champs de formulaire —
+  restent écrits en utilitaires. Les constats **DU2** et **DU3** de l'audit (blocs dupliqués entre
+  écrans) sont explicitement **hors périmètre** et feront l'objet d'un lot ultérieur, une fois le kit
+  éprouvé sur un composant.
+- **FR-014**: Le site MUST proposer **un thème clair et un thème sombre**, sélectionnés d'après la
+  préférence système du visiteur. Les deux MUST satisfaire les contrastes AA, et l'information MUST
+  être identique dans l'un et dans l'autre.
+- **FR-015**: Le thème clair étant nouveau, ses valeurs MUST être décidées explicitement et
+  consignées, et non déduites des valeurs par défaut du kit.
