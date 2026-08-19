@@ -4,32 +4,25 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Experience;
-use App\Entity\PersonalProject;
 use App\Repository\AppRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ExperienceRepository;
+use App\Repository\PersonalProjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class PortfolioController extends AbstractController
+final class PortfolioController extends AbstractController
 {
     #[Route('/', name: 'homepage')]
-    public function index(EntityManagerInterface $entityManager, AppRepository $appRepository): Response
-    {
-        $experiences = $entityManager->getRepository(Experience::class)->findBy(
-            [],
-            ['start_date' => 'DESC']
-        );
-
-        $projetcs = $entityManager->getRepository(PersonalProject::class)->findAll();
-
-        $apps = $appRepository->findAllOrderedByPosition();
-
+    public function index(
+        ExperienceRepository $experienceRepository,
+        PersonalProjectRepository $personalProjectRepository,
+        AppRepository $appRepository,
+    ): Response {
         return $this->render('portfolio/layout.html.twig', [
-            'experiences' => $experiences,
-            'projects' => $projetcs,
-            'apps' => $apps,
+            'experiences' => $experienceRepository->findAllOrderedByStartDate(),
+            'projects' => $personalProjectRepository->findAll(),
+            'apps' => $appRepository->findAllOrderedByPosition(),
         ]);
     }
 }
