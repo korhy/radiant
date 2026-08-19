@@ -1,5 +1,5 @@
 ---
-description: Testing strategy — PHPUnit (WebTestCase ready, no tests yet), opt-in critical-only coverage, SQLite-vs-Postgres caveat.
+description: Testing strategy — PHPUnit, critical paths only, no coverage target. Assert HTTP status, never dialect-specific SQL: CI runs SQLite, production runs PostgreSQL.
 paths:
   - "**/tests/**"
   - "**/*Test.php"

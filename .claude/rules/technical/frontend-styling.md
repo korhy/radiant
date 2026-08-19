@@ -1,5 +1,5 @@
 ---
-description: Styling conventions — Tailwind CSS 3 utility-first, the purge traps, design tokens, and the joint Tailwind 4 + shadcn target.
+description: Styling conventions — Tailwind utilities in the markup, reuse through partials not a CSS layer, the scale over arbitrary values. Two purge traps that fail silently.
 paths:
   - "**/*.twig"
   - "**/*.css"
@@ -77,13 +77,11 @@ layer and stay as CSS custom properties — they are not `@apply`-able.
 Mockup sizing is **indicative, not pixel-perfect**. Match spacing rhythm, hierarchy and colour
 faithfully; snap dimensions to the Tailwind scale rather than reproducing exact pixel values.
 
-## Target — Tailwind 4 **and** shadcn, as one migration
+## Target — Tailwind 4, shipped with the shadcn kit
 
-Tailwind 4 is the prerequisite for the shadcn kit ([components-shadcn.md](components-shadcn.md)), and
-the two are done **in the same batch** rather than one after the other: the palette has to be mapped
-onto CSS-first tokens either way, and doing Tailwind 4 alone would mean mapping it twice — once into
-a plain `@theme`, then again onto shadcn's `--primary` / `--background` / `--accent` model. Étape 5
-of [the audit](../../../docs/audit/audit-2026-08-18.md) covers both.
+Tailwind 4 is done **in the same batch** as the shadcn kit
+([components-shadcn.md](components-shadcn.md)), never on its own — the reasoning is recorded in
+Étape 5 of [the audit](../../../docs/audit/audit-2026-08-18.md).
 
 The Tailwind half involves at minimum:
 

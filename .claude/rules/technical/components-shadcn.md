@@ -1,5 +1,5 @@
 ---
-description: Component standard — current partial-based convention, and the shadcn (Symfony UX Toolkit) target, adopted jointly with Tailwind 4 as one migration.
+description: Component standard — reuse before writing markup, one partial one responsibility, data passed explicitly. shadcn kit is the target but is NOT installed: never render <twig:X>. Legacy migration strategy.
 paths:
   - "**/*.twig"
   - "**/src/Twig/Components/**/*.php"
@@ -33,9 +33,8 @@ Rules that already apply, and that carry over unchanged to shadcn:
 - **No Doctrine in templates** — the controller supplies the data.
 - Accessibility is part of "done" — see [frontend-twig.md](frontend-twig.md).
 
-`config/packages/twig_component.yaml` was deleted on 2026-08-19 (it pointed at a directory that never
-existed). A class-backed component therefore requires restoring that configuration — see the
-migration below, which does exactly that.
+A class-backed component is not possible today: `config/packages/twig_component.yaml` does not
+exist. Restoring it is part of the shadcn migration below — don't restore it on the side.
 
 ---
 
@@ -66,19 +65,11 @@ The intent is to build UI from the **Symfony UX Toolkit shadcn kit**
 - **User-facing text stays French; component and prop names stay English** — see
   [naming.md](naming.md).
 
-### Why it is one migration with Tailwind 4, not two
-
-The kit is Tailwind 4-native: it ships `@import 'tailwindcss'`, `@custom-variant dark`, a large
-`@theme inline` token block and `tw-animate-css`. None of that works under Tailwind 3's
-`tailwind.config.js`.
-
-Splitting the two would mean porting the amber/slate palette into a Tailwind 4 `@theme` block, then
-**re-porting it a second time** onto shadcn's token model (`--primary`, `--background`, `--accent`,
-`--ring`…) immediately after — and shipping an interim state whose only purpose is to be replaced.
-The palette decision is the same decision in both steps, so it is taken once. Étape 5 of
-[the audit](../../../docs/audit/audit-2026-08-18.md) covers both.
-
 ### Prerequisites — in order
+
+The kit is Tailwind 4-native, so it ships **with** the Tailwind 3 → 4 migration, in one batch — the
+reasoning is recorded in Étape 5 of [the audit](../../../docs/audit/audit-2026-08-18.md). Don't
+split them.
 
 1. **Migrate Tailwind 3 → 4.** See the outline in [frontend-styling.md](frontend-styling.md); the
    Motus purge block is the hard part.
