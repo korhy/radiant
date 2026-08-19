@@ -1,6 +1,6 @@
 # Radiant Constitution
 
-**Version**: 1.0.0 · **Ratified**: 2026-08-18 · **Last amended**: 2026-08-18
+**Version**: 1.1.0 · **Ratified**: 2026-08-18 · **Last amended**: 2026-08-19
 
 ## The constitution is not recreated here
 
@@ -24,7 +24,8 @@ Every spec, plan and task set is checked against these. They are the short form;
 the rules.
 
 1. **Strict typing.** `declare(strict_types=1)` in every PHP file; typed params, returns and
-   properties. PHP **8.2** is the ceiling of what CI can compile.
+   properties. PHP **8.2** is the ceiling of what CI can compile — the production server runs 8.4,
+   CI does not, and CI is the constraint.
 2. **Security through Symfony, never around it.** `#[IsGranted]`, `access_control`, voters — never
    raw role-string comparisons. Only `^/admin` is gated today, so every new route's exposure is an
    explicit decision. No secrets in code; never log the Cookbook credentials or its cached JWT.
@@ -40,17 +41,21 @@ the rules.
    message is machinery, not decoration.
 7. **Accessibility is an acceptance criterion.** RGAA/EAA → WCAG 2.1 AA. A screen that is not
    keyboard-operable, or that conveys meaning by colour alone, is not done.
-8. **A change is done when its gate passes**: php-cs-fixer and PHPStan, the same two CI runs. Twig,
-   JS and CSS have **no** automated gate — they are reviewed by hand and verified by loading the
-   page.
+8. **A change is done when its gate passes**: php-cs-fixer, twig-cs-fixer and PHPStan, the same
+   three CI runs, plus the PHPUnit suite. **JS and CSS** still have no automated gate — they are
+   reviewed by hand and verified by loading the page.
 
-## Two standing constraints on planning
+## Three standing constraints on planning
 
-- **Tailwind 3 → 4 gates shadcn.** The Symfony UX Toolkit shadcn kit is Tailwind 4-native. Any plan
-  proposing shadcn components must either sequence the migration first or drop the idea. See
-  `.claude/rules/technical/components-shadcn.md`.
-- **`tests/` is empty, so CI is green vacuously.** Never treat a passing pipeline as evidence of
-  behaviour. When a plan touches risky logic, the plan says which test proves it.
+- **Tailwind 4 and the shadcn kit ship together.** The kit is Tailwind 4-native, and splitting them
+  would map the palette onto CSS tokens twice. A plan proposing one without the other must justify
+  it. See `.claude/rules/technical/components-shadcn.md`.
+- **The test suite is thin (37 tests), not absent.** It covers Motus, the Cookbook client, the
+  public routes and a few accessibility invariants — nothing else. A passing pipeline is evidence
+  about those paths and no others; when a plan touches risky logic, the plan says which test proves
+  it.
+- **Front-end regressions are invisible to CI.** No JS/CSS linter, no visual or E2E test. Any plan
+  touching styling or templates states how each screen is verified by hand.
 
 ## Governance
 
