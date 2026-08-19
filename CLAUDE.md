@@ -40,7 +40,7 @@ only when relevant.
 ├── business/
 │   └── radiant.md                 # Domain, Stream Deck contract, Cookbook client, roles, conventions
 └── technical/
-    ├── backend-php.md             # PHP 8.2+, Symfony 7.3, Doctrine 3 on Postgres, DI, typing
+    ├── backend-php.md             # PHP 8.2+, Symfony 7.4, Doctrine 3 on Postgres, DI, typing
     ├── symfony-best-practices.md  # Official Symfony best practices, reconciled with this stack
     ├── naming.md                  # English identifiers everywhere; French only for user-facing text
     ├── security.md                # Authorization, secrets, input sanitization, API credentials
@@ -93,7 +93,8 @@ kit is Tailwind 4-native and the palette would otherwise be mapped onto CSS toke
 ## 🔧 Tech stack
 
 - **PHP** — `>=8.2`. **CI runs 8.2**, the Docker image ships 8.3. Write 8.2-compatible code.
-- **Symfony** 7.3 (pinned via Flex `extra.symfony.require`)
+- **Symfony** 7.4 (pinned via Flex `extra.symfony.require`) — monté depuis 7.3 le 2026-08-19, la
+  branche 7.3 n'ayant aucun correctif pour quatre CVE (constat **S9** de l'audit)
 - **Doctrine** ORM 3 / DBAL 3 + migrations, on **PostgreSQL 16**
 - **EasyAdmin 4** for the back-office · **VichUploader** for file uploads
 - **Twig** 3 + **Symfony UX**: **Stimulus only**. Turbo was removed on 2026-08-19 — it was declared
