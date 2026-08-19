@@ -24,8 +24,9 @@ Rules that already apply, and that carry over unchanged to shadcn:
 - **No Doctrine in templates** — the controller supplies the data.
 - Accessibility is part of "done" — see [frontend-twig.md](frontend-twig.md).
 
-A class-backed component is not possible today: `config/packages/twig_component.yaml` does not
-exist. Restoring it is part of the shadcn migration below — don't restore it on the side.
+A class-backed component needs the `defaults` mapping, which `config/packages/twig_component.yaml`
+deliberately omits — it declares only `anonymous_template_directory`, `src/Twig/Components/` having
+never existed. Add the mapping when a component genuinely needs data, not before.
 
 ---
 
@@ -64,7 +65,10 @@ split them.
 
 1. **Migrate Tailwind 3 → 4.** See the outline in [frontend-styling.md](frontend-styling.md); the
    Motus purge block is the hard part.
-2. **Restore Twig Components.** `composer require symfony/ux-twig-component` and re-create
+2. **Declare Twig Components explicitly, and add the class mapping.** The bundle is already active,
+   but only as a **transitive dependency of EasyAdmin** — promote it to `composer require
+   symfony/ux-twig-component`, since the kit makes it load-bearing and a dependency the project
+   relies on must be declared rather than inherited. Then add `defaults` to
    `config/packages/twig_component.yaml`:
    ```yaml
    twig_component:
@@ -72,10 +76,7 @@ split them.
        defaults:
            App\Twig\Components\: 'components/'
    ```
-   > This **deliberately reverses** the 2026-08-19 removal. That removal was right at the time (the
-   > config pointed at a non-existent directory and nothing used it); the kit makes Twig Components a
-   > hard requirement, so it comes back with an actual consumer this time. Turbo and Live Components
-   > stay removed — the kit needs neither.
+   > Turbo and Live Components stay removed — the kit needs neither.
 3. **Install the toolkit — pinned to the 2.x line**: `composer require --dev symfony/ux-toolkit:^2.36`.
    > **Version ceiling, verified 2026-08-19.** `symfony/ux-toolkit` **3.x requires PHP >= 8.4**. The
    > Symfony half of that requirement (`^7.4|^8.0`) is satisfied since the 7.4 upgrade, so **PHP is
