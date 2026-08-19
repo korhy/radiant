@@ -28,8 +28,8 @@ sont des tâches à part entière, pas une formalité de fin.
 **Purpose**: sans ces captures, **SC-001 n'est pas vérifiable** et le lot ne peut pas être validé.
 Cette phase se fait avant toute modification du moteur.
 
-- [ ] T001 Vérifier que la base de dev contient les trois lignes `App` avec leurs quatre colonnes JSON remplies (`make psql`, table `app`) — un panneau vide ne prouverait rien en US3
-- [ ] T002 **Bloquant** — démarrer l'API Cookbook en local. `/app/cookbook` est la page la plus dynamique du site (cartes construites en JavaScript) : l'exclure du relevé la soustrairait à toute comparaison, précisément là où le risque de purge est le plus fort. Ne pas poursuivre tant qu'elle ne rend pas
+- [X] T001 Vérifier que la base de dev contient les trois lignes `App` avec leurs quatre colonnes JSON remplies (`make psql`, table `app`) — un panneau vide ne prouverait rien en US3
+- [X] T002 **Bloquant** — démarrer l'API Cookbook en local. `/app/cookbook` est la page la plus dynamique du site (cartes construites en JavaScript) : l'exclure du relevé la soustrairait à toute comparaison, précisément là où le risque de purge est le plus fort. Ne pas poursuivre tant qu'elle ne rend pas
 - [ ] T003 Construire en mode production (`npm run build`) puis relever le poids de `public/build/app.*.css` dans `specs/001-tailwind4-shadcn/baseline/weight.txt` — référence de NFR-001 et SC-006
 - [ ] T004 [P] Capturer les **24 écrans** de référence (8 pages publiques × 375/768/1280 px) dans `specs/001-tailwind4-shadcn/baseline/`, nommés `<page>-<largeur>.png`. `/admin` n'en fait pas partie : il exige une authentification et renvoie 302 anonymement — le capturer connecté, à part
 - [ ] T005 [P] Consigner dans `specs/001-tailwind4-shadcn/baseline/renames.md` la liste nominative des 24 occurrences à renommer, fichier et ligne (4 `outline-none`, 2 `shadow`, 18 bordures sans couleur) — voir [research.md](research.md) R2

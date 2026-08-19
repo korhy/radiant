@@ -16,7 +16,7 @@ reprise sur le composant du kit doit donc préserver exactement ces formes.
 
 | Colonne | Forme attendue par le gabarit actuel | Onglet |
 |---|---|---|
-| `techStack` | objet `{ catégorie: [libellés] }` — la clé est affichée comme intertitre | Présentation |
+| `techStack` | **liste plate** d'objets `{ category, name }`. Le gabarit regroupe lui-même par `category` (`_app_detail_drawer.html.twig:97-101`) et retombe sur « Autre » quand la clé manque | Présentation |
 | `challenges` | liste d'objets `{ title, description }` | Défis |
 | `improvements` | liste d'objets `{ description }` (le `title` est présent mais commenté dans le gabarit) | À venir |
 | `resources` | liste d'objets `{ label, url }` | Ressources |
@@ -27,6 +27,12 @@ comportement fait partie du contrat et doit survivre à la reprise.
 > **Piège relevé** : `improvements` rend `{# item.title #}` dans un commentaire Twig. Le titre est
 > donc dans les données mais invisible à l'écran. Le reproduire tel quel, ou le corriger, est une
 > décision à prendre **explicitement** au moment de la reprise — pas un détail à trancher au clavier.
+
+> **⚠️ Ces formes se lisent dans le gabarit, jamais dans le HTML rendu.** Le 2026-08-19, avoir déduit
+> la forme de `techStack` depuis la page produite a fait écrire `{ catégorie: [libellés] }` — la
+> forme *après* regroupement par le gabarit, pas celle stockée. Injecter cette forme en base a
+> renvoyé `/app/motus` et `/app/cookbook` en 500 (« Key "name" ... does not exist »). Les colonnes
+> JSON n'ont aucun schéma qui les contraigne : le gabarit **est** le schéma.
 
 ## Donnée qui pilote un chemin de fichier
 
