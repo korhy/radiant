@@ -1,5 +1,5 @@
 ---
-description: Styling conventions — Tailwind CSS 3 utility-first, the purge traps, design tokens, and the Tailwind 4 target.
+description: Styling conventions — Tailwind CSS 3 utility-first, the purge traps, design tokens, and the joint Tailwind 4 + shadcn target.
 paths:
   - "**/*.twig"
   - "**/*.css"
@@ -67,26 +67,44 @@ one-off (an `aspect-ratio`, a precise icon size).
 
 Everything else: utilities.
 
+**When you do write CSS in `assets/styles/**`, prefer Tailwind `@apply`** over raw property
+declarations wherever the utilities can express the rule — it keeps the stylesheet in the design
+system's vocabulary instead of forking a second one. Reach for raw CSS only where Tailwind genuinely
+can't (some vendor overrides, properties with no utility). Design tokens themselves are the token
+layer and stay as CSS custom properties — they are not `@apply`-able.
+
 ## Mockups
 Mockup sizing is **indicative, not pixel-perfect**. Match spacing rhythm, hierarchy and colour
 faithfully; snap dimensions to the Tailwind scale rather than reproducing exact pixel values.
 
-## Target — Tailwind 4
+## Target — Tailwind 4 **and** shadcn, as one migration
 
-Moving to Tailwind 4 is the **prerequisite for adopting the shadcn kit**
-([components-shadcn.md](components-shadcn.md)). It is a change of its own, not a side effect, and it
-involves at minimum:
+Tailwind 4 is the prerequisite for the shadcn kit ([components-shadcn.md](components-shadcn.md)), and
+the two are done **in the same batch** rather than one after the other: the palette has to be mapped
+onto CSS-first tokens either way, and doing Tailwind 4 alone would mean mapping it twice — once into
+a plain `@theme`, then again onto shadcn's `--primary` / `--background` / `--accent` model. Étape 5
+of [the audit](../../../docs/audit/audit-2026-08-18.md) covers both.
+
+The Tailwind half involves at minimum:
 
 1. `npm install tailwindcss@^4 @tailwindcss/postcss` and drop `autoprefixer` from
-   `postcss.config.js` in favour of `@tailwindcss/postcss`.
+   `postcss.config.js` in favour of `@tailwindcss/postcss` (gestion-bachelor's `postcss.config.mjs`
+   is a two-line worked example — the plugin is the only entry left).
 2. Replace the `@tailwind base/components/utilities` directives with `@import 'tailwindcss'`.
-3. Delete `tailwind.config.js`, porting the colour overrides into a CSS `@theme` block.
-4. Replace the content globs with `@source` directives — **and re-solve the Motus purge problem**,
-   which is the risky part (Tailwind 4 offers `@source inline(...)` for exactly this).
-5. Re-check every screen: overriding `amber-*` behaves differently under CSS-first theming.
+3. Delete `tailwind.config.js`, porting the colour overrides into a CSS `@theme` block — decided
+   jointly with the shadcn token mapping, not before it.
+4. Replace the content globs with **explicit `@source` directives** (`@source '../../templates'`,
+   `@source '../../src'`, `@source not '../../public'`). Declaring the sources makes the purge
+   deterministic instead of leaning on Tailwind's auto-detection — and it removes purge trap #1
+   above, since it no longer depends on a filename glob.
+5. **Re-solve the Motus purge problem**, the risky part: those classes are applied by JavaScript and
+   appear in no source file. Tailwind 4's `@source inline(...)` exists for exactly this and replaces
+   the current "keep it outside `@layer`" workaround.
+6. Re-check every screen: overriding `amber-*` behaves differently under CSS-first theming.
 
 Don't start it inside a feature branch. Spec it with `/speckit-specify`.
 
 ## See also
 - Templates & accessibility: [frontend-twig.md](frontend-twig.md)
 - Component standard & the shadcn target: [components-shadcn.md](components-shadcn.md)
+- Twig style gate: [linting.md](linting.md) — `make twig-cs-fixer`

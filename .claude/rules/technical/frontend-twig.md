@@ -46,7 +46,9 @@ When a partial starts needing **data from the database**, don't query in the tem
 controller passes it in. Passer à un Twig Component adossé à une classe suppose de réinstaller la
 configuration supprimée : c'est une décision, pas un réflexe. Repositories only, never Doctrine in Twig.
 
-The longer-term target is the shadcn kit — see [components-shadcn.md](components-shadcn.md).
+The target is the shadcn kit, adopted **together with Tailwind 4** as a single migration (Étape 5
+of the audit) — which also restores the Twig Components configuration removed on 2026-08-19,
+since the kit requires it. See [components-shadcn.md](components-shadcn.md).
 
 ## Accessibility (mandatory)
 
@@ -86,6 +88,13 @@ The longer-term target is the shadcn kit — see [components-shadcn.md](componen
   descriptive `<title>`.
 - **Verify.** Check keyboard-only navigation and run an automated pass (axe / Lighthouse a11y)
   before considering a screen done — the `playwright-skill` can drive both.
+
+## Style gate
+
+`templates/**` is checked by **twig-cs-fixer** (`make twig-cs-fixer`, autofix with
+`make twig-cs-fixer-fix`), and the same check runs in CI. Let the autofixer handle quoting,
+whitespace and indentation instead of hand-editing them. JS and CSS still have **no** gate — see
+[linting.md](linting.md).
 
 ## See also
 - Tailwind utility-first styling: [frontend-styling.md](frontend-styling.md)

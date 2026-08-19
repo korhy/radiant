@@ -1,5 +1,5 @@
 ---
-description: Linting/formatting gate — run the matching linter before considering any change done. No Makefile; everything runs through Docker.
+description: Linting/formatting gate — run the matching linter before considering any change done. php-cs-fixer, twig-cs-fixer and PHPStan are gated; JS/CSS are not.
 paths:
   - "**/*.php"
   - "**/*.js"
@@ -23,12 +23,13 @@ container for you, so bring the stack up with `make up` first.
 | You touched… | Check | Autofix |
 |---|---|---|
 | any `.php` | `make php-cs-fixer` | `make php-cs-fixer-fix` |
+| `templates/**` `.twig` | `make twig-cs-fixer` | `make twig-cs-fixer-fix` |
 | `src/`, `config/`, `bin/`, `public/`, `tests/` | `make phpstan` | — (fix the code) |
-| both at once | `make lint` | — |
+| all three at once | `make lint` | — |
 | before a commit | `make ci` | — |
 
-**`make ci` runs exactly what `.github/workflows/ci.yml` runs** — php-cs-fixer, PHPStan, PHPUnit. If
-it passes locally, CI passes.
+**`make ci` runs exactly what `.github/workflows/ci.yml` runs** — php-cs-fixer, twig-cs-fixer,
+PHPStan, PHPUnit. If it passes locally, CI passes.
 
 > **Why `make phpstan` isn't just `vendor/bin/phpstan analyse`.** The container's PHP is capped at
 > **128M** and PHPStan's parallel workers exhaust it, failing with `Child process error (exit code
@@ -38,24 +39,29 @@ it passes locally, CI passes.
 
 - **PHP style** is `@Symfony` via **PHP-CS-Fixer** (`.php-cs-fixer.dist.php`). The finder excludes
   `var/`, `migrations/`, `config/bundles.php` and `config/reference.php`.
+- **Twig style** is **twig-cs-fixer** (`.twig-cs-fixer.php`) — the standard ruleset over
+  `templates/`. The templates are indented with **4 spaces**, which is already the `Indent` rule's
+  default, so nothing is overridden here (the sibling *gestion-bachelor* indents with tabs and has to
+  override it — don't copy that override across).
 - **Static analysis** is **PHPStan level 5** (`phpstan.dist.neon`) over `bin/ config/ public/ src/ tests/`.
 
 Autofix the mechanical issues instead of hand-editing whitespace.
 
-## ⚠️ Known gap — Twig, JS and CSS have no automated gate
+## ⚠️ Remaining gap — JS and CSS have no automated gate
 
-There is **no twig-cs-fixer, no ESLint, no Prettier, no stylelint** in this project, and
-`package.json` declares no lint script. Nothing checks `templates/**`, `assets/**/*.js` or
-`assets/styles/*.css` — CI will happily go green on malformed Twig or sloppy JS.
+Twig is covered since twig-cs-fixer landed, but there is still **no ESLint, no Prettier, no
+stylelint**, and `package.json` declares no lint script. Nothing checks `assets/**/*.js` or
+`assets/styles/*.css` — CI will happily go green on sloppy JS.
 
 Consequences for how you work:
-- Changes to Twig/JS/CSS need **deliberate manual review**; you cannot lean on a linter.
+- Changes to JS/CSS need **deliberate manual review**; you cannot lean on a linter.
 - Match the surrounding file's style by hand (the Stimulus controllers use ES private fields and are
   inconsistent about semicolons — follow the file you're in, don't reformat it wholesale).
 - Verify front-end changes by **loading the page**, not by trusting the build.
 
-Adding these tools is worthwhile but is a change of its own — propose it, don't smuggle it into a
-feature branch.
+Closing this gap means porting *gestion-bachelor*'s `eslint.config.mjs` + `.prettierrc` and the
+`lint`/`format` npm scripts, then adding a `javascript` job to `ci.yml`. Worthwhile, but a change of
+its own — propose it, don't smuggle it into a feature branch.
 
 ## Notes
 - **Config lives in code — don't loosen it casually.** Disabling a rule to make the linter green is a
