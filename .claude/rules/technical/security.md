@@ -36,7 +36,7 @@ paths:
 - All user input passes through a **Form Type + Validator** (Assert constraints on the entity or a
   DTO) — `ContactType` + `ContactDTO` is the model. Never trust `$request` data directly.
 - Public JSON endpoints (`cookbook_recipes_json`, `motus_guess`) take query/body parameters straight
-  from the request: **cast and clamp them** the way `ApplicationController` already does
+  from the request: **cast and clamp them** the way `CookbookController` already does
   (`max(1, (int) $request->query->get('page', 1))`). Never forward a raw user value into an
   upstream API call or a query without validating it.
 - Any HTML / rich text that will be rendered must be sanitized with `symfony/html-sanitizer` before

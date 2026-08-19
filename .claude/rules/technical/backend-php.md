@@ -26,7 +26,7 @@ paths:
 - Constructor injection everywhere; autowire/autoconfigure (`config/services.yaml`). No
   `ContainerAware`, no `new` of a service that has dependencies.
 - Environment values reach services through `#[Autowire(env: 'SOME_VAR')]` on the constructor or the
-  action argument — see `CookbookApiService` and `ApplicationController::cookbook()`.
+  action argument — see `CookbookApiService`, qui reçoit les quatre `COOKBOOK_API_*` ainsi.
 - **Thin controllers**: orchestration only — read the request, call a service/repository, render.
   No Doctrine queries and no business rules in the controller.
 - Move real logic into dedicated services under `src/Service/<Domain>/`; a controller action should

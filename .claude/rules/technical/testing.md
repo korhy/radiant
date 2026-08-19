@@ -9,11 +9,20 @@ paths:
 
 # Testing
 
-## Current state — be honest about it
+## Current state
 
-**There are no tests.** `tests/` contains only `bootstrap.php`, so `php bin/phpunit` in CI passes
-**vacuously**: a green CI run says nothing about behaviour. Treat "CI is green" as "it compiles and
-the linters are happy", nothing more.
+**37 tests depuis le 2026-08-19** — auparavant `tests/` ne contenait que `bootstrap.php` et la CI
+passait à vide. Ce qui existe :
+
+- `tests/Service/Motus/MotusServiceTest.php` — `checkGuess()`, lettres doublées comprises ;
+- `tests/Service/Cookbook/CookbookApiServiceTest.php` — retry 401 via `MockHttpClient`, et un
+  garde-fou vérifiant qu'aucun identifiant ni JWT n'atterrit dans les logs ;
+- `tests/Smoke/PublicRoutesTest.php` — routes publiques, contrat `_icon_<slug>`, endpoints JSON ;
+- `tests/Smoke/AccessibilityTest.php` — invariants d'accessibilité (clavier, `alt`, labels, erreurs
+  de formulaire).
+
+`.env.test` fixe `DATABASE_URL` (SQLite) et `MAILER_DSN` : **`.env.local` n'est pas chargé en env
+`test`**, sans quoi les tests viseraient la base de dev et le vrai mailer.
 
 What *is* in place:
 - **PHPUnit 9.5** (`phpunit.xml.dist` uses the legacy PHPUnit 9 schema — `<listeners>`,

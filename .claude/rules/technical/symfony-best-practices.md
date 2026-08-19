@@ -19,18 +19,17 @@ paths:
 Two best practices are **intentionally overridden** — do **not** "fix" the code toward the Symfony
 default here:
 
-- **Web assets → Webpack Encore, not AssetMapper.** Symfony now recommends AssetMapper, and
-  `symfony/asset-mapper` *is* installed alongside `importmap.php` and `assets/vendor/` — but those
-  are **dormant leftovers**. The live build is **Webpack Encore** (`webpack.config.js`,
-  `encore_entry_*_tags` in `base.html.twig`). Build against Encore; don't migrate to AssetMapper or
-  propose it as cleanup.
+- **Web assets → Webpack Encore, not AssetMapper.** Symfony now recommends AssetMapper, mais le
+  build est **Webpack Encore** (`webpack.config.js`, `encore_entry_*_tags` dans `base.html.twig`).
+  Le paquet `symfony/asset-mapper` et ses reliquats (`importmap.php`, `assets/vendor/`) ont été
+  supprimés le 2026-08-19. Ne pas migrer vers AssetMapper ni le proposer comme nettoyage.
 - **No internationalization layer.** Symfony recommends XLIFF catalogues and translation keys. This
   project writes **French directly in the templates**; `translations/` is empty. Don't introduce
   `trans` filters or catalogues as a side effect of another change — see
   [../business/radiant.md](../business/radiant.md).
 
-Interactivity uses **Stimulus + Turbo** only. **Live Components are not installed** — see
-[ux-stimulus-turbo.md](ux-stimulus-turbo.md).
+Interactivity uses **Stimulus only** — Turbo a été retiré le 2026-08-19. **Live Components are not
+installed** — see [ux-stimulus-turbo.md](ux-stimulus-turbo.md).
 
 ## Creating the project
 - **Default directory structure.** Keep the flat, standard layout (`src/`, `config/`, `templates/`,
@@ -95,10 +94,10 @@ Interactivity uses **Stimulus + Turbo** only. **Live Components are not installe
   logic gets complex, write a Voter instead of inlining checks. See [security.md](security.md).
 
 ## Tests
-- **Smoke-test your URLs.** A PHPUnit data-provider test asserting each key route returns a
-  successful status is the cheapest possible safety net — and this project has **none**, so it is the
-  highest-value test to add first. Cover at least `/`, `/app/taquin`, `/app/motus`, `/app/cookbook`,
-  `/contact`, `/legal`.
+- **Smoke-test your URLs.** C'est fait depuis le 2026-08-19 :
+  `tests/Smoke/PublicRoutesTest.php` couvre `/`, `/app/taquin`, `/app/motus`, `/app/cookbook`,
+  `/contact`, `/mentions-legales` et `/login` via un data provider. Étendre ce fichier plutôt que
+  d'en créer un autre.
 - **Hard-code URLs in functional tests** (the literal path, not `generateUrl()`), so renaming a route
   makes the test fail and forces you to add a redirect. See [testing.md](testing.md).
 
