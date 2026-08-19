@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class ExperienceCrudController extends AbstractCrudController
+final class ExperienceCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
