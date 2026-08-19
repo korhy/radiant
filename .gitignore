@@ -70,8 +70,10 @@ supervisord.pid
 supervisord.log
 
 # Apache
+# public/.htaccess est versionné : c'est le fichier standard de symfony/apache-pack,
+# sans personnalisation, et il n'existait qu'en production — le déploiement du
+# 2026-08-19 a failli l'emporter.
 /.htaccess
-/public/.htaccess
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
