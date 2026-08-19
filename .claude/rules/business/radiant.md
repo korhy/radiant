@@ -101,6 +101,9 @@ L'audit du 2026-08-18 (`docs/audit/audit-2026-08-18.md`) a traité les étapes 0
 - **Les messages de validation s'affichent en anglais** (`default_locale: en`) sur un site français.
 - **Les colonnes JSON `tags`** emballent le tableau dans une clé `tags` redondante.
 - **Migration Tailwind 3 → 4 *et* adoption du kit shadcn**, traitées comme un seul lot (Étape 5).
+- **Des dépendances portent des failles connues** (`composer audit` : 41 advisories, dont une
+  injection d'en-têtes SMTP atteignable depuis le formulaire de contact). À corriger par un
+  `composer update` dans les contraintes existantes — constat **S9** de l'audit.
 
 Ce qui a été corrigé et ne doit pas être re-signalé : `declare(strict_types=1)` (imposé par
 php-cs-fixer), la casse des propriétés d'entité, la typo `$projetcs`, le code mort (AssetMapper,
