@@ -48,8 +48,9 @@ décrite dans [quickstart.md](quickstart.md)
 **Constraints**: aucun contrôle automatisé du rendu · les assets sont construits par la CI, pas
 localement · le déploiement part tout seul au merge sur `main`
 
-**Scale/Scope**: 9 pages publiques · 23 gabarits · 420 classes distinctes · 5 contrôleurs Stimulus ·
-**54 écrans à vérifier** (9 pages × 3 largeurs × 2 thèmes)
+**Scale/Scope**: **8 pages publiques** (plus `/admin`, authentifié, vérifié à part) · 23 gabarits ·
+420 classes distinctes · 5 contrôleurs Stimulus · **48 écrans à vérifier**
+(8 pages × 3 largeurs × 2 thèmes)
 
 ## Constitution Check
 
@@ -134,7 +135,7 @@ frontend/backend : les gabarits Twig **sont** le frontend, et les composants du 
 
 | Tranche | Contenu | Livrable seule ? | Point de non-retour |
 |---|---|---|---|
-| **0** | Relevé de référence : 27 captures + poids de la feuille | — | **Aucun**, mais rien ne peut être validé sans lui |
+| **0** | Relevé de référence : 24 captures + poids de la feuille | — | **Aucun**, mais rien ne peut être validé sans lui |
 | **1 (US1)** | Renommages (24 occurrences), bascule du moteur, `@source`, palette portée à l'identique | ✅ oui | La suppression de `tailwind.config.js` |
 | **2 (US2)** | Tokens, thème clair, contraste de l'accent | ✅ oui | Le choix de la teinte d'accent claire — décision esthétique consignée |
 | **3 (US3)** | Dépendances du kit déclarées, mapping `defaults`, panneau repris sur `Dialog` | ✅ oui | Suppression de l'ancien partiel, une fois zéro usage |

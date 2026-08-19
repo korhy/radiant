@@ -36,7 +36,7 @@ tranchés : composantisation limitée au panneau « Behind the scenes » (FR-013
 sombre suivant la préférence système (FR-014, FR-015).
 
 **Effet notable du choix sur les thèmes.** Il resserre le périmètre d'un côté et l'élargit de
-l'autre : un seul composant repris du kit, mais **54 écrans à vérifier au lieu de 27**, et une part
+l'autre : un seul composant repris du kit, mais **48 écrans à vérifier au lieu de 24**, et une part
 de conception esthétique — le thème clair n'existe nulle part aujourd'hui, ses valeurs sont à créer.
 C'est le seul endroit du lot où il n'y a pas de référence avant/après à opposer à une régression.
 

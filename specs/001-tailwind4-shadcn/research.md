@@ -151,16 +151,17 @@ l'intégration continue compile en 8.2 — et c'est elle qui contraint. La moiti
 
 ## R8 — Comment vérifier, puisque rien ne l'automatise
 
-**Décision** : produire un **relevé de référence avant bascule** — captures des neuf pages aux trois
-largeurs — et comparer après. Sans ce relevé, SC-001 n'est pas vérifiable.
+**Décision** : produire un **relevé de référence avant bascule** — captures des huit pages publiques
+aux trois largeurs — et comparer après. Sans ce relevé, SC-001 n'est pas vérifiable.
 
 **Rationale** : il n'existe ni linter CSS, ni test visuel, ni test de bout en bout. La comparaison
 avant/après est le seul instrument disponible, et elle n'existe que si les captures sont prises
 **avant** de toucher au moteur.
 
-**Volume** : 9 pages × 3 largeurs = 27 captures de référence, puis 54 écrans à contrôler après
-(les deux thèmes). Le thème clair n'a pas de référence — il se contrôle au contraste, pas à la
-comparaison.
+**Volume** : 8 pages publiques × 3 largeurs = **24 captures** de référence, puis **48 écrans** à
+contrôler après (les deux thèmes). `/admin` s'ajoute à part : il exige une authentification et
+renvoie 302 anonymement, donc il ne peut pas figurer dans un relevé anonyme. Le thème clair n'a pas
+de référence — il se contrôle au contraste, pas à la comparaison.
 
 **Alternative écartée** : introduire des tests visuels automatisés. Ce serait un lot en soi, et le
 projet n'a pas de socle Playwright versionné.

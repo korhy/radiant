@@ -22,10 +22,13 @@ Sans lui, SC-001 n'est pas vérifiable et le lot ne peut pas être validé.
 npm run build
 ```
 
-Puis capturer les **neuf pages publiques** aux **trois largeurs** (375, 768, 1280) :
+Puis capturer les **huit pages publiques** aux **trois largeurs** (375, 768, 1280) :
 `/`, `/app/taquin`, `/app/motus`, `/app/cookbook`, `/app/cookbook/recipe/<id>`, `/contact`,
-`/mentions-legales`, `/login`, `/admin`. Soit **27 captures**, rangées sous
+`/mentions-legales`, `/login`. Soit **24 captures**, rangées sous
 `specs/001-tailwind4-shadcn/baseline/`.
+
+`/admin` **n'est pas une page publique** : anonymement il renvoie 302 vers `/login`. Le capturer
+séparément, connecté — c'est le contrôle du contrat C5, pas de la non-régression du site.
 
 Relever aussi le poids de la feuille livrée, référence de NFR-001 :
 
@@ -39,7 +42,7 @@ ls -l public/build/app.*.css
 npm run build && make ci
 ```
 
-Recapturer les 27 écrans et comparer à la référence. Puis exercer ce qu'une capture ne montre pas :
+Recapturer les 24 écrans et comparer à la référence. Puis exercer ce qu'une capture ne montre pas :
 
 - **Motus** — jouer un mot et vérifier les trois états, couleur **et** relief non chromatique. C'est
   le contrôle de C4 : ces classes viennent du JavaScript.
@@ -53,7 +56,8 @@ Recapturer les 27 écrans et comparer à la référence. Puis exercer ce qu'une 
 
 ## Étape 2 — Après les tokens et le thème clair (US2)
 
-Rejouer l'étape 1 **dans les deux thèmes**, en basculant la préférence système. Soit 54 écrans.
+Rejouer l'étape 1 **dans les deux thèmes**, en basculant la préférence système. Soit 48 écrans,
+plus `/admin` connecté dans les deux thèmes.
 
 Le thème clair n'a pas de référence à comparer : il se contrôle **au contraste**, pas à l'œil.
 
@@ -96,11 +100,11 @@ livré — c'est déjà ce qui avait fait échouer deux fois la CI sur ce projet
 
 | Critère | Comment il est prouvé |
 |---|---|
-| SC-001 | 27 écrans comparés à la référence |
+| SC-001 | 24 écrans comparés à la référence |
 | SC-002 | Motus joué, captures converties en niveaux de gris |
 | SC-003 | parcours clavier des trois mini-apps et du formulaire |
 | SC-004 | passe axe/Lighthouse, deux thèmes |
 | SC-005 | token d'accent modifié puis rétabli |
 | SC-006 | poids de `app.*.css` comparé au relevé de l'étape 0 |
 | SC-007 | tabulation panneau fermé, trois mini-apps |
-| SC-008 | 54 écrans contrôlés |
+| SC-008 | 48 écrans contrôlés, plus `/admin` connecté |

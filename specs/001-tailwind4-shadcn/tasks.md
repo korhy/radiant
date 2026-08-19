@@ -29,9 +29,9 @@ sont des tâches à part entière, pas une formalité de fin.
 Cette phase se fait avant toute modification du moteur.
 
 - [ ] T001 Vérifier que la base de dev contient les trois lignes `App` avec leurs quatre colonnes JSON remplies (`make psql`, table `app`) — un panneau vide ne prouverait rien en US3
-- [ ] T002 Rendre `/app/cookbook` exploitable en local : démarrer l'API Cookbook, ou consigner dans `specs/001-tailwind4-shadcn/baseline/README.md` que cette page est exclue du relevé (constat S8)
+- [ ] T002 **Bloquant** — démarrer l'API Cookbook en local. `/app/cookbook` est la page la plus dynamique du site (cartes construites en JavaScript) : l'exclure du relevé la soustrairait à toute comparaison, précisément là où le risque de purge est le plus fort. Ne pas poursuivre tant qu'elle ne rend pas
 - [ ] T003 Construire en mode production (`npm run build`) puis relever le poids de `public/build/app.*.css` dans `specs/001-tailwind4-shadcn/baseline/weight.txt` — référence de NFR-001 et SC-006
-- [ ] T004 [P] Capturer les 27 écrans de référence (9 pages × 375/768/1280 px) dans `specs/001-tailwind4-shadcn/baseline/` en nommant `<page>-<largeur>.png`
+- [ ] T004 [P] Capturer les **24 écrans** de référence (8 pages publiques × 375/768/1280 px) dans `specs/001-tailwind4-shadcn/baseline/`, nommés `<page>-<largeur>.png`. `/admin` n'en fait pas partie : il exige une authentification et renvoie 302 anonymement — le capturer connecté, à part
 - [ ] T005 [P] Consigner dans `specs/001-tailwind4-shadcn/baseline/renames.md` la liste nominative des 24 occurrences à renommer, fichier et ligne (4 `outline-none`, 2 `shadow`, 18 bordures sans couleur) — voir [research.md](research.md) R2
 - [ ] T006 Repasser en build de développement (`npm run dev`) pour ne pas travailler sur des noms de fichiers hachés
 
@@ -58,7 +58,7 @@ site sans contour de focus.
 
 **Goal**: un visiteur ne perçoit aucune différence. Le moteur a changé, le rendu non.
 
-**Independent Test**: comparer les 27 écrans au relevé de référence et rejouer les parcours des
+**Independent Test**: comparer les 24 écrans au relevé de référence et rejouer les parcours des
 mini-apps. Livrable sans aucun composant du kit.
 
 - [ ] T013 [US1] Appliquer les 24 renommages listés en T005 dans `templates/**` et `assets/controllers/*.js` : `outline-none` → `outline-hidden`, `shadow` → `shadow-sm`. Si l'outil de migration officiel de Tailwind est employé, **relire son diff intégralement** plutôt que lui faire confiance
@@ -69,7 +69,7 @@ mini-apps. Livrable sans aucun composant du kit.
 - [ ] T018 [US1] Vérifier le Taquin au clavier : le contour de focus est visible sur les tuiles — c'est le contrôle des `outline-none` renommés
 - [ ] T019 [US1] Vérifier le formulaire de contact : les champs gardent une bordure visible et un contraste conforme (WCAG 1.4.11)
 - [ ] T020 [US1] Vérifier que `/admin` est visuellement inchangé — contrat C5, séparation avec le back-office
-- [ ] T021 [US1] Comparer les 27 écrans au relevé de T004 et consigner les écarts délibérés dans `specs/001-tailwind4-shadcn/baseline/diff.md` (SC-001)
+- [ ] T021 [US1] Comparer les 24 écrans au relevé de T004 et consigner les écarts délibérés dans `specs/001-tailwind4-shadcn/baseline/diff.md` (SC-001)
 - [ ] T022 [US1] Reconstruire en production et vérifier que `public/build/app.*.css` ne dépasse pas 120 % du poids relevé en T003 (SC-006, NFR-001)
 - [ ] T023 [US1] `make ci` puis livrer la tranche — **vert ne vaut pas validation ici**, seules T016 à T022 valident
 
@@ -94,7 +94,7 @@ au lieu de reproduire.
 - [ ] T028 [US2] Remplacer dans `templates/**` les couleurs littérales restantes par les tokens — contrat C3 : plus aucune couleur en dur dans un gabarit
 - [ ] T029 [US2] Vérifier SC-005 : changer la valeur du token d'accent, reconstruire, constater que tout le site suit, puis rétablir
 - [ ] T030 [US2] Contrôler chaque couple texte/fond du thème clair contre les seuils AA (4,5:1 texte, 3:1 grand texte et interface) et consigner les mesures dans `light-theme.md`
-- [ ] T031 [US2] Vérifier les 54 écrans — 9 pages × 3 largeurs × 2 thèmes (SC-008). Le thème clair n'a pas de référence à comparer : il se contrôle au contraste
+- [ ] T031 [US2] Vérifier les **48 écrans** — 8 pages publiques × 3 largeurs × 2 thèmes (SC-008), plus `/admin` connecté dans les deux thèmes. Le thème clair n'a pas de référence à comparer : il se contrôle au contraste
 - [ ] T032 [US2] Vérifier que basculer la préférence système ne perd pas l'état en cours : partie de Motus, grille du Taquin, saisie du formulaire
 - [ ] T033 [US2] Passe automatisée d'accessibilité (axe ou Lighthouse) sur les pages modifiées, **dans les deux thèmes** (SC-004)
 - [ ] T034 [US2] `make ci` puis livrer la tranche
@@ -115,14 +115,15 @@ au lieu de reproduire.
 - [ ] T038 [US3] [P] Ajouter `symfony/ux-toolkit:^2.36` en `require-dev` — la ligne 3.x exige PHP >= 8.4 et la CI compile en 8.2
 - [ ] T039 [US3] [P] Installer `tw-animate-css` (npm) et l'importer dans `assets/styles/app.css` après `@import 'tailwindcss'`
 - [ ] T040 [US3] Installer le composant : `php bin/console ux:install dialog --kit shadcn`, puis relire les fichiers copiés — ils deviennent du code du projet
-- [ ] T041 [US3] Réécrire `templates/components/_app_detail_drawer.html.twig` sur `<twig:Dialog>` en préservant les quatre onglets et les formes JSON attendues (`techStack`, `challenges`, `improvements`, `resources` — voir [data-model.md](data-model.md))
-- [ ] T042 [US3] Trancher explicitement le sort de `{# item.title #}` dans l'onglet « À venir » : le titre est dans les données mais commenté dans le gabarit. Le reproduire ou le rétablir est une décision, pas un détail
-- [ ] T043 [US3] Réduire ou supprimer `assets/controllers/app_detail_drawer_controller.js` selon ce que le composant prend en charge, et mettre à jour son enregistrement dans `assets/bootstrap.js` — un contrôleur non enregistré ne tourne jamais, en silence
-- [ ] T044 [US3] Dérouler le contrat C2 ligne à ligne au clavier seul, sur les **trois** mini-apps : ouverture, piège au focus, flèches entre onglets, Échap, retour du focus, et panneau fermé inatteignable à la tabulation (SC-003, SC-007)
-- [ ] T045 [US3] Vérifier le contrat C1 : la page d'accueil rend une icône par tuile. `make phpunit` couvre déjà ce point via `PublicRoutesTest::testHomepageRendersTheStreamDeckTileAndItsIconPartial`
-- [ ] T046 [US3] Passe automatisée d'accessibilité sur les trois mini-apps, dans les deux thèmes — la reprise doit **améliorer** l'accessibilité, jamais la dégrader
-- [ ] T047 [US3] Supprimer l'ancien partiel et son contrôleur une fois zéro usage confirmé par `grep`
-- [ ] T048 [US3] `make ci` puis livrer la tranche
+- [ ] T041 [US3] Vérifier FR-004 : afficher un composant du kit **sans aucune personnalisation** sur une page de test, et constater qu'il prend les tokens du site et non ceux du kit. Si ce n'est pas le cas, la réconciliation de la palette (US2) est incomplète et la reprise du panneau doit attendre
+- [ ] T042 [US3] Réécrire `templates/components/_app_detail_drawer.html.twig` sur `<twig:Dialog>` en préservant les quatre onglets et les formes JSON attendues (`techStack`, `challenges`, `improvements`, `resources` — voir [data-model.md](data-model.md))
+- [ ] T043 [US3] Trancher explicitement le sort de `{# item.title #}` dans l'onglet « À venir » : le titre est dans les données mais commenté dans le gabarit. Le reproduire ou le rétablir est une décision, pas un détail
+- [ ] T044 [US3] Réduire ou supprimer `assets/controllers/app_detail_drawer_controller.js` selon ce que le composant prend en charge, et mettre à jour son enregistrement dans `assets/bootstrap.js` — un contrôleur non enregistré ne tourne jamais, en silence
+- [ ] T045 [US3] Dérouler le contrat C2 ligne à ligne au clavier seul, sur les **trois** mini-apps : ouverture, piège au focus, flèches entre onglets, Échap, retour du focus, et panneau fermé inatteignable à la tabulation (SC-003, SC-007)
+- [ ] T046 [US3] Vérifier le contrat C1 : la page d'accueil rend une icône par tuile. `make phpunit` couvre déjà ce point via `PublicRoutesTest::testHomepageRendersTheStreamDeckTileAndItsIconPartial`
+- [ ] T047 [US3] Passe automatisée d'accessibilité sur les trois mini-apps, dans les deux thèmes — la reprise doit **améliorer** l'accessibilité, jamais la dégrader
+- [ ] T048 [US3] Supprimer l'ancien partiel et son contrôleur une fois zéro usage confirmé par `grep`
+- [ ] T049 [US3] `make ci` puis livrer la tranche
 
 **Checkpoint**: le kit est en place et prouvé sur un composant réel.
 
@@ -133,12 +134,12 @@ au lieu de reproduire.
 **Purpose**: ces fichiers sont chargés à chaque session. Les laisser périmés propagerait l'erreur —
 c'est déjà arrivé sur ce projet.
 
-- [ ] T049 [P] Corriger `.claude/rules/technical/frontend-styling.md` : le passage sur `@source inline(...)` et le « problème de purge Motus » est **faux** ([research.md](research.md) R1). Réécrire la règle en Tailwind 4 au présent, sans section « cible »
-- [ ] T050 [P] Réécrire `.claude/rules/technical/components-shadcn.md` : retirer l'avertissement « le kit n'est pas installé » et la section des prérequis, devenus de l'historique. La règle énonce la convention en vigueur
-- [ ] T051 [P] Mettre à jour `CLAUDE.md` : stack en Tailwind 4 + kit shadcn, et la mention des Twig Components
-- [ ] T052 [P] Mettre à jour `.claude/rules/technical/frontend-twig.md` : les composants du kit deviennent la convention, les partiels `_*.html.twig` l'exception
-- [ ] T053 Marquer l'Étape 5 comme faite dans `docs/audit/audit-2026-08-18.md`, et y consigner que DU2/DU3 restent ouverts (hors périmètre par FR-013)
-- [ ] T054 Après merge, vérifier la production : les 8 routes répondent, le panneau s'ouvre, et les deux thèmes rendent — le déploiement part tout seul au merge sur `main`
+- [ ] T050 [P] Corriger `.claude/rules/technical/frontend-styling.md` : le passage sur `@source inline(...)` et le « problème de purge Motus » est **faux** ([research.md](research.md) R1). Réécrire la règle en Tailwind 4 au présent, sans section « cible »
+- [ ] T051 [P] Réécrire `.claude/rules/technical/components-shadcn.md` : retirer l'avertissement « le kit n'est pas installé » et la section des prérequis, devenus de l'historique. La règle énonce la convention en vigueur
+- [ ] T052 [P] Mettre à jour `CLAUDE.md` : stack en Tailwind 4 + kit shadcn, et la mention des Twig Components
+- [ ] T053 [P] Mettre à jour `.claude/rules/technical/frontend-twig.md` : les composants du kit deviennent la convention, les partiels `_*.html.twig` l'exception
+- [ ] T054 Marquer l'Étape 5 comme faite dans `docs/audit/audit-2026-08-18.md`, et y consigner que DU2/DU3 restent ouverts (hors périmètre par FR-013)
+- [ ] T055 Après merge, vérifier la production : les 8 routes répondent, le panneau s'ouvre, et les deux thèmes rendent — le déploiement part tout seul au merge sur `main`
 
 ---
 
@@ -147,10 +148,11 @@ c'est déjà arrivé sur ce projet.
 ```
 Phase 1 (Setup, T001-T006)
     └─> Phase 2 (Foundational, T007-T012)
-            ├─> Phase 3 (US1, T013-T023)  ← MVP, livrable seule
-            │       └─> Phase 4 (US2, T024-T034)  ← livrable seule
-            │               └─> Phase 5 (US3, T035-T048)  ← livrable seule
-            └────────────────────> Phase 6 (Polish, T049-T054)
+            └─> Phase 3 (US1, T013-T023)  ← MVP, livrable seule
+                    ├─> T050  (frontend-styling.md : dès que US1 est livrée)
+                    └─> Phase 4 (US2, T024-T034)  ← livrable seule
+                            └─> Phase 5 (US3, T035-T049)  ← livrable seule
+                                    └─> Phase 6 restante (T051-T055)
 ```
 
 **US2 dépend de US1** (les tokens remplacent la palette portée en T010) et **US3 dépend de US2**
@@ -158,11 +160,16 @@ Phase 1 (Setup, T001-T006)
 utile : chaque tranche est livrable et vérifiable seule, et l'on peut s'arrêter après n'importe
 laquelle.
 
+**La Phase 6 n'est pas parallèle aux user stories, contrairement à ce qu'on pourrait croire d'une
+phase de finition.** T051 et T052 décrivent un état où le kit **est** installé — les écrire avant la
+Phase 5 produirait une règle fausse, et les règles sont chargées à chaque session. Seul **T050**
+(la règle de style, dont le passage sur la purge Motus est erroné) peut suivre immédiatement US1.
+
 ## Parallélisation
 
 - **Phase 1** : T004 et T005 en parallèle (captures et inventaire, sans rapport).
 - **Phase 5** : T037, T038 et T039 en parallèle (trois gestionnaires de paquets distincts).
-- **Phase 6** : T049 à T052 en parallèle (quatre fichiers distincts).
+- **Phase 6** : T050 à T053 en parallèle (quatre fichiers distincts).
 - **Phases 3 et 4** : peu de parallélisme réel — les tâches se succèdent sur `app.css` et sur les
   mêmes gabarits, et les tâches de vérification supposent l'état stabilisé.
 

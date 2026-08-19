@@ -39,7 +39,7 @@ avant/après sur trois largeurs (mobile, tablette, bureau), et en rejouant les p
 **Acceptance Scenarios**:
 
 1. **Given** le site tel qu'il est en production, **When** le moteur CSS est basculé, **Then** les
-   neuf pages publiques rendent visuellement à l'identique aux trois largeurs de référence.
+   huit pages publiques rendent visuellement à l'identique aux trois largeurs de référence.
 2. **Given** une partie de Motus en cours, **When** le joueur propose un mot, **Then** les trois
    états (bien placée, mal placée, absente) gardent leur couleur **et** leur redondance non
    chromatique — la nuance étant que ces classes sont posées par JavaScript et n'apparaissent dans
@@ -126,7 +126,8 @@ passe automatisée d'accessibilité, sur les trois mini-apps qui l'incluent.
 ### Functional Requirements
 
 - **FR-001**: Le site MUST rendre visuellement à l'identique après la bascule du moteur CSS, sur les
-  neuf pages publiques et aux trois largeurs de référence.
+  **huit pages publiques** et aux trois largeurs de référence. Le back-office (`/admin`), qui n'est
+  pas public et exige une authentification, est vérifié séparément — FR-008.
 - **FR-002**: Les classes appliquées à l'exécution par JavaScript MUST continuer d'être stylées.
   Leur inventaire MUST être établi explicitement **avant** la bascule, et non découvert après.
 - **FR-003**: La palette du site MUST être exprimée en tokens, de sorte qu'un changement d'accent ou
@@ -170,8 +171,9 @@ les quatre onglets du panneau. Leur structure ne change pas.
 
 ### Measurable Outcomes
 
-- **SC-001**: Sur les neuf pages publiques et aux trois largeurs de référence, **aucune différence
-  visuelle perceptible** avant/après — hors changements délibérés, qui sont listés nommément.
+- **SC-001**: Sur les **huit pages publiques** et aux trois largeurs de référence — soit
+  **24 écrans** —, **aucune différence visuelle perceptible** avant/après, hors changements délibérés
+  listés nommément.
 - **SC-002**: Les trois états de Motus restent distinguables **en niveaux de gris**, donc sans
   recourir à la couleur — dans les deux thèmes.
 - **SC-003**: Les trois mini-apps et le formulaire de contact sont **intégralement utilisables au
@@ -181,8 +183,9 @@ les quatre onglets du panneau. Leur structure ne change pas.
   d'améliorer.
 - **SC-005**: Changer la couleur d'accent en **un seul endroit** se répercute sur l'ensemble du
   site, dans les deux thèmes.
-- **SC-008**: Les neuf pages publiques sont vérifiées **dans les deux thèmes** aux trois largeurs de
-  référence — soit 54 écrans, contre 27 si le thème était figé.
+- **SC-008**: Les huit pages publiques sont vérifiées **dans les deux thèmes** aux trois largeurs de
+  référence — soit **48 écrans**, contre 24 si le thème était figé. `/admin` s'y ajoute, connecté et
+  dans les deux thèmes.
 - **SC-006**: La feuille de style livrée ne dépasse pas 120 % de son poids actuel.
 - **SC-007**: Le panneau « Behind the scenes » n'est plus atteignable au clavier lorsqu'il est
   fermé, sur les trois mini-apps.
