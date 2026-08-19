@@ -11,6 +11,14 @@ const CELL_STATE_CLASS = {
 };
 const CELL_STATE_CLASSES = ['motus-cell--correct', 'motus-cell--present', 'motus-cell--absent'];
 
+// L'état d'une case n'existait que dans sa couleur de fond (WCAG 1.4.1) : il lui
+// faut aussi un nom accessible et, côté CSS, une redondance de forme.
+const STATE_LABEL = {
+    correct: 'bien placée',
+    present: 'mal placée',
+    absent: 'absente',
+};
+
 const KEY_STATE_CLASS = {
     correct: 'motus-key--correct',
     present: 'motus-key--present',
@@ -175,7 +183,9 @@ export default class extends Controller {
         const row = this.#attempts.length;
         for (let col = 0; col < this.wordLengthValue; col++) {
             const cell = this.#getCell(row, col);
-            cell.textContent = this.#currentGuess[col] ?? '';
+            const letter = this.#currentGuess[col] ?? '';
+            cell.textContent = letter;
+            cell.setAttribute('aria-label', letter === '' ? 'Case vide' : letter);
             if (col === 0) {
                 cell.classList.add('motus-cell--correct');
             }
@@ -234,6 +244,7 @@ export default class extends Controller {
             cell.textContent = letter;
             cell.classList.remove(...CELL_STATE_CLASSES);
             cell.classList.add(CELL_STATE_CLASS[state] ?? CELL_STATE_CLASS.absent);
+            cell.setAttribute('aria-label', `${letter}, ${STATE_LABEL[state] ?? STATE_LABEL.absent}`);
         });
     }
 
@@ -247,6 +258,7 @@ export default class extends Controller {
                 btn.dataset.state = state;
                 btn.classList.remove(...KEY_STATE_CLASSES);
                 btn.classList.add(KEY_STATE_CLASS[state] ?? KEY_STATE_CLASS.absent);
+                btn.setAttribute('aria-label', `${letter}, ${STATE_LABEL[state] ?? STATE_LABEL.absent}`);
             }
         });
     }

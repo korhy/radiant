@@ -40,8 +40,9 @@
 
                 {# Desktop : tooltip au survol #}
                 <span class="relative group hidden md:inline-block">
-                    <span class="text-slate-400 hover:text-white cursor-help text-base">ⓘ</span>
-                    <span class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity
+                    <button type="button" class="text-slate-400 hover:text-white focus-visible:text-white cursor-help text-base"
+                        aria-label="Règles du jeu">ⓘ</button>
+                    <span class="invisible group-hover:visible group-focus-within:visible opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity
                         absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 block
                         bg-slate-700 text-slate-300 text-sm font-normal rounded-lg p-3 shadow-xl z-10">
                         {{ include('app/motus/_legend.html.twig') }}
@@ -59,8 +60,8 @@
         </header>
 
         <div class="motus-stage md:contents">
-            <div data-motus-target="grid" class="motus-grid"></div>
-            <p data-motus-target="message" class="motus-message"></p>
+            <div data-motus-target="grid" class="motus-grid" role="group" aria-label="Grille des essais"></div>
+            <p data-motus-target="message" class="motus-message" role="status" aria-live="polite"></p>
         </div>
 
         <div data-motus-target="keyboard" class="motus-keyboard md:flex md:flex-col md:gap-1.5 md:items-center">

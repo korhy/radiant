@@ -52,6 +52,18 @@
     color: #fff;
 }
 
+/* Redondance non chromatique (WCAG 1.4.1). En niveaux de gris, ou avec une
+   déficience de perception des couleurs, le rouge et le jaune se confondent :
+   la couleur seule ne peut donc pas porter l'état. Liseré intérieur pour « bien
+   placée », barre basse pour « mal placée », rien pour « absente » — les trois
+   restent distincts par la forme. Le nom accessible est posé en parallèle
+   depuis le JS. */
+.motus-cell--correct,
+.motus-key--correct { box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .55); }
+
+.motus-cell--present,
+.motus-key--present { box-shadow: inset 0 -7px 0 rgba(15, 23, 42, .45); }
+
 .motus-key {
     display: flex;
     align-items: center;
@@ -100,8 +112,8 @@
     height: 1rem;
     border-radius: 3px;
 }
-.motus-swatch--correct { background-color: #ef4444; }
-.motus-swatch--present { background-color: #facc15; }
+.motus-swatch--correct { background-color: #ef4444; box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .55); }
+.motus-swatch--present { background-color: #facc15; box-shadow: inset 0 -5px 0 rgba(15, 23, 42, .45); }
 .motus-swatch--absent { background-color: #475569; }
 
 /* ---------- Desktop : reproduit l'apparence d'origine à l'identique ---------- */
