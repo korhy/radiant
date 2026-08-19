@@ -1,0 +1,54 @@
+{
+    "app": {
+        "path": "\/assets\/app-Tc8Ke1k.js",
+        "type": "js"
+    },
+    "\/assets\/bootstrap.js": {
+        "path": "\/assets\/bootstrap-F2ZrnP9.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/taquin_controller.js": {
+        "path": "\/assets\/controllers\/taquin_controller-1e62z0E.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/app_detail_drawer_controller.js": {
+        "path": "\/assets\/controllers\/app_detail_drawer_controller-ayoKCsI.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/recipe_chat_controller.js": {
+        "path": "\/assets\/controllers\/recipe_chat_controller-db0JKyh.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/cookbook_controller.js": {
+        "path": "\/assets\/controllers\/cookbook_controller-Fh1d0na.js",
+        "type": "js"
+    },
+    "\/assets\/styles\/app.css": {
+        "path": "\/assets\/styles\/app-8nEzYZd.css",
+        "type": "css"
+    },
+    "@hotwired\/stimulus": {
+        "path": "\/assets\/vendor\/@hotwired\/stimulus\/stimulus.index-S4zNcea.js",
+        "type": "js"
+    },
+    "@symfony\/stimulus-bundle": {
+        "path": "\/assets\/@symfony\/stimulus-bundle\/loader-IOzBDLu.js",
+        "type": "js"
+    },
+    "\/assets\/@symfony\/stimulus-bundle\/controllers.js": {
+        "path": "\/assets\/@symfony\/stimulus-bundle\/controllers-ZxwYdwl.js",
+        "type": "js"
+    },
+    "\/assets\/@symfony\/ux-turbo\/turbo_controller.js": {
+        "path": "\/assets\/@symfony\/ux-turbo\/turbo_controller-bFCo5ub.js",
+        "type": "js"
+    },
+    "\/assets\/controllers\/hello_controller.js": {
+        "path": "\/assets\/controllers\/hello_controller-VYgvytJ.js",
+        "type": "js"
+    },
+    "@hotwired\/turbo": {
+        "path": "\/assets\/vendor\/@hotwired\/turbo\/turbo.index-pT15T6h.js",
+        "type": "js"
+    }
+}

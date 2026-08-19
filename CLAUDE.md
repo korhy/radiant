@@ -95,13 +95,14 @@ Good first candidates: the **Tailwind 3 → 4 migration** (prerequisite for shad
 - **Symfony** 7.3 (pinned via Flex `extra.symfony.require`)
 - **Doctrine** ORM 3 / DBAL 3 + migrations, on **PostgreSQL 16**
 - **EasyAdmin 4** for the back-office · **VichUploader** for file uploads
-- **Twig** 3 + **Symfony UX**: Stimulus and Turbo. **No Live Components, no Twig Components in use**
-  (the namespace is configured but `src/Twig/Components/` doesn't exist)
+- **Twig** 3 + **Symfony UX**: **Stimulus only**. Turbo was removed on 2026-08-19 — it was declared
+  but never loaded. No Live Components, no Twig Components (the config was removed too)
 - **Tailwind CSS 3.4** via PostCSS, configured in `tailwind.config.js` — **not** Tailwind 4, and
   **no shadcn kit** (see `components-shadcn.md` for the target and its prerequisites)
-- **Webpack Encore** for assets — `symfony/asset-mapper` + `importmap.php` are dormant leftovers
+- **Webpack Encore** for assets — the dormant AssetMapper setup was removed on 2026-08-19
 - **Mailjet** mailer for the contact form
-- **Tests**: PHPUnit 9.5 — `tests/` is **empty**, so a green CI proves only that linters pass
+- **Tests**: PHPUnit — 37 tests since 2026-08-19 (Motus, client Cookbook, routes publiques,
+  accessibilité). Voir [testing.md](.claude/rules/technical/testing.md)
 
 Two operational traps worth knowing before you change anything:
 

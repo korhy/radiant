@@ -4,9 +4,12 @@
 
     {# Trigger #}
     <button
+        type="button"
+        data-app-detail-drawer-target="trigger"
         data-action="click->app-detail-drawer#open"
+        aria-label="Ouvrir les coulisses de cette application"
+        aria-expanded="false"
         class="fixed bottom-6 right-6 z-50 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-3 shadow-lg transition-colors {{ hide_drawer_btn_on_mobile is defined and hide_drawer_btn_on_mobile ? 'hidden md:block' : '' }}"
-        title="Behind the scenes"
     >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -23,18 +26,24 @@
     {# Drawer #}
     <div
         data-app-detail-drawer-target="drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="app-detail-drawer-title"
+        inert
         class="fixed top-0 right-0 h-full w-96 max-w-full bg-slate-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col"
     >
         {# Header #}
         <div class="flex items-center justify-between px-6 py-4 border-b border-slate-700 shrink-0">
-            <h2 class="text-white font-bold text-base tracking-wide flex items-center gap-2">
+            <h2 id="app-detail-drawer-title" class="text-white font-bold text-base tracking-wide flex items-center gap-2">
                 <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
                 </svg>
                 Behind the scenes
             </h2>
             <button
+                type="button"
                 data-action="click->app-detail-drawer#close"
+                aria-label="Fermer les coulisses"
                 class="text-slate-400 hover:text-white transition-colors"
             >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -44,24 +53,32 @@
         </div>
 
         {# Tabs #}
-        <div class="flex border-b border-slate-700 shrink-0">
-            <button data-app-detail-drawer-target="tab" data-tab="stack"
-                data-action="click->app-detail-drawer#switchTab"
+        <div class="flex border-b border-slate-700 shrink-0" role="tablist" aria-label="Coulisses">
+            <button type="button" role="tab" id="app-detail-tab-stack"
+                aria-controls="app-detail-panel-stack" aria-selected="false" tabindex="-1"
+                data-app-detail-drawer-target="tab" data-tab="stack"
+                data-action="click->app-detail-drawer#switchTab keydown->app-detail-drawer#moveTab"
                 class="flex-1 py-3 text-xs font-medium transition-colors">
                 Présentation
             </button>
-            <button data-app-detail-drawer-target="tab" data-tab="challenges"
-                data-action="click->app-detail-drawer#switchTab"
+            <button type="button" role="tab" id="app-detail-tab-challenges"
+                aria-controls="app-detail-panel-challenges" aria-selected="false" tabindex="-1"
+                data-app-detail-drawer-target="tab" data-tab="challenges"
+                data-action="click->app-detail-drawer#switchTab keydown->app-detail-drawer#moveTab"
                 class="flex-1 py-3 text-xs font-medium transition-colors">
                 Défis
             </button>
-            <button data-app-detail-drawer-target="tab" data-tab="improvements"
-                data-action="click->app-detail-drawer#switchTab"
+            <button type="button" role="tab" id="app-detail-tab-improvements"
+                aria-controls="app-detail-panel-improvements" aria-selected="false" tabindex="-1"
+                data-app-detail-drawer-target="tab" data-tab="improvements"
+                data-action="click->app-detail-drawer#switchTab keydown->app-detail-drawer#moveTab"
                 class="flex-1 py-3 text-xs font-medium transition-colors">
                 À venir
             </button>
-            <button data-app-detail-drawer-target="tab" data-tab="resources"
-                data-action="click->app-detail-drawer#switchTab"
+            <button type="button" role="tab" id="app-detail-tab-resources"
+                aria-controls="app-detail-panel-resources" aria-selected="false" tabindex="-1"
+                data-app-detail-drawer-target="tab" data-tab="resources"
+                data-action="click->app-detail-drawer#switchTab keydown->app-detail-drawer#moveTab"
                 class="flex-1 py-3 text-xs font-medium transition-colors">
                 Ressources
             </button>
@@ -71,7 +88,8 @@
         <div class="flex-1 overflow-y-auto overscroll-contain px-6 py-5">
 
             {# Panel : Présentation #}
-            <div data-app-detail-drawer-target="panel" data-tab="stack">
+            <div role="tabpanel" id="app-detail-panel-stack" aria-labelledby="app-detail-tab-stack" tabindex="0"
+                data-app-detail-drawer-target="panel" data-tab="stack">
                 {% if app_detail.description %}
                     <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ app_detail.description }}</p>
                 {% endif %}
@@ -99,7 +117,8 @@
             </div>
 
             {# Panel : Défis #}
-            <div data-app-detail-drawer-target="panel" data-tab="challenges" class="hidden">
+            <div role="tabpanel" id="app-detail-panel-challenges" aria-labelledby="app-detail-tab-challenges" tabindex="0"
+                data-app-detail-drawer-target="panel" data-tab="challenges" class="hidden">
                 {% if app_detail.challenges %}
                     <div class="flex flex-col gap-4">
                         {% for item in app_detail.challenges %}
@@ -115,7 +134,8 @@
             </div>
 
             {# Panel : Améliorations #}
-            <div data-app-detail-drawer-target="panel" data-tab="improvements" class="hidden">
+            <div role="tabpanel" id="app-detail-panel-improvements" aria-labelledby="app-detail-tab-improvements" tabindex="0"
+                data-app-detail-drawer-target="panel" data-tab="improvements" class="hidden">
                 {% if app_detail.improvements %}
                     <ul class="flex flex-col gap-3">
                         {% for item in app_detail.improvements %}
@@ -136,7 +156,8 @@
             </div>
 
             {# Panel : Ressources #}
-            <div data-app-detail-drawer-target="panel" data-tab="resources" class="hidden">
+            <div role="tabpanel" id="app-detail-panel-resources" aria-labelledby="app-detail-tab-resources" tabindex="0"
+                data-app-detail-drawer-target="panel" data-tab="resources" class="hidden">
                 {% if app_detail.resources %}
                     <div class="flex flex-col gap-2">
                         {% for item in app_detail.resources %}

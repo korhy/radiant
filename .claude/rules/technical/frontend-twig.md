@@ -25,9 +25,9 @@ paths:
 
 ## Components — the current shape
 
-**Symfony UX Twig Components are configured but unused.** `config/packages/twig_component.yaml`
-declares `App\Twig\Components\ → components/` and `anonymous_template_directory: components/`, but
-`src/Twig/Components/` **does not exist** and no template is rendered as `<twig:Xxx>`.
+**Symfony UX Twig Components ne sont pas en usage.** `config/packages/twig_component.yaml` a été
+supprimé le 2026-08-19 : il déclarait `App\Twig\Components\ → components/` alors que
+`src/Twig/Components/` n'a jamais existé. Aucun gabarit n'est rendu en `<twig:Xxx>`.
 
 What the project actually does — and what you should follow until that changes:
 
@@ -43,8 +43,8 @@ What the project actually does — and what you should follow until that changes
   the filename from the `App` slug at render time. See [../business/radiant.md](../business/radiant.md).
 
 When a partial starts needing **data from the database**, don't query in the template — the
-controller passes it in, or it becomes a class-backed Twig Component (`#[AsTwigComponent]` under
-`src/Twig/Components/`, the config is already there). Repositories only, never Doctrine in Twig.
+controller passes it in. Passer à un Twig Component adossé à une classe suppose de réinstaller la
+configuration supprimée : c'est une décision, pas un réflexe. Repositories only, never Doctrine in Twig.
 
 The longer-term target is the shadcn kit — see [components-shadcn.md](components-shadcn.md).
 

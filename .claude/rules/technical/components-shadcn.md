@@ -32,9 +32,8 @@ Rules that already apply, and that carry over unchanged to shadcn:
 - **No Doctrine in templates** — the controller supplies the data.
 - Accessibility is part of "done" — see [frontend-twig.md](frontend-twig.md).
 
-`config/packages/twig_component.yaml` already declares the Twig Component namespaces
-(`App\Twig\Components\ → components/`, `anonymous_template_directory: components/`), so a
-class-backed component works the day one is needed — `src/Twig/Components/` simply doesn't exist yet.
+`config/packages/twig_component.yaml` a été supprimé le 2026-08-19 (il pointait sur un répertoire
+inexistant). Un composant adossé à une classe demandera donc de rétablir cette configuration.
 
 ## Target state — the shadcn kit
 

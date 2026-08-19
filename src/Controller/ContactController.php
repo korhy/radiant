@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\DTO\ContactDTO;
@@ -13,7 +15,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-class ContactController extends AbstractController
+final class ContactController extends AbstractController
 {
     public function __construct(
         private MailerInterface $mailer,

@@ -1,37 +1,45 @@
 {# templates/app/taquin/index.html.twig #}
 {% extends 'base.html.twig' %}
+
+{% block title %}Taquin — Clément BOUDINEL{% endblock %}
 {% block body_class %}overflow-hidden{% endblock %}
 
 {% block body %}
 <div class="flex justify-center items-start md:items-center min-h-screen pt-16 md:-pt-2">
     <div data-controller="taquin"
-        class="flex flex-col items-center gap-6 bg-slate-800 p-8 rounded-2xl shadow-2xl w-fit">
+        class="relative flex flex-col items-center gap-6 bg-slate-800 p-8 rounded-2xl shadow-2xl w-fit">
 
         <div data-taquin-target="grid">
             <h1
                 class="text-white text-2xl font-bold tracking-wide mb-4 text-center flex items-center gap-2 justify-center">
                 <span class="w-7 h-7">{{ include('components/_icon_taquin.html.twig') }}</span>
                 Taquin
-                <div class="relative group">
-                    <span class="text-slate-400 hover:text-white cursor-help text-base">ⓘ</span>
-                    <div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity
-                    absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64
-                    bg-slate-700 text-slate-300 text-sm font-normal rounded-lg p-3 shadow-xl z-10">
-                        <p class="mt-1">L'objectif est de remettre les tuiles dans l'ordre en les déplaçant une par une
-                            via la case vide.
+                {# <details> plutôt qu'un survol : atteignable au clavier et au doigt. #}
+                <details class="relative inline-block font-normal">
+                    <summary class="text-slate-400 hover:text-white cursor-help text-base list-none"
+                        aria-label="Règles du jeu">ⓘ</summary>
+                    <div class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 z-10
+                        bg-slate-700 text-slate-300 text-sm font-normal rounded-lg p-3 shadow-xl">
+                        <p>L'objectif est de remettre les tuiles dans l'ordre en les déplaçant une par une
+                            via la case vide. Au clavier : les flèches déplacent le focus, Entrée fait glisser
+                            la tuile.
                         </p>
                     </div>
-                </div>
+                </details>
             </h1>
-            <div class="grid grid-cols-4 gap-2" data-action="click->taquin#move">
+            <div class="grid grid-cols-4 gap-2" role="group" aria-label="Grille du taquin"
+                data-action="click->taquin#move keydown->taquin#navigate">
                 {% for i in 1..15 %}
-                <div class="tile">
-                    {{ i }}
-                </div>
+                <button type="button" class="tile" aria-label="Tuile {{ i }}">{{ i }}</button>
                 {% endfor %}
-                <div class="empty w-16 h-16 bg-slate-700 rounded-lg"></div>
+                <button type="button" class="empty w-16 h-16 bg-slate-700 rounded-lg" aria-label="Case vide"
+                    disabled></button>
             </div>
         </div>
+
+        {# Les déplacements sont muets pour un lecteur d'écran sans cette région. #}
+        <p data-taquin-target="status" role="status" aria-live="polite" class="sr-only"></p>
+
         <div class="grid">
             <div class="grid grid-cols-2 gap-2">
                 <a href="{{ path('homepage') }}"
@@ -48,9 +56,9 @@
 
         <div data-taquin-target="winOverlay"
             class="hidden absolute inset-0 bg-slate-900/90 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-4">
-            <p class="text-5xl">🎉</p>
+            <p class="text-5xl" aria-hidden="true">🎉</p>
             <p class="text-white text-2xl font-bold tracking-wide">Bravo !</p>
-            <button data-action="click->taquin#replay"
+            <button data-taquin-target="replay" data-action="click->taquin#replay"
                 class="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-full transition-colors cursor-pointer">
                 Rejouer
             </button>

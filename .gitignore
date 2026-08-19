@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -18,12 +17,6 @@
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
-
-###> symfony/asset-mapper ###
-/public/assets/
-/assets/vendor/
-###< symfony/asset-mapper ###
-
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
@@ -59,7 +52,6 @@ Thumbs.db
 /dist/
 
 # Ignore environment variables files
-.env
 .env.local
 .env.*.local
 .env.testing
@@ -67,7 +59,6 @@ Thumbs.db
 
 # Ignore Composer files
 /composer.phar
-/composer.lock
 /vendor/
 
 # Ignore Node.js files

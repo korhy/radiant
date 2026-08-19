@@ -6,13 +6,13 @@ paths:
   - "**/src/Twig/Components/**/*.php"
 ---
 
-# Interactivity — Stimulus & Turbo
+# Interactivity — Stimulus
 
 ## ⚠️ Controllers are registered BY HAND
 
-This project does **not** use Stimulus auto-discovery. `assets/controllers.json` enables only
-`@symfony/ux-turbo`'s `turbo-core`. Every application controller is imported and registered
-explicitly in `assets/bootstrap.js`:
+This project does **not** use Stimulus auto-discovery, and `assets/controllers.json` no longer
+exists. Every application controller is imported and registered explicitly in
+`assets/bootstrap.js`:
 
 ```js
 import MotusController from './controllers/motus_controller.js';
@@ -21,8 +21,8 @@ app.register('motus', MotusController);
 ```
 
 **A controller file that isn't registered there simply never runs — silently, with no console error.**
-That is not hypothetical: `recipe_chat_controller.js` and `hello_controller.js` sit in
-`assets/controllers/` unregistered and dead.
+Ce n'est pas théorique : `hello_controller.js` et `recipe_chat_controller.js` sont restés morts dans
+`assets/controllers/` jusqu'à leur suppression le 2026-08-19.
 
 So creating a Stimulus controller is always **two** edits: the controller file, **and** the import +
 `app.register()` line in `bootstrap.js`. Verify by loading the page, not by reading the file.
@@ -47,12 +47,15 @@ All four live controllers are this shape:
 
 Conventions to match: `static targets` / `static values`, ES **private fields** (`#observer`,
 `#debounceTimer`, `#loading`) for internal state, and cleanup in `disconnect()` — an
-IntersectionObserver or a timer left running leaks across Turbo navigations.
+IntersectionObserver ou un timer laissé en vie fuit dès que le contrôleur est reconnecté.
 
-### 2. Turbo — navigation and page-level updates
-`@symfony/ux-turbo` is enabled. Use Turbo for full-page navigation and progressive enhancement of
-links/forms. Because Turbo keeps the JS runtime alive across navigations, controllers **must** clean
-up in `disconnect()`.
+### 2. ❌ Turbo n'est plus installé
+`symfony/ux-turbo` a été retiré le **2026-08-19** : il était déclaré dans `composer.json` et
+`controllers.json`, mais `bootstrap.js` enregistre Stimulus à la main sans `stimulus-bridge`, donc
+`controllers.json` n'était jamais lu et `@hotwired/turbo` n'a jamais figuré dans `package.json`.
+Le bundle ne l'a donc jamais chargé. La navigation est un rechargement de page classique.
+
+Nettoyer malgré tout dans `disconnect()` (observers, timers) reste la bonne pratique.
 
 ### ❌ Live Components are not available
 `symfony/ux-live-component` is **not installed**. Don't reach for `#[AsLiveComponent]`, `data-live-*`

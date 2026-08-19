@@ -1,0 +1,9 @@
+[
+    "\/assets\/bootstrap.js",
+    "\/assets\/styles\/app.css",
+    "@hotwired\/stimulus",
+    "\/assets\/controllers\/taquin_controller.js",
+    "\/assets\/controllers\/app_detail_drawer_controller.js",
+    "\/assets\/controllers\/recipe_chat_controller.js",
+    "\/assets\/controllers\/cookbook_controller.js"
+]

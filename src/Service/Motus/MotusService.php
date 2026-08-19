@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Motus;
 
-class MotusService
+final class MotusService
 {
     /**
      * Mots de 5 à 8 lettres, sans accents, mélangés une fois pour l'ordre du jour.
@@ -102,5 +104,23 @@ class MotusService
         }
 
         return $result;
+    }
+
+    /**
+     * @param array<int, array{letter: string, state: string}> $result
+     */
+    public function isWinning(array $result): bool
+    {
+        if ([] === $result) {
+            return false;
+        }
+
+        foreach ($result as $cell) {
+            if ('correct' !== $cell['state']) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

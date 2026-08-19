@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\PersonalProject;
@@ -8,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
-class PersonalProjectCrudController extends AbstractCrudController
+final class PersonalProjectCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {

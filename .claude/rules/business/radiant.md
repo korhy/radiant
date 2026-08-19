@@ -22,9 +22,9 @@ quality on display matters as much as the feature itself.
   grid and the "Behind the scenes" drawer. `slug` is unique; `position` orders the grid
   (`AppRepository::findAllOrderedByPosition()`); `route` holds a **Symfony route name**, resolved
   with `path()` in Twig.
-- **Experience** (`company`, `position`, `description`, `url`, `start_date`, `end_date`, `tags`) —
+- **Experience** (`company`, `position`, `description`, `url`, `startDate`, `endDate`, `tags`) —
   a CV entry.
-- **PersonalProject** (`name`, `description`, `url`, `file`/`file_name`, `tags`, `updated_at`) —
+- **PersonalProject** (`name`, `description`, `url`, `file`/`fileName`, `tags`, `updatedAt`) —
   `#[Vich\Uploadable]`, mapping `personal_projects`; the binary lives on the server filesystem
   under `public/images/personal_projects/`.
 
@@ -72,7 +72,8 @@ the token. If the API contract changes, the fix belongs in that service.
   `motus`, `motus_guess`, `contact`, `legal`. Only `app_login`/`app_logout` keep the `app_` prefix
   inherited from `make:auth`. Follow the surrounding controller rather than inventing a scheme.
 - **Controllers** live flat in `src/Controller`, except the EasyAdmin ones under
-  `src/Controller/Admin`. Mini-app actions all live in `ApplicationController`.
+  `src/Controller/Admin`. Un contrôleur par mini-app depuis le 2026-08-19 : `TaquinController`,
+  `MotusController`, `CookbookController` — `ApplicationController` les agrégeait tous.
 - **Services** go under `src/Service/<Domain>/`, stateless where possible (`MotusService` is a
   good model: a private word list, pure functions, no state).
 - **Templates**: `templates/app/<slug>/` per mini-app, `templates/portfolio/**` for the homepage
@@ -88,17 +89,20 @@ the token. If the API contract changes, the fix belongs in that service.
 
 ## Notes / known rough edges (improve, don't propagate)
 
-- **`declare(strict_types=1)` is missing across `src/`.** Add it to every file you touch — see
-  [backend-php.md](../technical/backend-php.md).
-- **Entity property casing is inconsistent**: `App::$techStack` (camelCase) vs
-  `Experience::$start_date`, `PersonalProject::$file_name`, `$updated_at` (snake_case). The standard
-  is `camelCase`; migrate when you touch one, with a Doctrine migration if the column name moves.
-- `PortfolioController` has a typo'd variable (`$projetcs`).
-- **Dead code**: `assets/controllers/hello_controller.js` and `recipe_chat_controller.js` (neither is
-  registered in `assets/bootstrap.js`, so neither runs), `importmap.php` + `assets/vendor/`
-  (AssetMapper leftovers — Encore is what builds), `.platform*` (Platform.sh, inactive),
-  `experience_data.sql` / `personal_project_data.sql` seed dumps at the root.
-- **`README.md` is stale**: its routes table and feature list predate Cookbook and Motus, and its
-  structure tree omits `src/Service/`, `src/DTO/` and `templates/components/`.
+L'audit du 2026-08-18 (`docs/audit/audit-2026-08-18.md`) a traité les étapes 0 à 4. Ce qui reste :
 
-Run `/audit-existing` to inventory these with file:line evidence before deciding what to fix.
+- **`README.md` est périmé** : son tableau des routes et sa liste de fonctionnalités datent d'avant
+  Cookbook et Motus, et son arborescence omet `src/Service/`, `src/DTO/` et `templates/components/`.
+- **La carte recette est écrite deux fois** — en Twig et en littéral JS dans
+  `cookbook_controller.js` —, et cette version JS interpole les champs de l'API sans échappement.
+- **`/app/cookbook` renvoie une 500 si l'API Cookbook est injoignable** au lieu d'un état dégradé.
+- **Le formulaire de contact** part avec l'adresse du visiteur en `From` (SPF/DKIM), et n'a ni
+  rate limiting ni anti-spam.
+- **Les messages de validation s'affichent en anglais** (`default_locale: en`) sur un site français.
+- **Les colonnes JSON `tags`** emballent le tableau dans une clé `tags` redondante.
+- **Migration Tailwind 3 → 4**, préalable à shadcn.
+
+Ce qui a été corrigé et ne doit pas être re-signalé : `declare(strict_types=1)` (imposé par
+php-cs-fixer), la casse des propriétés d'entité, la typo `$projetcs`, le code mort (AssetMapper,
+Platform.sh, contrôleurs Stimulus non enregistrés), l'accessibilité des mini-apps, et l'absence de
+tests.

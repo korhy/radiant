@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\PersonalProjectRepository;
@@ -26,17 +28,17 @@ class PersonalProject
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
-    #[Vich\UploadableField(mapping: 'personal_projects', fileNameProperty: 'file_name')]
+    #[Vich\UploadableField(mapping: 'personal_projects', fileNameProperty: 'fileName')]
     private ?File $file = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $file_name = null;
+    private ?string $fileName = null;
 
     #[ORM\Column(nullable: true)]
     private ?array $tags = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updated_at = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function getId(): ?int
     {
@@ -81,12 +83,12 @@ class PersonalProject
 
     public function getFileName(): ?string
     {
-        return $this->file_name;
+        return $this->fileName;
     }
 
     public function setFileName(?string $fileName): static
     {
-        $this->file_name = $fileName;
+        $this->fileName = $fileName;
 
         return $this;
     }
@@ -105,12 +107,12 @@ class PersonalProject
 
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updated_at): static
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
@@ -141,7 +143,7 @@ class PersonalProject
         if (null !== $file) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->updated_at = new \DateTimeImmutable();
+            $this->updatedAt = new \DateTimeImmutable();
         }
     }
 
