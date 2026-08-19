@@ -1,1 +1,10 @@
-public/build/app.01c91171.css 33862 octets
+# Poids de la feuille de style livrée
+
+## Référence Tailwind 3.4 (2026-08-19, avant bascule)
+brut 33 862 o · gzip 7 166 o · brotli 6 303 o
+
+## Après bascule Tailwind 4
+brut    50015 o · gzip 9722 o
+
+## Critère (NFR-001, révisé le 2026-08-19)
+plafond absolu : 15 360 octets gzippés

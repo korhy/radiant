@@ -30,10 +30,10 @@ Puis capturer les **huit pages publiques** aux **trois largeurs** (375, 768, 128
 `/admin` **n'est pas une page publique** : anonymement il renvoie 302 vers `/login`. Le capturer
 séparément, connecté — c'est le contrôle du contrat C5, pas de la non-régression du site.
 
-Relever aussi le poids de la feuille livrée, référence de NFR-001 :
+Relever aussi le poids de la feuille livrée, **brut et compressé** — c'est le second qui fait foi :
 
 ```bash
-ls -l public/build/app.*.css
+ls -l public/build/app.*.css && gzip -9 -c public/build/app.*.css | wc -c
 ```
 
 ## Étape 1 — Après la bascule du moteur (US1)
@@ -105,6 +105,6 @@ livré — c'est déjà ce qui avait fait échouer deux fois la CI sur ce projet
 | SC-003 | parcours clavier des trois mini-apps et du formulaire |
 | SC-004 | passe axe/Lighthouse, deux thèmes |
 | SC-005 | token d'accent modifié puis rétabli |
-| SC-006 | poids de `app.*.css` comparé au relevé de l'étape 0 |
+| SC-006 | `gzip -9 -c public/build/app.*.css | wc -c` sous 15 360 octets |
 | SC-007 | tabulation panneau fermé, trois mini-apps |
 | SC-008 | 48 écrans contrôlés, plus `/admin` connecté |

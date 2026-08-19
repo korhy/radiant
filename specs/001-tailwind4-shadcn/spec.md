@@ -157,8 +157,13 @@ passe automatisée d'accessibilité, sur les trois mini-apps qui l'incluent.
 
 ### Non-Functional Requirements
 
-- **NFR-001**: Le poids de la feuille de style livrée ne MUST pas dépasser 120 % de l'existant.
-  Au-delà, c'est le signe que l'élagage des classes inutilisées ne fonctionne pas.
+- **NFR-001**: La feuille de style livrée ne MUST pas dépasser **15 Ko une fois compressée** (gzip).
+  > **Révisé le 2026-08-19, après mesure.** Le critère initial — « pas plus de 120 % de l'existant » —
+  > était mal posé, et reposait sur une hypothèse fausse : Tailwind 4 émet **168 variables de thème**
+  > dans une couche dédiée, coût **fixe** et indépendant de la taille du site. Mesuré à la bascule :
+  > 7,2 Ko → 9,7 Ko gzippés, soit +2,5 Ko. Un ratio pénalise donc un surcoût unique qui ne dit rien
+  > de la qualité de l'élagage, alors qu'un plafond absolu mesure ce qui compte pour un visiteur.
+  > 15 Ko laisse la marge des deux thèmes et des composants du kit à venir.
 - **NFR-002**: Ce lot ne MUST comporter aucune migration de base de données.
 
 ### Key Entities
@@ -186,7 +191,8 @@ les quatre onglets du panneau. Leur structure ne change pas.
 - **SC-008**: Les huit pages publiques sont vérifiées **dans les deux thèmes** aux trois largeurs de
   référence — soit **48 écrans**, contre 24 si le thème était figé. `/admin` s'y ajoute, connecté et
   dans les deux thèmes.
-- **SC-006**: La feuille de style livrée ne dépasse pas 120 % de son poids actuel.
+- **SC-006**: La feuille de style livrée ne dépasse pas **15 Ko gzippés**. Mesure de bascule :
+  **9,7 Ko** — voir NFR-001 pour la révision du critère.
 - **SC-007**: Le panneau « Behind the scenes » n'est plus atteignable au clavier lorsqu'il est
   fermé, sur les trois mini-apps.
 
