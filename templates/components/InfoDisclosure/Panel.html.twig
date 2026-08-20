@@ -1,0 +1,4 @@
+{# @block content Le contenu révélé. #}
+<div class="{{ ('absolute z-10 ' ~ attributes.render('class'))|tailwind_merge }}" {{ attributes.defaults({'data-slot': 'info-disclosure-panel'}) }}>
+    {%- block content %}{% endblock -%}
+</div>

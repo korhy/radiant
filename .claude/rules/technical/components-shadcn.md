@@ -57,19 +57,33 @@ l'identité du portfolio sans être retouché.
 `src/Twig/Components/`, sans configuration supplémentaire. Y mettre de la présentation, jamais une
 requête Doctrine — la donnée arrive du contrôleur.
 
-## Ce qui reste écrit en utilitaires
+## Quand le kit n'a pas le bon composant
 
-Les éléments récurrents non encore repris du kit — pastilles de tags, en-têtes de section, champs de
-formulaire — restent des utilitaires dans le gabarit. Les migrer est un lot à part, à mener une fois
-le kit éprouvé, pas un à-côté d'un autre changement.
+Le kit d'abord — mais **prendre un composant pour ce qu'il fait, pas pour son nom**. Une aide
+contextuelle n'est pas une infobulle : le `Tooltip` du kit se révèle au survol, se dérobe au pointeur
+qui l'approche et n'offre aucune fermeture au clavier — il échoue WCAG 1.4.13 dès que le contenu se
+lit. Le ⓘ des mini-apps passe donc par `InfoDisclosure`, adossé au `<details>` natif.
 
-Les partiels préfixés d'un tiret bas (`templates/components/_*.html.twig`) restent valables pour ce
-qui n'a pas d'équivalent dans le kit — l'icône d'une tuile, une légende. Ils s'incluent
-explicitement, avec leurs variables :
+Quand rien dans le kit ne couvre le besoin, écrire un **composant du projet aux conventions du
+kit** : `templates/components/<Nom>.html.twig`, sous-composants dans `templates/components/<Nom>/`,
+props documentées en tête, `attributes` fusionnés par `tailwind_merge`, un `data-slot` par partie.
+
+- **`SectionHeader`** — l'en-tête d'une section du portfolio : barre collante et libellé de bureau.
+- **`InfoDisclosure`** (+ `:Trigger`, `:Panel`) — le ⓘ qui révèle une aide.
+
+**Un composant du projet ne porte que des classes structurelles ; l'appelant l'habille.** C'est ce
+qui laisse le même `InfoDisclosure` être un ⓘ en ligne sur le bureau et un bouton de barre de 44 px
+sur mobile.
+
+Réserver les partiels préfixés d'un tiret bas (`templates/components/_*.html.twig`) à ce qui ne prend
+**aucune variation** — l'icône d'une tuile, une légende. Les inclure explicitement, avec leurs
+variables :
 
 ```twig
 {{ include('components/_icon_motus.html.twig') }}
 ```
+
+Restent en utilitaires bruts dans le gabarit, faute d'être repris : les champs de formulaire.
 
 ## Reprendre un composant existant — le « Legacy move »
 

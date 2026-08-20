@@ -1,0 +1,6 @@
+{# @prop label string Nom accessible du déclencheur : le glyphe ⓘ n'en donne aucun. #}
+{# @block content Le glyphe du déclencheur. Défaut : ⓘ. #}
+{%- props label -%}
+<summary class="{{ ('list-none select-none [&::-webkit-details-marker]:hidden ' ~ attributes.render('class'))|tailwind_merge }}" {{ attributes.defaults({'aria-label': label, 'data-slot': 'info-disclosure-trigger'}) }}>
+    {%- block content -%}ⓘ{%- endblock -%}
+</summary>

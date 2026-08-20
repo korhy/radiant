@@ -14,18 +14,15 @@
                 class="text-content-max text-2xl font-bold tracking-wide mb-4 text-center flex items-center gap-2 justify-center">
                 <span class="w-7 h-7">{{ include('components/_icon_taquin.html.twig') }}</span>
                 Taquin
-                {# <details> plutôt qu'un survol : atteignable au clavier et au doigt. #}
-                <details class="relative inline-block font-normal">
-                    <summary class="text-content-low hover:text-content-max cursor-help text-base list-none"
-                        aria-label="Règles du jeu">ⓘ</summary>
-                    <div class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 z-10
-                        bg-surface-inset text-content-mid text-sm font-normal rounded-lg p-3 shadow-xl">
+                <twig:InfoDisclosure class="inline-block font-normal">
+                    <twig:InfoDisclosure:Trigger label="Règles du jeu" class="cursor-help text-base text-content-low hover:text-content-max" />
+                    <twig:InfoDisclosure:Panel class="left-1/2 top-full mt-2 w-64 -translate-x-1/2 rounded-lg bg-surface-inset p-3 text-sm font-normal text-content-mid shadow-xl">
                         <p>L'objectif est de remettre les tuiles dans l'ordre en les déplaçant une par une
                             via la case vide. Au clavier : les flèches déplacent le focus, Entrée fait glisser
                             la tuile.
                         </p>
-                    </div>
-                </details>
+                    </twig:InfoDisclosure:Panel>
+                </twig:InfoDisclosure>
             </h1>
             <div class="grid grid-cols-4 gap-2" role="group" aria-label="Grille du taquin"
                 data-action="click->taquin#move keydown->taquin#navigate">

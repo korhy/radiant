@@ -77,6 +77,48 @@ final class AccessibilityTest extends WebTestCase
     }
 
     /**
+     * A12 + DU3 — l'aide « ⓘ » était une infobulle révélée au survol seul sur
+     * Motus, et le même motif était recopié dans le Taquin.
+     *
+     * Depuis la reprise sur `InfoDisclosure`, c'est un `<details>` natif :
+     * activable à la souris, au clavier et au doigt. Le test fige la forme,
+     * pas l'habillage — un retour au survol le casse.
+     *
+     * @dataProvider provideMiniAppsWithRules
+     */
+    public function testRulesHelpIsANativeDisclosure(string $path, int $expected): void
+    {
+        $crawler = $this->client->request('GET', $path);
+
+        self::assertSame(
+            $expected,
+            $crawler->filter('details[data-slot="info-disclosure"]')->count(),
+            'L\'aide doit passer par le composant InfoDisclosure.'
+        );
+        self::assertSame(
+            $expected,
+            $crawler->filter('details > summary[data-slot="info-disclosure-trigger"][aria-label]')->count(),
+            'Chaque déclencheur doit être un <summary> nommé.'
+        );
+
+        $orphans = $crawler->filter('[data-slot="info-disclosure-panel"]')->reduce(
+            static fn (Crawler $node): bool => 'details' !== $node->ancestors()->first()->nodeName()
+        );
+
+        self::assertSame(0, $orphans->count(), 'Un panneau d\'aide hors <details> n\'est plus activable au clavier.');
+    }
+
+    /**
+     * @return iterable<string, array{string, int}>
+     */
+    public static function provideMiniAppsWithRules(): iterable
+    {
+        yield 'taquin' => ['/app/taquin', 1];
+        // Motus en rend deux : le ⓘ en ligne du bureau, le bouton de barre du mobile.
+        yield 'motus' => ['/app/motus', 2];
+    }
+
+    /**
      * A5 + A6 — le tiroir n'avait aucun nom accessible, aucune sémantique
      * d'onglets, et restait dans l'ordre de tabulation une fois fermé.
      *
