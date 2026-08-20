@@ -15,8 +15,8 @@ use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
 /**
- * Le client Cookbook parle à une API externe : tout passe par MockHttpClient,
- * la suite ne doit jamais dépendre du réseau.
+ * The Cookbook client talks to an external API: everything goes through
+ * MockHttpClient, the suite must never depend on the network.
  */
 final class CookbookApiServiceTest extends TestCase
 {
@@ -68,8 +68,8 @@ final class CookbookApiServiceTest extends TestCase
     }
 
     /**
-     * Le cœur du contrat : un 401 doit purger le JWT en cache, se réauthentifier
-     * et rejouer la requête — une seule fois.
+     * The core of the contract: a 401 must drop the cached JWT, re-authenticate
+     * and replay the request — exactly once.
      */
     public function testItRetriesOnceAfterA401AndDropsTheCachedToken(): void
     {
@@ -168,8 +168,8 @@ final class CookbookApiServiceTest extends TestCase
     }
 
     /**
-     * Garde-fou sur la règle n°6 : ni les identifiants ni le JWT ne doivent
-     * jamais atterrir dans les logs.
+     * Guard on global rule 6: neither the credentials nor the JWT may ever end
+     * up in the logs.
      */
     public function testItNeverLogsCredentialsOrToken(): void
     {

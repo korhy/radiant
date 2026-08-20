@@ -7,7 +7,7 @@ namespace App\Service\Motus;
 final class MotusService
 {
     /**
-     * Mots de 5 à 8 lettres, sans accents, mélangés une fois pour l'ordre du jour.
+     * Five to eight letters, no accents: the grid has no way to type one.
      */
     private const WORDS = [
         'SIROP', 'JUSTICE', 'SPORTS', 'SCIENCE', 'VITRES', 'SCENES', 'DEFAITES', 'MIROIR',
