@@ -103,6 +103,7 @@ Ce qui a été corrigé et ne doit pas être re-signalé : `declare(strict_types
 php-cs-fixer), la casse des propriétés d'entité, la typo `$projetcs`, le code mort (AssetMapper,
 Platform.sh, contrôleurs Stimulus non enregistrés), l'accessibilité des mini-apps, l'absence de
 tests, l'absence de gate Twig (twig-cs-fixer depuis le 2026-08-19), et les failles de dépendances
-(constat **S9**, `composer audit` à 0 depuis la montée Symfony 7.4). Étapes 5 et 6 closes
-le 2026-08-20 : Tailwind 4, tokens, thème clair, kit shadcn, et le README refait à partir du
-dépôt. **DU1**, **DU2** et **DU3** restent ouverts.
+(constat **S9**, `composer audit` à 0 depuis la montée Symfony 7.4). Étapes 5 à 7 closes
+le 2026-08-20 : Tailwind 4, tokens, thème clair, kit shadcn, le README refait à partir du dépôt,
+puis la composantisation de l'en-tête de section, de la pastille de tag et du ⓘ d'aide
+(`SectionHeader`, `Badge`, `InfoDisclosure`). **DU1** reste seul ouvert.

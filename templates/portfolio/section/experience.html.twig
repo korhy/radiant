@@ -1,36 +1,31 @@
 <section id="experience" class="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
-    <div class="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-surface/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
-        <h2 class="text-xs font-bold uppercase tracking-widest text-content-min lg:sr-only">Expérience</h2>
-    </div>
-    <div>
-        <p class="hidden lg:block text-xs font-bold uppercase tracking-widest text-content-min mb-3">Expérience</p>
-        <ol class="">
-            {% for experience in experiences %}
-                <li class="mb-12">
-                    <div class="lg:flex lg:justify-between lg:gap-1">
-                        <header class="sm:col-span-2 lg:w-1/5 lg:flex-col ">
-                            {{ experience.startDate|date('M Y') }}
+    <twig:SectionHeader title="Expérience" />
+    <ol>
+        {% for experience in experiences %}
+            <li class="mb-12">
+                <div class="lg:flex lg:justify-between lg:gap-1">
+                    <header class="sm:col-span-2 lg:w-1/5 lg:flex-col">
+                        {{ experience.startDate|date('M Y') }}
+                        -
+                        {{ experience.endDate ? experience.endDate|date('M Y') : 'maintenant' }}
+                    </header>
+                    <div class="sm:col-span-6 lg:w-4/5 lg:flex-col">
+                        <h3 class="font-medium leading-snug text-content-high">{{ experience.position }}
                             -
-                            {{ experience.endDate ? experience.endDate|date('M Y') : 'maintenant' }}
-                        </header>
-                        <div class="sm:col-span-6 lg:w-4/5 lg:flex-col ">
-                            <h3 class="font-medium leading-snug text-content-high">{{ experience.position }}
-                                -
-                                {{ experience.company }}</h3>
-                            <p class="mt-2 text-sm leading-normal">
-                                {{ experience.description|raw }}
-                            </p>
-                            <ul class="mt-2 flex flex-wrap">
-                                {% for tag in experience.tags.tags %}
-                                    <li class="mr-1.5 mt-2">
-                                        <div class="flex items-center rounded-full border-2 border-brand-light px-3 py-1 text-xs font-medium leading-5 text-brand-fg ">{{ tag }}</div>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                            {{ experience.company }}</h3>
+                        <p class="mt-2 text-sm leading-normal">
+                            {{ experience.description|raw }}
+                        </p>
+                        <ul class="mt-2 flex flex-wrap">
+                            {% for tag in experience.tags.tags %}
+                                <li class="mr-1.5 mt-2">
+                                    <twig:Badge variant="outline" class="border-2 border-brand-light px-3 py-1 leading-5 text-brand-fg">{{ tag }}</twig:Badge>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
-                </li>
-            {% endfor %}
-        </ol>
-    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ol>
 </section>

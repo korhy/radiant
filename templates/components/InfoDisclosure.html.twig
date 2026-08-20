@@ -1,0 +1,15 @@
+{# @block content Le déclencheur puis le panneau, dans cet ordre. #}
+{#
+   Le motif « ⓘ » qui révèle une aide contextuelle, en `<details>` natif : la
+   même commande à la souris, au clavier et au doigt, sans JavaScript.
+
+   Volontairement pas un survol. Une infobulle révélée au survol seul est
+   inatteignable au clavier et se dérobe au pointeur (WCAG 1.4.13) ; le
+   composant `Tooltip` du kit ne convient donc pas ici.
+
+   Les classes portées sont structurelles : chaque appelant habille son
+   déclencheur et son panneau.
+#}
+<details class="{{ ('relative ' ~ attributes.render('class'))|tailwind_merge }}" {{ attributes.defaults({'data-slot': 'info-disclosure'}) }}>
+    {%- block content %}{% endblock -%}
+</details>

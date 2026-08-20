@@ -36,8 +36,12 @@ Les Twig Components sont configurés pour cela : `config/packages/twig_component
 `anonymous_template_directory` **et** le mappage `App\Twig\Components\`. Voir
 [components-shadcn.md](components-shadcn.md).
 
-**Les partiels préfixés d'un tiret bas restent l'exception**, pour ce qui n'a pas d'équivalent dans
-le kit :
+**Quand le kit ne couvre pas le besoin, écrire un composant du projet aux mêmes conventions** —
+`SectionHeader`, `InfoDisclosure` — plutôt qu'un partiel. Il ne porte que des classes structurelles ;
+l'appelant l'habille. Voir [components-shadcn.md](components-shadcn.md).
+
+**Les partiels préfixés d'un tiret bas restent l'exception**, pour ce qui ne prend aucune
+variation :
 
 ```twig
 {{ include('components/_app_detail_drawer.html.twig', { app_detail: app_detail }) }}

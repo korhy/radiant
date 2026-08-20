@@ -38,25 +38,22 @@
                 <span class="motus-title__icon">{{ include('components/_icon_motus.html.twig') }}</span>
                 Motus
 
-                {# Desktop : tooltip au survol #}
-                <span class="relative group hidden md:inline-block">
-                    <button type="button" class="text-content-low hover:text-content-max focus-visible:text-content-max cursor-help text-base"
-                        aria-label="Règles du jeu">ⓘ</button>
-                    <span class="invisible group-hover:visible group-focus-within:visible opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity
-                        absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 block
-                        bg-surface-inset text-content-mid text-sm font-normal rounded-lg p-3 shadow-xl z-10">
+                {# Bureau : le même ⓘ que le Taquin, en ligne dans le titre. #}
+                <twig:InfoDisclosure class="hidden font-normal md:inline-block">
+                    <twig:InfoDisclosure:Trigger label="Règles du jeu" class="cursor-help text-base text-content-low hover:text-content-max" />
+                    <twig:InfoDisclosure:Panel class="left-1/2 top-full mt-2 w-64 -translate-x-1/2 rounded-lg bg-surface-inset p-3 text-sm font-normal text-content-mid shadow-xl">
                         {{ include('app/motus/_legend.html.twig') }}
-                    </span>
-                </span>
+                    </twig:InfoDisclosure:Panel>
+                </twig:InfoDisclosure>
             </h1>
 
-            {# Mobile : le survol n'existe pas, <details> est activable au tap et sans JS #}
-            <details class="motus-info md:hidden">
-                <summary class="motus-iconbtn" aria-label="Règles du jeu">ⓘ</summary>
-                <div class="motus-info__panel">
+            {# Mobile : le même composant, habillé en bouton de barre pour tenir la cible tactile. #}
+            <twig:InfoDisclosure class="motus-info md:hidden">
+                <twig:InfoDisclosure:Trigger label="Règles du jeu" class="motus-iconbtn" />
+                <twig:InfoDisclosure:Panel class="motus-info__panel">
                     {{ include('app/motus/_legend.html.twig') }}
-                </div>
-            </details>
+                </twig:InfoDisclosure:Panel>
+            </twig:InfoDisclosure>
         </header>
 
         <div class="motus-stage md:contents">
