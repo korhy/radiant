@@ -29,7 +29,7 @@ final class MotusController extends AbstractController
     #[Route('/app/motus/guess', name: 'motus_guess', methods: ['POST'])]
     public function guess(MotusService $motusService, Request $request): JsonResponse
     {
-        // Le corps est du JSON libre : il peut être vide, ou ne pas être un objet.
+        // The body is free-form JSON: it can be empty, or not an object at all.
         $payload = json_decode($request->getContent(), true);
         $guess = \is_array($payload) ? trim(mb_strtoupper((string) ($payload['guess'] ?? ''))) : '';
 

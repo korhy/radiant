@@ -1,12 +1,12 @@
-{# @prop title string Le libellé de la section. #}
+{# @prop title string The section label. #}
 {#
-   L'en-tête d'une section du portfolio, dans ses deux formes :
-   — sous `lg`, une barre collante qui suit le défilement ;
-   — à partir de `lg`, un simple libellé au-dessus de la liste, la navigation
-     latérale prenant le relais de la barre.
+   The header of a portfolio section, in its two forms:
+   — below `lg`, a sticky bar following the scroll;
+   — from `lg` up, a plain label above the list, the side navigation taking over
+     from the bar.
 
-   Le `h2` reste dans l'arbre d'accessibilité aux deux tailles ; le libellé de
-   bureau le redouble à l'écran seulement, d'où son `aria-hidden`.
+   The `h2` stays in the accessibility tree at both sizes; the desktop label only
+   repeats it on screen, hence its `aria-hidden`.
 #}
 {%- props title -%}
 <div class="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-surface/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">

@@ -1,10 +1,11 @@
 ---
-description: Naming conventions — English identifiers everywhere, framework casing rules. French only for user-facing text.
+description: Naming conventions — English identifiers and comments everywhere, framework casing rules. French only for user-facing text.
 paths:
   - "**/*.php"
   - "**/*.twig"
   - "**/*.js"
   - "**/config/**/*.yaml"
+  - "**/*.css"
 ---
 
 # Naming conventions
@@ -40,6 +41,23 @@ Everything a developer names is **English** and follows the framework's casing:
 > **Route names have no prefix here.** `homepage`, `taquin`, `cookbook`, `contact` — only
 > `app_login`/`app_logout` carry `app_`, inherited from `make:auth`. Match the surrounding
 > controller; don't introduce a new prefix scheme in a feature change.
+
+## Comments — English, and only when they earn their place
+
+Write every comment in **English**, whatever the syntax: `//`, `#`, `/* */`, `{# #}`. A comment is
+addressed to a developer, so the French exception below never applies to it.
+
+Keep a comment only when it carries what the surrounding code cannot show:
+
+- an external constraint — `SPF and DKIM can only sign our own domain`;
+- a decision and the option it rejects — `503 rather than an empty payload, so the client can tell
+  an outage from "no result"`;
+- a trap that costs a debugging session — `Messenger routes mails to an async transport: the
+  message is queued, so assertEmailCount sees nothing`.
+
+Delete the rest. A comment that paraphrases the next line, restates the name of the test it sits on,
+or narrates history (`this used to be…`) is noise to maintain. Before committing, re-read each
+comment you added and ask what it teaches that the code does not.
 
 ## French — the words users read
 

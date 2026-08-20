@@ -8,9 +8,9 @@ use App\Service\Motus\MotusService;
 use PHPUnit\Framework\TestCase;
 
 /**
- * La logique en deux passes de checkGuess() est le point où les clones de Wordle
- * se trompent : une lettre doublée dans la proposition ne doit être signalée que
- * autant de fois qu'elle apparaît réellement dans le mot.
+ * The two-pass logic of checkGuess() is where Wordle clones get it wrong: a
+ * letter repeated in the guess may only be flagged as many times as it really
+ * occurs in the word.
  */
 final class MotusServiceTest extends TestCase
 {
@@ -47,7 +47,7 @@ final class MotusServiceTest extends TestCase
 
     public function testMisplacedLettersArePresent(): void
     {
-        // SIROP vs PORTS : R tombe juste, T est absent, P/O/S sont mal placés.
+        // SIROP vs PORTS: R lands right, T is absent, P/O/S are misplaced.
         self::assertSame(
             ['present', 'present', 'correct', 'absent', 'present'],
             $this->states('PORTS', 'SIROP')
@@ -55,9 +55,9 @@ final class MotusServiceTest extends TestCase
     }
 
     /**
-     * Le cas qui casse les implémentations naïves : le S bien placé consomme
-     * l'unique S du mot, donc le second S de la proposition doit être ABSENT
-     * et non « présent ».
+     * The case naive implementations get wrong: the well-placed S consumes the
+     * only S of the word, so the second S of the guess must be ABSENT, not
+     * "present".
      */
     public function testDuplicateInGuessDoesNotOverConsumeASingleLetter(): void
     {
@@ -68,8 +68,8 @@ final class MotusServiceTest extends TestCase
     }
 
     /**
-     * Symétrique du précédent : le mot contient bien deux S, les deux S de la
-     * proposition doivent donc être signalés tous les deux.
+     * Mirror of the previous case: the word does hold two S, so both S of the
+     * guess must be flagged.
      */
     public function testDuplicateInWordIsReportedTwice(): void
     {

@@ -1,14 +1,14 @@
-{# @block content Le déclencheur puis le panneau, dans cet ordre. #}
+{# @block content The trigger, then the panel, in that order. #}
 {#
-   Le motif « ⓘ » qui révèle une aide contextuelle, en `<details>` natif : la
-   même commande à la souris, au clavier et au doigt, sans JavaScript.
+   The ⓘ pattern revealing contextual help, as a native `<details>`: one control
+   for mouse, keyboard and touch alike, with no JavaScript.
 
-   Volontairement pas un survol. Une infobulle révélée au survol seul est
-   inatteignable au clavier et se dérobe au pointeur (WCAG 1.4.13) ; le
-   composant `Tooltip` du kit ne convient donc pas ici.
+   Deliberately not a hover. A tooltip revealed on hover alone is unreachable by
+   keyboard and slips away from the pointer (WCAG 1.4.13), so the kit's `Tooltip`
+   component does not fit here.
 
-   Les classes portées sont structurelles : chaque appelant habille son
-   déclencheur et son panneau.
+   The classes carried are structural: each caller styles its own trigger and
+   panel.
 #}
 <details class="{{ ('relative ' ~ attributes.render('class'))|tailwind_merge }}" {{ attributes.defaults({'data-slot': 'info-disclosure'}) }}>
     {%- block content %}{% endblock -%}

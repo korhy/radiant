@@ -3,14 +3,14 @@
 
 {% block title %}Motus — Clément BOUDINEL{% endblock %}
 
-{# viewport-fit=cover : sans lui env(safe-area-inset-*) vaut 0 et la barre home
-   recouvre la dernière rangée du clavier. Surchargé ici uniquement. #}
+{# viewport-fit=cover: without it env(safe-area-inset-*) is 0 and the home bar
+   covers the bottom keyboard row. Overridden here only. #}
 {% block viewport %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 {% endblock %}
 
-{# Sur mobile l'app occupe l'écran : on neutralise les marges du wrapper de base
-   et on masque le footer, qui rendrait le document scrollable. Desktop inchangé. #}
+{# On mobile the app fills the screen: drop the base wrapper margins and hide the
+   footer, which would make the document scrollable. Desktop unchanged. #}
 {% block layout_wrapper_class %}font-sans md:mx-auto md:min-h-screen md:max-w-screen-xl md:px-12 md:py-20 lg:px-24 lg:py-0{% endblock %}
 {% block footer_class %}hidden md:block{% endblock %}
 
@@ -38,7 +38,7 @@
                 <span class="motus-title__icon">{{ include('components/_icon_motus.html.twig') }}</span>
                 Motus
 
-                {# Bureau : le même ⓘ que le Taquin, en ligne dans le titre. #}
+                {# Desktop: the same ⓘ as Taquin, inline in the heading. #}
                 <twig:InfoDisclosure class="hidden font-normal md:inline-block">
                     <twig:InfoDisclosure:Trigger label="Règles du jeu" class="cursor-help text-base text-content-low hover:text-content-max" />
                     <twig:InfoDisclosure:Panel class="left-1/2 top-full mt-2 w-64 -translate-x-1/2 rounded-lg bg-surface-inset p-3 text-sm font-normal text-content-mid shadow-xl">
@@ -47,7 +47,7 @@
                 </twig:InfoDisclosure>
             </h1>
 
-            {# Mobile : le même composant, habillé en bouton de barre pour tenir la cible tactile. #}
+            {# Mobile: the same component, styled as a bar button to keep the touch target. #}
             <twig:InfoDisclosure class="motus-info md:hidden">
                 <twig:InfoDisclosure:Trigger label="Règles du jeu" class="motus-iconbtn" />
                 <twig:InfoDisclosure:Panel class="motus-info__panel">
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        {# Desktop : la pilule Retour d'origine. Sur mobile c'est la flèche de la barre. #}
+        {# Desktop: the original Back pill. On mobile it is the arrow in the bar. #}
         <a href="{{ path('homepage') }}"
             class="hidden md:inline-block bg-surface-muted hover:bg-surface-inset text-content-max font-bold px-6 py-2 rounded-full transition-colors cursor-pointer text-center text-sm">
             Retour

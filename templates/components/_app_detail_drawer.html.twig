@@ -1,16 +1,16 @@
 {# templates/components/_app_detail_drawer.html.twig
 
-   Le dialogue vient du kit shadcn (`Dialog`), qui s'appuie sur l'élément natif
-   `<dialog>` : piège au focus, Échap, arrière-plan inerte et retour du focus
-   sont donc assurés par le navigateur, plus par du JavaScript maison.
-   Ne reste au contrôleur `app-detail-drawer` que la barre d'onglets.
+   The dialog comes from the shadcn kit (`Dialog`), built on the native
+   `<dialog>` element: focus trap, Escape, inert background and focus
+   restoration are the browser's job, no longer hand-written JavaScript. All the
+   `app-detail-drawer` controller keeps is the tab bar.
 
-   `Dialog:Content` est un modal centré par défaut ; les classes passées ici le
-   ramènent au bord droit, en tiroir pleine hauteur. Elles sont fusionnées par
-   `tailwind_merge`, pas concaténées : elles écrasent bien celles du kit. #}
+   `Dialog:Content` is a centred modal by default; the classes passed here pull
+   it back to the right edge, as a full-height drawer. They are merged by
+   `tailwind_merge`, not concatenated, so they do override the kit's. #}
 {% if app_detail is defined and app_detail is not null %}
-    {# `data-controller` est fusionné par le composant, pas écrasé : ne passer
-       que le contrôleur d'onglets, `dialog` étant ajouté par le kit. #}
+    {# `data-controller` is merged by the component, not overwritten: pass only
+       the tabs controller, `dialog` being added by the kit. #}
     <twig:Dialog id="app-detail" data-controller="app-detail-drawer">
         <twig:block name="content">
             <button
@@ -73,7 +73,6 @@
                     </div>
 
                     <div class="flex-1 overflow-y-auto overscroll-contain px-6 py-5">
-                        {# Présentation #}
                         <div role="tabpanel" id="app-detail-panel-stack" aria-labelledby="app-detail-tab-stack" tabindex="0"
                             data-app-detail-drawer-target="panel" data-tab="stack">
                             {% if app_detail.description %}
@@ -104,7 +103,6 @@
                             {% endif %}
                         </div>
 
-                        {# Défis #}
                         <div role="tabpanel" id="app-detail-panel-challenges" aria-labelledby="app-detail-tab-challenges" tabindex="0"
                             data-app-detail-drawer-target="panel" data-tab="challenges" class="hidden">
                             {% if app_detail.challenges %}
@@ -121,9 +119,9 @@
                             {% endif %}
                         </div>
 
-                        {# À venir. Les lignes stockées ne portent qu'une `description` ; le titre
-                           reste facultatif plutôt que supprimé, pour qu'une ligne qui en gagne un
-                           s'affiche sans retoucher le gabarit. #}
+                        {# Stored rows carry only a `description`; the title stays optional rather than
+                           removed, so a row that later gains one renders without touching this
+                           template. #}
                         <div role="tabpanel" id="app-detail-panel-improvements" aria-labelledby="app-detail-tab-improvements" tabindex="0"
                             data-app-detail-drawer-target="panel" data-tab="improvements" class="hidden">
                             {% if app_detail.improvements %}

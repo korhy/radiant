@@ -1,12 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Barre d'onglets du panneau « Behind the scenes ».
+ * Tab bar of the "Behind the scenes" panel.
  *
- * L'ouverture, la fermeture, le piège au focus, Échap, l'inertie de
- * l'arrière-plan et le retour du focus sont assurés par le composant `Dialog`
- * du kit, qui s'appuie sur l'élément natif `<dialog>`. Ce contrôleur ne garde
- * que ce que le navigateur ne fournit pas : le motif `tablist`.
+ * Opening, closing, the focus trap, Escape, background inertness and focus
+ * restoration all come from the kit's `Dialog` component, built on the native
+ * `<dialog>` element. This controller keeps only what the browser does not
+ * provide: the `tablist` pattern.
  */
 export default class extends Controller {
     static targets = ['panel', 'tab'];
@@ -20,8 +20,8 @@ export default class extends Controller {
     }
 
     /**
-     * Navigation aux flèches dans la barre d'onglets, comme l'attend le motif
-     * tablist : un seul onglet est dans l'ordre de tabulation à la fois.
+     * Arrow-key navigation across the tab bar, as the tablist pattern expects:
+     * only one tab sits in the tab order at a time.
      */
     moveTab(event) {
         const step = { ArrowRight: 1, ArrowLeft: -1, Home: 'first', End: 'last' }[event.key];
