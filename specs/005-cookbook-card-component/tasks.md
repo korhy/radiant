@@ -85,15 +85,15 @@ reste. C'est dit ici plutôt que déguisé en indépendance.
 
 ### Tests for User Story 2
 
-- [ ] T014 [US2] Ajouter `testRecipeFieldsAreEscaped` à `tests/Controller/CookbookCardTest.php` — titre piégé servi par les deux chemins ; assertions : la chaîne brute n'apparaît pas dans le balisage, sa forme échappée oui, et l'attribut `alt` est échappé lui aussi
-- [ ] T015 [P] [US2] Ajouter `testAnEmptyResultSetServesTheEmptyState` — une réponse d'API sans recette donne `empty: true` et un `html` contenant l'état vide, pas une chaîne vide
+- [X] T014 [US2] Ajouter `testRecipeFieldsAreEscaped` à `tests/Controller/CookbookCardTest.php` — titre piégé servi par les deux chemins ; assertions : la chaîne brute n'apparaît pas dans le balisage, sa forme échappée oui, et l'attribut `alt` est échappé lui aussi
+- [X] T015 [P] [US2] Ajouter `testAnEmptyResultSetServesTheEmptyState` — une réponse d'API sans recette donne `empty: true` et un `html` contenant l'état vide, pas une chaîne vide
 
 ### Implementation for User Story 2
 
-- [ ] T016 [US2] Dans `src/Controller/CookbookController.php`, renvoyer l'état vide rendu par `_recipe_grid_state.html.twig` quand la première page ne ramène rien, avec `empty: true`
-- [ ] T017 [US2] Dans `assets/controllers/cookbook_controller.js`, supprimer la chaîne `grid.innerHTML = '<div class="col-span-full…'` et la remplacer par l'injection de `data.html` quand `data.empty` est vrai (remplacement, pas ajout)
-- [ ] T018 [US2] Dans `templates/app/cookbook/index.html.twig`, faire passer la branche « aucune recette » par `_recipe_grid_state.html.twig` ; laisser la branche d'indisponibilité en place, elle n'est jamais servie au client
-- [ ] T019 [US2] Relire `assets/controllers/cookbook_controller.js` de bout en bout : **plus aucun littéral de gabarit ne doit contenir de balise**. C'est le critère d'arrêt de la phase
+- [X] T016 [US2] Dans `src/Controller/CookbookController.php`, renvoyer l'état vide rendu par `_recipe_grid_state.html.twig` quand la première page ne ramène rien, avec `empty: true`
+- [X] T017 [US2] Dans `assets/controllers/cookbook_controller.js`, supprimer la chaîne `grid.innerHTML = '<div class="col-span-full…'` et la remplacer par l'injection de `data.html` quand `data.empty` est vrai (remplacement, pas ajout)
+- [X] T018 [US2] Dans `templates/app/cookbook/index.html.twig`, faire passer la branche « aucune recette » par `_recipe_grid_state.html.twig` ; laisser la branche d'indisponibilité en place, elle n'est jamais servie au client — *fait dès T010, les deux branches passant par le même partiel*
+- [X] T019 [US2] Relire `assets/controllers/cookbook_controller.js` de bout en bout : **plus aucun littéral de gabarit ne doit contenir de balise**. C'est le critère d'arrêt de la phase — *un dernier littéral reconstruisait le conteneur « Charger plus » : il est désormais rendu par le gabarit et simplement masqué. Restent les libellés de tri en français dans le JS, hors périmètre*
 
 **Checkpoint**: **S3 est refermé**, et plus aucun chemin ne compose de balisage côté navigateur.
 

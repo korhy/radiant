@@ -2,15 +2,19 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = ['loadMoreContainer', 'button', 'searchInput', 'categorySelect', 'sortBtn']
-    static values = { nextPage: Number }
+    static values = { nextPage: Number, unavailableLabel: String }
 
     #loading = false
     #observer = null
+    #loadingLabel = ''
     #sortField = null
     #sortDir = null
     #debounceTimer = null
 
     connect() {
+        // Kept from the template so no visible text lives in this file.
+        this.#loadingLabel = this.hasButtonTarget ? this.buttonTarget.textContent.trim() : ''
+
         this.#observer = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting) this.loadMore()
         }, { rootMargin: '200px' })
@@ -60,7 +64,7 @@ export default class extends Controller {
         // Without this guard, the empty payload of a 503 would read as
         // "no result" and show the wrong message.
         if (!res.ok) {
-            if (this.hasButtonTarget) this.buttonTarget.textContent = 'Recettes momentanément indisponibles'
+            if (this.hasButtonTarget) this.buttonTarget.textContent = this.unavailableLabelValue
             this.#observer?.disconnect()
             this.#loading = false
             return
@@ -70,8 +74,8 @@ export default class extends Controller {
 
         const grid = document.getElementById('recipe-grid')
         if (data.empty) {
-            grid.innerHTML = `<div class="col-span-full text-center py-12 text-content-low">Aucune recette ne correspond à ces critères.</div>`
-            if (this.hasLoadMoreContainerTarget) this.loadMoreContainerTarget.remove()
+            grid.innerHTML = data.html
+            this.#hideLoadMore()
             this.#observer.disconnect()
             this.#loading = false
             return
@@ -85,27 +89,25 @@ export default class extends Controller {
             if (this.hasButtonTarget) this.buttonTarget.textContent = '↓'
             this.#loading = false
         } else {
-            if (this.hasLoadMoreContainerTarget) this.loadMoreContainerTarget.remove()
-            this.#observer.disconnect()
+            this.#hideLoadMore()
         }
     }
 
+    #hideLoadMore() {
+        if (this.hasLoadMoreContainerTarget) this.loadMoreContainerTarget.classList.add('hidden')
+        this.#observer?.disconnect()
+    }
+
     #reset() {
-        const grid = document.getElementById('recipe-grid')
-        grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6'
-        grid.innerHTML = ''
+        document.getElementById('recipe-grid').innerHTML = ''
 
+        // The container is part of the page, not something to rebuild: it is
+        // only shown again, with the label the template gave it.
         if (this.hasLoadMoreContainerTarget) {
-            this.#observer.unobserve(this.loadMoreContainerTarget)
-            this.loadMoreContainerTarget.remove()
+            this.loadMoreContainerTarget.classList.remove('hidden')
+            if (this.hasButtonTarget) this.buttonTarget.textContent = this.#loadingLabel
+            this.#observer.observe(this.loadMoreContainerTarget)
         }
-
-        const container = document.createElement('div')
-        container.setAttribute('data-cookbook-target', 'loadMoreContainer')
-        container.className = 'flex justify-center mt-6'
-        container.innerHTML = `<span data-cookbook-target="button" class="text-content-min text-sm animate-pulse">Chargement…</span>`
-        this.element.appendChild(container)
-        this.#observer.observe(container)
 
         this.nextPageValue = 1
         this.#loading = false

@@ -98,6 +98,46 @@ final class CookbookCardTest extends WebTestCase
         );
     }
 
+    /**
+     * Audit finding S3: the client used to interpolate API fields into an HTML
+     * string, `alt` included. Rendering server-side settles it by construction.
+     */
+    public function testRecipeFieldsAreEscaped(): void
+    {
+        $trapped = [[
+            'id' => 9,
+            'title' => 'L\'entrecôte "façon <chef>" <img src=x onerror=alert(1)>',
+            // With a thumbnail on purpose: `alt` was the sharpest edge of S3.
+            'thumbnail' => 'https://cookbook.test/x.jpg',
+            'category' => ['id' => 1, 'name' => '<b>Plat</b>'],
+            'duration' => 30,
+        ]];
+
+        $this->mockApi($trapped);
+
+        $this->client->request('GET', '/app/cookbook');
+        $firstScreen = (string) $this->client->getResponse()->getContent();
+        $scrolled = $this->payloadOf('/app/cookbook/recipes')['html'];
+
+        foreach (['premier écran' => $firstScreen, 'défilement' => $scrolled] as $path => $html) {
+            self::assertStringNotContainsString('<img src=x', $html, sprintf('Balisage injecté par le %s.', $path));
+            self::assertStringNotContainsString('<b>Plat</b>', $html, sprintf('Balisage injecté par le %s.', $path));
+            self::assertStringContainsString('&lt;img src=x', $html, sprintf('Le titre piégé doit être échappé dans le %s.', $path));
+            self::assertStringContainsString('alt=""', $html, sprintf('Le titre ne doit plus entrer dans alt= dans le %s.', $path));
+        }
+    }
+
+    public function testAnEmptyResultSetServesTheEmptyState(): void
+    {
+        $this->mockApi([]);
+
+        $payload = $this->payloadOf('/app/cookbook/recipes');
+
+        self::assertTrue($payload['empty']);
+        self::assertStringContainsString('data-slot="empty"', $payload['html'], 'L\'état vide doit venir du serveur.');
+        self::assertFalse($payload['hasNextPage']);
+    }
+
     public function testTheEndpointServesRenderedMarkup(): void
     {
         $this->mockApi(self::RECIPES);

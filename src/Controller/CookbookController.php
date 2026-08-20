@@ -71,12 +71,19 @@ final class CookbookController extends AbstractController
 
         $recipes = $data['member'] ?? [];
         $hasNextPage = isset($data['view']['next']);
+        $isEmpty = [] === $recipes && 1 === $page;
 
-        // The markup is rendered here, from the same template as the first
-        // screen: the browser never assembles a card of its own.
+        // The markup is rendered here, from the same templates as the first
+        // screen: the browser never assembles a card or a state of its own.
+        $html = $isEmpty
+            ? $this->renderView('app/cookbook/_recipe_grid_state.html.twig', [
+                'message' => 'Aucune recette ne correspond à ces critères.',
+            ])
+            : $this->renderView('app/cookbook/_recipe_grid_items.html.twig', ['recipes' => $recipes]);
+
         return $this->json([
-            'html' => $this->renderView('app/cookbook/_recipe_grid_items.html.twig', ['recipes' => $recipes]),
-            'empty' => [] === $recipes && 1 === $page,
+            'html' => $html,
+            'empty' => $isEmpty,
             'hasNextPage' => $hasNextPage,
             'nextPage' => $hasNextPage ? $page + 1 : null,
         ]);

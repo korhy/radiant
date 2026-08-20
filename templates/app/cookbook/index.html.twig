@@ -17,6 +17,7 @@
 
         {# Filters & sorts #}
         <div data-controller="cookbook" data-cookbook-next-page-value="2"
+            data-cookbook-unavailable-label-value="Recettes momentanément indisponibles"
             data-cookbook-categories-value="{{ categories|json_encode }}">
 
             <div class="flex flex-col sm:flex-row gap-3">
@@ -71,13 +72,15 @@
                 {% endif %}
             </div>
 
-            {% if hasNextPage %}
-                <div data-cookbook-target="loadMoreContainer" class="flex justify-center mt-6">
-                    <span data-cookbook-target="button" class="text-content-min text-sm animate-pulse">
-                        Chargement…
-                    </span>
-                </div>
-            {% endif %}
+            {# Always rendered, hidden when there is nothing more to load: the
+               controller toggles it instead of rebuilding it, which keeps every
+               piece of visible text in this template. #}
+            <div data-cookbook-target="loadMoreContainer"
+                class="flex justify-center mt-6{{ hasNextPage ? '' : ' hidden' }}">
+                <span data-cookbook-target="button" class="text-content-min text-sm animate-pulse">
+                    Chargement…
+                </span>
+            </div>
 
         </div>{# /data-controller #}
 
