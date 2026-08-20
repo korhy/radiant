@@ -70,6 +70,11 @@ props documentées en tête, `attributes` fusionnés par `tailwind_merge`, un `d
 
 - **`SectionHeader`** — l'en-tête d'une section du portfolio : barre collante et libellé de bureau.
 - **`InfoDisclosure`** (+ `:Trigger`, `:Panel`) — le ⓘ qui révèle une aide.
+- **`RecipeCard`** — la carte d'une recette du Cookbook. Le kit a bien un `Card`, mais c'est un
+  conteneur neutre dont les quatre classes déterminantes (`rounded-lg border bg-card shadow-sm`)
+  sont toutes écrasées ici, et la carte recette est un lien de bout en bout à vignette pleine
+  largeur. L'`Empty` du kit, lui, **est** installé : il apporte une vraie structure dont on ne
+  surcharge qu'une classe.
 
 **Un composant du projet ne porte que des classes structurelles ; l'appelant l'habille.** C'est ce
 qui laisse le même `InfoDisclosure` être un ⓘ en ligne sur le bureau et un bouton de barre de 44 px
