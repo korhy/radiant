@@ -105,8 +105,8 @@ reste. C'est dit ici plutôt que déguisé en indépendance.
 
 **Independent Test**: modifier le chemin de la route `cookbook_recipe` en local ; les cartes des deux groupes suivent.
 
-- [ ] T020 [US3] Ajouter `testTheCardLinkComesFromTheRouter` à `tests/Controller/CookbookCardTest.php` — l'adresse portée par une carte servie par le défilement est **exactement** celle générée par le routeur pour cette recette
-- [ ] T021 [US3] Vérifier par `grep` qu'aucune chaîne `/app/cookbook/recipe/` ne subsiste dans `assets/` ; supprimer ce qui traîne
+- [X] T020 [US3] Ajouter `testTheCardLinkComesFromTheRouter` à `tests/Controller/CookbookCardTest.php` — l'adresse portée par une carte servie par le défilement est **exactement** celle générée par le routeur pour cette recette
+- [X] T021 [US3] Vérifier par `grep` qu'aucune chaîne `/app/cookbook/recipe/` ne subsiste dans `assets/` ; supprimer ce qui traîne — *l'URL du point d'accès lui-même passe aussi en valeur Stimulus, comme `data-motus-guess-url-value` : plus aucun chemin en dur dans le JS*
 
 **Checkpoint**: une route qui bouge ne peut plus casser silencieusement la moitié des cartes.
 

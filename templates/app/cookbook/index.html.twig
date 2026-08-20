@@ -17,6 +17,7 @@
 
         {# Filters & sorts #}
         <div data-controller="cookbook" data-cookbook-next-page-value="2"
+            data-cookbook-recipes-url-value="{{ path('cookbook_recipes_json') }}"
             data-cookbook-unavailable-label-value="Recettes momentanément indisponibles"
             data-cookbook-categories-value="{{ categories|json_encode }}">
 

@@ -127,6 +127,20 @@ final class CookbookCardTest extends WebTestCase
         }
     }
 
+    /**
+     * The scroll path used to rebuild the recipe path by hand: a route change
+     * would have broken half the cards, silently.
+     */
+    public function testTheCardLinkComesFromTheRouter(): void
+    {
+        $this->mockApi(self::RECIPES);
+
+        $html = $this->payloadOf('/app/cookbook/recipes')['html'];
+
+        $expected = static::getContainer()->get('router')->generate('cookbook_recipe', ['id' => 1]);
+        self::assertStringContainsString(sprintf('href="%s"', $expected), $html);
+    }
+
     public function testAnEmptyResultSetServesTheEmptyState(): void
     {
         $this->mockApi([]);

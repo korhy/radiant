@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = ['loadMoreContainer', 'button', 'searchInput', 'categorySelect', 'sortBtn']
-    static values = { nextPage: Number, unavailableLabel: String }
+    static values = { nextPage: Number, unavailableLabel: String, recipesUrl: String }
 
     #loading = false
     #observer = null
@@ -59,7 +59,7 @@ export default class extends Controller {
         if (category) params.set('category', category)
         if (this.#sortField) params.set(`order[${this.#sortField}]`, this.#sortDir)
 
-        const res = await fetch(`/app/cookbook/recipes?${params}`)
+        const res = await fetch(`${this.recipesUrlValue}?${params}`)
 
         // Without this guard, the empty payload of a 503 would read as
         // "no result" and show the wrong message.
