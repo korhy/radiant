@@ -27,3 +27,12 @@ framework:
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
+
+# CI starts from an empty database: a mail sent from a test would write to
+# `messenger_messages`, which does not exist there. In memory keeps the send
+# asynchronous, as in production, without touching the schema.
+when@test:
+    framework:
+        messenger:
+            transports:
+                async: 'in-memory://'

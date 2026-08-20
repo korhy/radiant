@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Tests\Service\Cookbook;
 
 use App\Service\Cookbook\CookbookApiService;
+use App\Service\Cookbook\Exception\CookbookUnavailableException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
@@ -22,7 +24,7 @@ final class CookbookApiServiceTest extends TestCase
     private const PASSWORD = 'test-password';
 
     /**
-     * @param list<MockResponse> $responses
+     * @param list<MockResponse|callable> $responses
      *
      * @return array{0: CookbookApiService, 1: MockHttpClient}
      */
@@ -103,17 +105,52 @@ final class CookbookApiServiceTest extends TestCase
         $service->getRecipes();
     }
 
-    public function testItThrowsOnANonAuthError(): void
+    /**
+     * A server error upstream is an outage: the caller has to tell it apart to
+     * degrade the page (audit finding S8).
+     */
+    public function testAServerErrorIsReportedAsAnUnavailability(): void
     {
         [$service] = $this->service([
             self::json(['token' => 'jwt-1']),
             self::json(['error' => 'boom'], 500),
         ]);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(CookbookUnavailableException::class);
         $this->expectExceptionMessageMatches('/Cookbook API error 500/');
 
         $service->getCategories();
+    }
+
+    public function testAnUnreachableApiIsReportedAsAnUnavailability(): void
+    {
+        [$service] = $this->service([
+            static fn () => throw new TransportException('Connection refused'),
+        ]);
+
+        $this->expectException(CookbookUnavailableException::class);
+
+        $service->getRecipes();
+    }
+
+    /**
+     * Unavailability stops at 5xx: a client error stays a bug in our own code
+     * and must not pass itself off as an outage.
+     */
+    public function testAClientErrorIsNotAnUnavailability(): void
+    {
+        [$service] = $this->service([
+            self::json(['token' => 'jwt-1']),
+            self::json(['error' => 'not found'], 404),
+        ]);
+
+        try {
+            $service->getRecipe(404);
+            self::fail('A 404 must raise an exception.');
+        } catch (\RuntimeException $e) {
+            self::assertNotInstanceOf(CookbookUnavailableException::class, $e);
+            self::assertMatchesRegularExpression('/Cookbook API error 404/', $e->getMessage());
+        }
     }
 
     public function testTheTokenIsReusedAcrossCalls(): void

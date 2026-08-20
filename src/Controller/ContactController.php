@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ContactController extends AbstractController
@@ -34,12 +35,15 @@ final class ContactController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // SPF and DKIM can only sign our own domain: the From header must
+            // stay the site address, so the visitor goes to Reply-To instead.
             $this->mailer->send((new NotificationEmail())
                 ->subject('Demande de contact')
                 ->htmlTemplate('email/contact.html.twig')
-                ->from($form->get('email')->getData())
+                ->from(new Address($this->adminEmail, 'Formulaire de contact'))
+                ->replyTo(new Address($data->email, $data->name))
                 ->to($this->adminEmail)
-                ->context(['contact' => $form->getData()]));
+                ->context(['contact' => $data]));
 
             $this->addFlash('success', 'Votre demande de contact a bien été envoyé');
 

@@ -56,6 +56,16 @@ export default class extends Controller {
         if (this.#sortField) params.set(`order[${this.#sortField}]`, this.#sortDir)
 
         const res = await fetch(`/app/cookbook/recipes?${params}`)
+
+        // Without this guard, the empty payload of a 503 would read as
+        // "no result" and show the wrong message.
+        if (!res.ok) {
+            if (this.hasButtonTarget) this.buttonTarget.textContent = 'Recettes momentanément indisponibles'
+            this.#observer?.disconnect()
+            this.#loading = false
+            return
+        }
+
         const data = await res.json()
 
         const grid = document.getElementById('recipe-grid')

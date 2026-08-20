@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Repository\AppRepository;
 use App\Service\Cookbook\CookbookApiService;
+use App\Service\Cookbook\Exception\CookbookUnavailableException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,14 +18,23 @@ final class CookbookController extends AbstractController
     #[Route('/app/cookbook', name: 'cookbook')]
     public function index(CookbookApiService $cookbookApiService, AppRepository $appRepository): Response
     {
-        $data = $cookbookApiService->getRecipes();
-        $categories = $cookbookApiService->getCategories();
+        $unavailable = false;
+
+        try {
+            $data = $cookbookApiService->getRecipes();
+            $categories = $cookbookApiService->getCategories();
+        } catch (CookbookUnavailableException) {
+            $data = [];
+            $categories = [];
+            $unavailable = true;
+        }
 
         return $this->render('app/cookbook/index.html.twig', [
             'recipes' => $data['member'] ?? [],
             'hasNextPage' => isset($data['view']['next']),
             'categories' => $categories['member'] ?? [],
             'apiDocUrl' => $cookbookApiService->getDocUrl(),
+            'apiUnavailable' => $unavailable,
             'app_detail' => $appRepository->findBySlug('cookbook'),
         ]);
     }
@@ -45,7 +55,18 @@ final class CookbookController extends AbstractController
             'order[createdAt]' => $order['createdAt'] ?? null,
         ]);
 
-        $data = $cookbookApiService->getRecipes($page, $itemsPerPage, $filters);
+        try {
+            $data = $cookbookApiService->getRecipes($page, $itemsPerPage, $filters);
+        } catch (CookbookUnavailableException) {
+            // 503 rather than an empty payload: the client must be able to
+            // tell an outage from "no result" and show the right message.
+            return $this->json([
+                'recipes' => [],
+                'hasNextPage' => false,
+                'nextPage' => null,
+                'unavailable' => true,
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
 
         return $this->json([
             'recipes' => $data['member'] ?? [],
@@ -62,8 +83,18 @@ final class CookbookController extends AbstractController
         AppRepository $appRepository,
         int $id,
     ): Response {
+        try {
+            $recipe = $cookbookApiService->getRecipe($id);
+        } catch (CookbookUnavailableException) {
+            // A recipe page has nothing to degrade to: send the visitor back
+            // to the list, which already carries the degraded state.
+            $this->addFlash('warning', 'Le service de recettes est momentanément indisponible. Réessaie dans quelques instants.');
+
+            return $this->redirectToRoute('cookbook');
+        }
+
         return $this->render('app/cookbook/recipe.html.twig', [
-            'recipe' => $cookbookApiService->getRecipe($id),
+            'recipe' => $recipe,
             'app_detail' => $appRepository->findBySlug('cookbook/recipe'),
         ]);
     }
