@@ -129,4 +129,9 @@ phpunit: ## Run the test suite (use TEST=path for a subset)
 	$(PHPUNIT) $(if $(TEST),$(TEST),)
 
 .PHONY: ci
+e2e: ## Run the Playwright suite (accessibility, both themes) — starts its own servers
+	npx playwright test
+
+.PHONY: e2e
+
 ci: php-cs-fixer twig-cs-fixer phpstan phpunit ## Run exactly what .github/workflows/ci.yml runs

@@ -1,7 +1,9 @@
 {
     "devDependencies": {
+        "@axe-core/playwright": "^4.13.0",
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
+        "@playwright/test": "^1.62.1",
         "@symfony/webpack-encore": "^4.7.0",
         "core-js": "^3.38.0",
         "postcss": "^8.4.47",
@@ -18,7 +20,9 @@
         "dev-server": "encore dev-server",
         "dev": "encore dev",
         "watch": "encore dev --watch",
-        "build": "encore production --progress"
+        "build": "encore production --progress",
+        "test:e2e": "playwright test",
+        "test:e2e:ui": "playwright test --ui"
     },
     "dependencies": {
         "@hotwired/stimulus": "^3.2.2",

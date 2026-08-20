@@ -43,3 +43,69 @@ jobs:
         env:
           APP_ENV: test
           DATABASE_URL: "sqlite:///%kernel.project_dir%/var/test.db"
+
+  e2e:
+    name: Accessibility (Playwright)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo, pdo_sqlite, intl, mbstring
+          coverage: none
+          tools: composer:v2, symfony-cli
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      - name: Build assets
+        # Dev build: the audit needs the stylesheet, not the hashed production bundle,
+        # and encore dev is several times faster.
+        run: npm run dev
+
+      - name: Cache Playwright browser
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-shell-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright headless shell
+        # --only-shell installs the lightweight Chrome headless shell rather than full
+        # Chromium. On a cache hit only the OS libraries are (re)installed.
+        run: |
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = "true" ]; then
+            npx playwright install-deps chromium-headless-shell
+          else
+            npx playwright install --with-deps --only-shell chromium
+          fi
+
+      - name: Run the accessibility suite
+        # The suite starts the site and the Cookbook API stub itself, and builds its own
+        # SQLite database in tests/e2e/global-setup.js.
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
