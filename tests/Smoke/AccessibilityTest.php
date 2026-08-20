@@ -10,6 +10,8 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\MockResponse;
 
 /**
  * L'accessibilité est un critère d'acceptation du projet, pas une finition.
@@ -64,6 +66,25 @@ final class AccessibilityTest extends WebTestCase
         $crawler = $this->client->request('GET', '/app/taquin');
 
         self::assertSame(1, $crawler->filter('[data-taquin-target="status"][role="status"]')->count());
+    }
+
+    /**
+     * The infinite scroll used to load silently: what the eye sees appear must
+     * be announced too.
+     */
+    public function testCookbookExposesALiveRegionForLoadedRecipes(): void
+    {
+        static::getContainer()->set('http_client', new MockHttpClient(
+            static fn (string $method, string $url): MockResponse => new MockResponse(json_encode(
+                str_contains($url, 'login_check') ? ['token' => 'jwt'] : ['member' => []],
+                JSON_THROW_ON_ERROR
+            )),
+            'https://cookbook.test'
+        ));
+
+        $crawler = $this->client->request('GET', '/app/cookbook');
+
+        self::assertSame(1, $crawler->filter('[data-cookbook-target="announcement"][role="status"]')->count());
     }
 
     /**

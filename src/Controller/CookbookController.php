@@ -65,6 +65,7 @@ final class CookbookController extends AbstractController
                 'empty' => false,
                 'hasNextPage' => false,
                 'nextPage' => null,
+                'announcement' => '',
                 'unavailable' => true,
             ], Response::HTTP_SERVICE_UNAVAILABLE);
         }
@@ -86,6 +87,10 @@ final class CookbookController extends AbstractController
             'empty' => $isEmpty,
             'hasNextPage' => $hasNextPage,
             'nextPage' => $hasNextPage ? $page + 1 : null,
+            'announcement' => $isEmpty ? '' : trim($this->renderView(
+                'app/cookbook/_recipe_grid_announcement.html.twig',
+                ['count' => \count($recipes)]
+            )),
         ]);
     }
 

@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['loadMoreContainer', 'button', 'searchInput', 'categorySelect', 'sortBtn']
+    static targets = ['loadMoreContainer', 'button', 'searchInput', 'categorySelect', 'sortBtn', 'announcement']
     static values = { nextPage: Number, unavailableLabel: String, recipesUrl: String }
 
     #loading = false
@@ -65,6 +65,7 @@ export default class extends Controller {
         // "no result" and show the wrong message.
         if (!res.ok) {
             if (this.hasButtonTarget) this.buttonTarget.textContent = this.unavailableLabelValue
+            this.#announce(this.unavailableLabelValue)
             this.#observer?.disconnect()
             this.#loading = false
             return
@@ -83,6 +84,7 @@ export default class extends Controller {
 
         // Server-rendered markup: Twig escaped every field, the browser only inserts it.
         grid.insertAdjacentHTML('beforeend', data.html)
+        this.#announce(data.announcement)
 
         if (data.hasNextPage) {
             this.nextPageValue = data.nextPage
@@ -91,6 +93,11 @@ export default class extends Controller {
         } else {
             this.#hideLoadMore()
         }
+    }
+
+    // Announced, never focused: the reader stays where they were.
+    #announce(sentence) {
+        if (this.hasAnnouncementTarget) this.announcementTarget.textContent = sentence ?? ''
     }
 
     #hideLoadMore() {

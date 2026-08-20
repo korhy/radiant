@@ -120,11 +120,11 @@ reste. C'est dit ici plutôt que déguisé en indépendance.
 
 **Détachable** : si cette phase saute, les phases 3 à 5 restent complètes et cohérentes.
 
-- [ ] T022 [US4] Ajouter au gabarit `templates/app/cookbook/index.html.twig` une région `role="status"` **vide et présente dès le premier rendu**, hors de la grille
-- [ ] T023 [US4] Dans `src/Controller/CookbookController.php`, ajouter le champ `announcement` à la charge — phrase française **rendue par Twig**, jamais composée en PHP (voir décision D4 de [research.md](research.md))
-- [ ] T024 [US4] Dans `assets/controllers/cookbook_controller.js`, recopier `data.announcement` dans la région `role="status"` après insertion, sans déplacer le focus
-- [ ] T025 [US4] Ajouter à `tests/Smoke/AccessibilityTest.php` un test figeant la présence de la région `role="status"` sur `/app/cookbook`
-- [ ] T026 [US4] Vérifier au lecteur d'écran (VoiceOver) : chargement d'une page annoncé, focus immobile ; et l'échec de chargement annoncé au même titre
+- [X] T022 [US4] Ajouter au gabarit `templates/app/cookbook/index.html.twig` une région `role="status"` **vide et présente dès le premier rendu**, hors de la grille
+- [X] T023 [US4] Dans `src/Controller/CookbookController.php`, ajouter le champ `announcement` à la charge — phrase française **rendue par Twig**, jamais composée en PHP (voir décision D4 de [research.md](research.md))
+- [X] T024 [US4] Dans `assets/controllers/cookbook_controller.js`, recopier `data.announcement` dans la région `role="status"` après insertion, sans déplacer le focus
+- [X] T025 [US4] Ajouter à `tests/Smoke/AccessibilityTest.php` un test figeant la présence de la région `role="status"` sur `/app/cookbook`
+- [ ] T026 [US4] **À faire par toi** — vérifier au lecteur d'écran (VoiceOver) : chargement d'une page annoncé, focus immobile ; et l'échec de chargement annoncé au même titre
 
 **Checkpoint**: le défilement infini n'est plus muet.
 

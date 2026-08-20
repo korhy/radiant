@@ -73,6 +73,10 @@
                 {% endif %}
             </div>
 
+            {# Present from the first render, and empty: an announcement region
+               added later is unevenly reported by assistive technology. #}
+            <p data-cookbook-target="announcement" role="status" class="sr-only"></p>
+
             {# Always rendered, hidden when there is nothing more to load: the
                controller toggles it instead of rebuilding it, which keeps every
                piece of visible text in this template. #}
