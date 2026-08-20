@@ -40,12 +40,16 @@
         "symfony/string": "7.4.*",
         "symfony/translation": "7.4.*",
         "symfony/twig-bundle": "7.4.*",
+        "symfony/ux-icons": "^2.36",
+        "symfony/ux-twig-component": "^2.36",
         "symfony/validator": "7.4.*",
         "symfony/web-link": "7.4.*",
         "symfony/webpack-encore-bundle": "^2.2",
         "symfony/yaml": "7.4.*",
+        "tales-from-a-dev/twig-tailwind-extra": "^1.4",
         "twig/cssinliner-extra": "^3.13",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/html-extra": "^3.28",
         "twig/inky-extra": "^3.13",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^2.4"
@@ -110,6 +114,7 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^7.3",
         "symfony/stopwatch": "7.4.*",
+        "symfony/ux-toolkit": "^2.36",
         "symfony/web-profiler-bundle": "7.4.*",
         "vincentlanglet/twig-cs-fixer": "^4.0"
     }

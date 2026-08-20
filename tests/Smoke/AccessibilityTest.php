@@ -79,6 +79,11 @@ final class AccessibilityTest extends WebTestCase
     /**
      * A5 + A6 — le tiroir n'avait aucun nom accessible, aucune sémantique
      * d'onglets, et restait dans l'ordre de tabulation une fois fermé.
+     *
+     * Depuis la reprise sur le composant `Dialog` du kit, le panneau est un
+     * `<dialog>` natif : sans l'attribut `open`, il n'est ni affiché, ni
+     * focusable, ni exposé — ce que `inert` obtenait à la main. Le rôle et
+     * `aria-modal` viennent de l'élément lui-même.
      */
     public function testBehindTheScenesDrawerIsAccessible(): void
     {
@@ -88,14 +93,26 @@ final class AccessibilityTest extends WebTestCase
 
         self::assertSame(
             1,
-            $crawler->filter('[data-app-detail-drawer-target="trigger"][aria-label][aria-expanded="false"]')->count(),
+            $crawler->filter('[data-dialog-target="trigger"][aria-label][aria-expanded="false"]')->count(),
             'Le déclencheur doit être nommé et annoncer son état.'
         );
         self::assertSame(
             1,
-            $crawler->filter('[data-app-detail-drawer-target="drawer"][role="dialog"][inert]')->count(),
-            'Fermé, le tiroir doit être inerte.'
+            $crawler->filter('dialog:not([open])')->count(),
+            'Le panneau doit être un <dialog> natif, fermé au rendu.'
         );
+
+        $labelledBy = $crawler->filter('[aria-labelledby]')->reduce(
+            static fn (Crawler $node): bool => $node->filter('dialog')->count() > 0
+        );
+
+        self::assertSame(1, $labelledBy->count(), 'Le panneau doit porter un nom accessible.');
+        self::assertSame(
+            1,
+            $crawler->filter('#'.$labelledBy->attr('aria-labelledby'))->count(),
+            'Le nom accessible doit pointer sur un élément qui existe.'
+        );
+
         self::assertSame(4, $crawler->filter('[role="tablist"] [role="tab"][aria-controls]')->count());
         self::assertSame(4, $crawler->filter('[role="tabpanel"][aria-labelledby]')->count());
     }

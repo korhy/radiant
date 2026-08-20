@@ -106,8 +106,8 @@ export default class extends Controller {
     #updateSortButtons() {
         this.sortBtnTargets.forEach(btn => {
             const isActive = btn.dataset.sort === this.#sortField
-            btn.classList.toggle('border-accent-fg', isActive)
-            btn.classList.toggle('text-accent-fg-em', isActive)
+            btn.classList.toggle('border-brand-fg', isActive)
+            btn.classList.toggle('text-brand-fg-em', isActive)
             btn.classList.toggle('border-line-control', !isActive)
             btn.classList.toggle('text-content-low', !isActive)
             if (isActive) {
@@ -133,7 +133,7 @@ export default class extends Controller {
                </div>`;
 
         const category = recipe.category
-            ? `<span class="bg-accent/20 text-accent-fg-em text-xs font-medium px-2 py-0.5 rounded-full">${recipe.category.name}</span>`
+            ? `<span class="bg-brand/20 text-brand-fg-em text-xs font-medium px-2 py-0.5 rounded-full">${recipe.category.name}</span>`
             : '';
 
         const duration = recipe.duration
@@ -147,10 +147,10 @@ export default class extends Controller {
             : '';
 
         return `<a href="/app/cookbook/recipe/${recipe.id}"
-                   class="group bg-surface-raised rounded-2xl overflow-hidden shadow-lg hover:shadow-accent/10 hover:-translate-y-1 transition-all duration-200">
+                   class="group bg-surface-raised rounded-2xl overflow-hidden shadow-lg hover:shadow-brand/10 hover:-translate-y-1 transition-all duration-200">
                     ${thumbnail}
                     <div class="p-4 flex flex-col gap-2">
-                        <h2 class="text-content-max font-semibold text-sm leading-snug group-hover:text-accent-fg-em transition-colors">
+                        <h2 class="text-content-max font-semibold text-sm leading-snug group-hover:text-brand-fg-em transition-colors">
                             ${recipe.title}
                         </h2>
                         <div class="flex items-center gap-2 flex-wrap mt-auto">

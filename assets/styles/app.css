@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+/* Animations attendues par les composants du kit shadcn. */
+@import 'tw-animate-css';
 
 /* Sources déclarées explicitement plutôt que laissées à la détection automatique.
    `assets` n'est pas facultatif : trois contrôleurs Stimulus posent des utilitaires
@@ -21,15 +23,15 @@
    Contrastes mesurés et consignés dans specs/001-tailwind4-shadcn/light-theme.md.
    ========================================================================= */
 :root {
-    /* ---- Couleurs de marque ---- */
-    --brand-amber: #faa734;
-    --brand-amber-light: #fcc175;
-    --brand-amber-strong: #e68a1a;
-    --brand-night: #23313e;
+    /* ---- Couleurs brutes ---- */
+    --amber: #faa734;
+    --amber-light: #fcc175;
+    --amber-strong: #e68a1a;
+    --night: #23313e;
     /* Deux ambres réservés à l'avant-plan en thème clair : l'ambre de marque
        plafonne à 1,97:1 sur blanc, inutilisable pour du texte. */
-    --brand-amber-ink: #a35c12;
-    --brand-amber-ink-em: #8a4f0f;
+    --amber-ink: #a35c12;
+    --amber-ink-em: #8a4f0f;
 
     /* ---- Fonds ---- */
     --canvas: var(--brand-night);
@@ -58,15 +60,20 @@
     /* Bordure qui délimite un contrôle : tenue à 3:1 (WCAG 1.4.11). */
     --line-control: #94a3b8;
 
-    /* ---- Accent ---- */
-    --accent: var(--brand-amber);
-    --accent-strong: var(--brand-amber-strong);
-    --accent-light: var(--brand-amber-light);
-    --accent-fg: var(--brand-amber);
-    --accent-fg-em: var(--brand-amber-light);
-    /* Texte posé sur un fond accentué. L'ardoise, pas le blanc : blanc sur
+    /* ---- Marque. `accent` est réservé au sens que lui donne le kit shadcn :
+       une surface de survol discrète, pas l'ambre du portfolio. ---- */
+    --brand: var(--amber);
+    --brand-strong: var(--amber-strong);
+    --brand-light: var(--amber-light);
+    --brand-fg: var(--amber);
+    --brand-fg-em: var(--amber-light);
+    /* Texte posé sur un fond de marque. L'ardoise, pas le blanc : blanc sur
        ambre donne 1,97:1. */
-    --accent-on: var(--brand-night);
+    --brand-on: var(--night);
+
+    /* ---- Alerte ---- */
+    --danger: #dc2626;
+    --danger-on: #ffffff;
 
     /* ---- Formulaires ---- */
     --field: #374151;
@@ -136,9 +143,9 @@
         --line-subtle: #e2e8f0;
         --line-control: #78828f;
 
-        --accent-light: #b76a14;
-        --accent-fg: var(--brand-amber-ink);
-        --accent-fg-em: var(--brand-amber-ink-em);
+        --brand-light: #b76a14;
+        --brand-fg: var(--amber-ink);
+        --brand-fg-em: var(--amber-ink-em);
 
         --field: #f9fafb;
         --field-line: #78828f;
@@ -205,12 +212,12 @@
     --color-line-subtle: var(--line-subtle);
     --color-line-control: var(--line-control);
 
-    --color-accent: var(--accent);
-    --color-accent-strong: var(--accent-strong);
-    --color-accent-light: var(--accent-light);
-    --color-accent-fg: var(--accent-fg);
-    --color-accent-fg-em: var(--accent-fg-em);
-    --color-accent-on: var(--accent-on);
+    --color-brand: var(--brand);
+    --color-brand-strong: var(--brand-strong);
+    --color-brand-light: var(--brand-light);
+    --color-brand-fg: var(--brand-fg);
+    --color-brand-fg-em: var(--brand-fg-em);
+    --color-brand-on: var(--brand-on);
 
     --color-field: var(--field);
     --color-field-line: var(--field-line);
@@ -232,6 +239,47 @@
     --color-tile-face-hover: var(--tile-face-hover);
     --color-tile-content: var(--tile-content);
     --color-tile-empty: var(--tile-empty);
+
+    /* ------------------------------------------------------------------
+       Vocabulaire du kit shadcn, adossé aux rôles ci-dessus. C'est ce qui
+       fait qu'un composant installé depuis le kit prend l'identité du site
+       sans être retouché (FR-004). Ne pas y écrire de valeur : ces noms
+       pointent vers des rôles, les rôles vers des couleurs.
+       ------------------------------------------------------------------ */
+    --color-background: var(--surface-raised);
+    --color-foreground: var(--content-max);
+    --color-card: var(--surface-raised);
+    --color-card-foreground: var(--content-max);
+    --color-popover: var(--surface-raised);
+    --color-popover-foreground: var(--content-max);
+    --color-primary: var(--brand);
+    --color-primary-foreground: var(--brand-on);
+    --color-secondary: var(--surface-inset);
+    --color-secondary-foreground: var(--content-max);
+    --color-muted: var(--surface-inset);
+    --color-muted-foreground: var(--content-low);
+    /* `accent` au sens du kit : la surface discrète d'un état survolé. */
+    --color-accent: var(--surface-inset);
+    --color-accent-foreground: var(--content-max);
+    --color-destructive: var(--danger);
+    --color-destructive-foreground: var(--danger-on);
+    --color-border: var(--line);
+    --color-input: var(--line-control);
+    --color-ring: var(--brand-fg);
+}
+
+/* Tailwind 4 donne `currentColor` pour couleur de bordure par défaut ; les
+   composants du kit écrivent `border` sans couleur et attendent le token.
+   Sans effet sur les gabarits du projet : chaque bordure y porte déjà sa
+   couleur (relevé T014). */
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-border);
+    }
 }
 
 @layer components {
@@ -326,14 +374,14 @@
     color: var(--motus-surface-content); /* slate-300 */
 }
 
-.motus-key--enter { background-color: var(--accent); color: var(--accent-on); } /* amber-500 du thème */
+.motus-key--enter { background-color: var(--brand); color: var(--brand-on); } /* amber-500 du thème */
 
 @media (hover: hover) {
     .motus-key:hover { background-color: var(--motus-key-hover); }
     .motus-key--correct:hover { background-color: var(--motus-correct); }
     .motus-key--present:hover { background-color: var(--motus-present); }
     .motus-key--absent:hover { background-color: var(--motus-surface); }
-    .motus-key--enter:hover { background-color: var(--accent-strong); }
+    .motus-key--enter:hover { background-color: var(--brand-strong); }
 }
 
 /* Pastilles de légende : reprennent la forme, pas seulement la couleur */

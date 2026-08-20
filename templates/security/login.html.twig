@@ -16,17 +16,17 @@
                         {% endif %}
                         <div>
                             <label for="username" class="block mb-2 text-sm font-medium text-content-max">Username</label>
-                            <input type="text" value="{{ last_username }}" name="_username" id="username" class="bg-field border border-field-line text-field-content placeholder-field-hint sm:text-sm rounded-lg focus:ring-accent-fg focus:border-accent-fg block w-full p-2.5" autocomplete="username" required autofocus>
+                            <input type="text" value="{{ last_username }}" name="_username" id="username" class="bg-field border border-field-line text-field-content placeholder-field-hint sm:text-sm rounded-lg focus:ring-brand-fg focus:border-brand-fg block w-full p-2.5" autocomplete="username" required autofocus>
                         </div>
 
                         <div>
                             <label for="password" class="block mb-2 text-sm font-medium text-content-max">Password</label>
-                            <input type="password" name="_password" id="password" class="bg-field border border-field-line text-field-content placeholder-field-hint sm:text-sm rounded-lg focus:ring-accent-fg focus:border-accent-fg block w-full p-2.5" autocomplete="current-password" required>
+                            <input type="password" name="_password" id="password" class="bg-field border border-field-line text-field-content placeholder-field-hint sm:text-sm rounded-lg focus:ring-brand-fg focus:border-brand-fg block w-full p-2.5" autocomplete="current-password" required>
                         </div>
 
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-                        <button class="w-full text-accent-on bg-accent-strong hover:bg-accent focus:ring-4 focus:outline-hidden focus:ring-accent-fg focus:ring-offset-2 focus:ring-offset-panel font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">
+                        <button class="w-full text-brand-on bg-brand-strong hover:bg-brand focus:ring-4 focus:outline-hidden focus:ring-brand-fg focus:ring-offset-2 focus:ring-offset-panel font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">
                             Sign in
                         </button>
                     </form>

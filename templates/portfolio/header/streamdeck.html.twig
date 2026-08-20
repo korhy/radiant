@@ -4,7 +4,7 @@
         {% for appEntry in apps %}
             <a href="{{ path(appEntry.route) }}"
                rel="noreferrer noopener"
-               class="group flex flex-col items-center justify-center gap-2 rounded-xl border border-line/50 bg-surface-raised/60 text-content-low shadow-inner transition-all duration-200 hover:border-accent-fg/40 hover:bg-surface-raised hover:text-accent-fg active:scale-95"
+               class="group flex flex-col items-center justify-center gap-2 rounded-xl border border-line/50 bg-surface-raised/60 text-content-low shadow-inner transition-all duration-200 hover:border-brand-fg/40 hover:bg-surface-raised hover:text-brand-fg active:scale-95"
                style="aspect-ratio:1/1;">
                 <span class="h-6 w-6 transition-transform duration-200 group-hover:scale-110" aria-hidden="true">
                     {{ include('components/_icon_' ~ appEntry.slug ~ '.html.twig') }}

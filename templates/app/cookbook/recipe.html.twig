@@ -40,7 +40,7 @@
                     <h1 class="text-content-max text-2xl font-bold tracking-wide">{{ recipe.title }}</h1>
                     <div class="flex items-center gap-3 flex-wrap">
                         {% if recipe.category is defined and recipe.category %}
-                            <span class="bg-accent/20 text-accent-fg-em text-xs font-semibold px-3 py-1 rounded-full">
+                            <span class="bg-brand/20 text-brand-fg-em text-xs font-semibold px-3 py-1 rounded-full">
                                 {{ recipe.category.name }}
                             </span>
                         {% endif %}
@@ -67,7 +67,7 @@
                         <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {% for ri in recipe.recipeIngredients.member %}
                                 <li class="flex items-center gap-2 bg-surface-inset rounded-lg px-3 py-2 text-sm">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-accent-light shrink-0"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-brand-light shrink-0"></span>
                                     <span class="text-content">{{ ri.ingredient.name }}</span>
                                     {% if ri.quantity %}
                                         <span class="ml-auto text-content-low">{{ ri.quantity }}</span>
@@ -88,7 +88,7 @@
                         <ol class="flex flex-col gap-3">
                             {% for instruction in recipe.instructions.member %}
                                 <li class="flex gap-4 bg-surface-inset rounded-lg px-4 py-3 text-sm text-content">
-                                    <span class="text-accent-fg-em font-bold shrink-0">{{ loop.index }}</span>
+                                    <span class="text-brand-fg-em font-bold shrink-0">{{ loop.index }}</span>
                                     <span class="leading-relaxed">{{ instruction.content }}</span>
                                 </li>
                             {% endfor %}
