@@ -3,7 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 const MAX_ATTEMPTS = 6;
 const STORAGE_KEY = 'motus_session';
 
-// Tables littérales : ne jamais construire ces noms par concaténation.
+// Literal tables: never build these class names by concatenation.
 const CELL_STATE_CLASS = {
     correct: 'motus-cell--correct',
     present: 'motus-cell--present',
@@ -11,8 +11,8 @@ const CELL_STATE_CLASS = {
 };
 const CELL_STATE_CLASSES = ['motus-cell--correct', 'motus-cell--present', 'motus-cell--absent'];
 
-// L'état d'une case n'existait que dans sa couleur de fond (WCAG 1.4.1) : il lui
-// faut aussi un nom accessible et, côté CSS, une redondance de forme.
+// A cell state must not live in its background colour alone (WCAG 1.4.1): it
+// also needs an accessible name, and a shape redundancy on the CSS side.
 const STATE_LABEL = {
     correct: 'bien placée',
     present: 'mal placée',
@@ -131,9 +131,9 @@ export default class extends Controller {
     #onKeyDown = (e) => {
         if (this.#gameOver) return;
         if (e.key === 'Enter') {
-            // Un élément focusable déclenche déjà sa propre action sur Entrée
-            // (le <summary> du panneau d'info, une touche cliquée à la souris) :
-            // on ne la double pas. Les lettres, elles, restent toujours actives.
+            // A focusable element already fires its own action on Enter (the
+            // info panel <summary>, a key clicked with the mouse): don't double
+            // it. Letters stay active in every case.
             if (e.target.closest?.('summary, a, button')) return;
             this.#submitGuess();
             return;
@@ -153,8 +153,8 @@ export default class extends Controller {
             for (let col = 0; col < this.wordLengthValue; col++) {
                 const cell = document.createElement('div');
                 cell.className = 'motus-cell';
-                // aria-label est interdit sur un div générique : la cellule doit
-                // porter un rôle qui l'autorise, sinon le libellé n'est pas exposé.
+                // aria-label is not allowed on a plain div: the cell needs a role
+                // that permits it, otherwise the label is never exposed.
                 cell.setAttribute('role', 'cell');
                 cell.dataset.row = row;
                 cell.dataset.col = col;

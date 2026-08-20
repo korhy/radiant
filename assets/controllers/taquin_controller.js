@@ -52,17 +52,16 @@ export default class extends Controller {
 
     this.#swap(tile, empty);
 
-    // La tuile actionnée est devenue le trou (donc disabled) : sans ce transfert
-    // le focus clavier retomberait sur le <body>.
+    // The tile just moved became the hole, hence disabled: without this handover
+    // keyboard focus would fall back to <body>.
     empty.focus();
     this.#announce(`Tuile ${label} déplacée.`);
     this.#checkWin();
   }
 
   /**
-   * Les flèches déplacent le focus de case en case ; Entrée et Espace font
-   * glisser la tuile, nativement, puisque chaque case est un <button>.
-   * Le trou étant disabled, on l'enjambe.
+   * Arrows move focus from cell to cell; Enter and Space slide the tile natively,
+   * since every cell is a <button>. The hole being disabled, we step over it.
    */
   navigate(event) {
     const deltas = {
@@ -80,7 +79,7 @@ export default class extends Controller {
 
     event.preventDefault();
 
-    // Deux sauts au plus : la case voisine, puis celle d'après si c'est le trou.
+    // Two hops at most: the neighbouring cell, then the next if that is the hole.
     for (let hop = 1; hop <= 2; hop++) {
       const to = from + step * hop;
       if (to < 0 || to >= tiles.length) return;
@@ -123,7 +122,7 @@ export default class extends Controller {
       this.#swap(randomTile, empty);
     }
 
-    // Le brassage enchaîne 200 permutations : on ne l'annonce qu'une fois, à la fin.
+    // Shuffling chains 200 swaps: announce it once, at the end.
     this.#announce('Grille mélangée.');
   }
 
@@ -155,7 +154,7 @@ export default class extends Controller {
     if (isWin) {
       this.winOverlayTarget.classList.remove('hidden');
       this.#announce('Bravo, le puzzle est résolu.');
-      // Sans ce déplacement, le focus reste sur une case masquée par l'overlay.
+      // Without this move, focus stays on a cell hidden behind the overlay.
       if (this.hasReplayTarget) this.replayTarget.focus();
     }
   }

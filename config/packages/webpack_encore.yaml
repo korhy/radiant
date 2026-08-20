@@ -40,14 +40,14 @@ framework:
 #        # Available in version 1.2
 #        cache: true
 
-# public/build/ est git-ignoré et ci.yml ne construit pas les assets (seul
-# deploy.yml lance npm run build). Sans ceci, tout test fonctionnel qui rend un
-# gabarit échoue sur un entrypoints.json absent.
+# public/build/ is git-ignored and ci.yml never builds the assets (only
+# deploy.yml runs npm run build). Without this, any functional test rendering a
+# template fails on a missing entrypoints.json.
 when@test:
     webpack_encore:
         strict_mode: false
-    # asset() résout par le manifeste, lui aussi absent tant que rien n'est
-    # construit : sans ce null, chaque asset('images/...') lève une exception.
+    # asset() resolves through the manifest, equally absent until something is
+    # built: without this null, every asset('images/...') throws.
     framework:
         assets:
             json_manifest_path: null

@@ -75,8 +75,8 @@ final class CookbookController extends AbstractController
         ]);
     }
 
-    // Sans la contrainte \d+, un identifiant non numérique produisait une 500
-    // (TypeError) au lieu d'une 404.
+    // Without the \d+ requirement, a non-numeric id raised a TypeError — a 500
+    // where a 404 is expected.
     #[Route('/app/cookbook/recipe/{id}', name: 'cookbook_recipe', requirements: ['id' => '\d+'])]
     public function recipe(
         CookbookApiService $cookbookApiService,
