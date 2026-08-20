@@ -56,6 +56,16 @@ export default class extends Controller {
         if (this.#sortField) params.set(`order[${this.#sortField}]`, this.#sortDir)
 
         const res = await fetch(`/app/cookbook/recipes?${params}`)
+
+        // 503 : l'API est injoignable. Sans ce garde-fou, la charge vide serait
+        // lue comme « aucun résultat » et afficherait le mauvais message.
+        if (!res.ok) {
+            if (this.hasButtonTarget) this.buttonTarget.textContent = 'Recettes momentanément indisponibles'
+            this.#observer?.disconnect()
+            this.#loading = false
+            return
+        }
+
         const data = await res.json()
 
         const grid = document.getElementById('recipe-grid')

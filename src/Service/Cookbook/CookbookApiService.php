@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Service\Cookbook;
 
+use App\Service\Cookbook\Exception\CookbookUnavailableException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class CookbookApiService
@@ -32,14 +35,18 @@ final class CookbookApiService
         return $this->cache->get('cookbook_api_token', function (ItemInterface $item): string {
             $item->expiresAfter(3500);
 
-            $response = $this->httpClient->request('POST', $this->apiUrl.'/api/login_check', [
-                'json' => [
-                    'username' => $this->apiUsername,
-                    'password' => $this->apiPassword,
-                ],
-            ]);
+            try {
+                $response = $this->httpClient->request('POST', $this->apiUrl.'/api/login_check', [
+                    'json' => [
+                        'username' => $this->apiUsername,
+                        'password' => $this->apiPassword,
+                    ],
+                ]);
 
-            return $response->toArray()['token'];
+                return $response->toArray()['token'];
+            } catch (TransportExceptionInterface|ServerExceptionInterface $e) {
+                throw new CookbookUnavailableException('Cookbook API unreachable on authentication', previous: $e);
+            }
         });
     }
 
@@ -47,27 +54,39 @@ final class CookbookApiService
      * @param array<string, mixed> $options
      *
      * @return array<string, mixed>
+     *
+     * @throws CookbookUnavailableException
      */
     private function request(string $method, string $path, array $options = [], bool $retry = true): array
     {
         $options['headers']['Authorization'] = 'Bearer '.$this->getToken();
         $options['headers']['Accept'] ??= 'application/ld+json';
 
-        $response = $this->httpClient->request($method, $this->apiUrl.$path, $options);
+        try {
+            $response = $this->httpClient->request($method, $this->apiUrl.$path, $options);
 
-        $statusCode = $response->getStatusCode();
+            $statusCode = $response->getStatusCode();
 
-        if (401 === $statusCode && $retry) {
-            $this->cache->delete('cookbook_api_token');
+            if (401 === $statusCode && $retry) {
+                $this->cache->delete('cookbook_api_token');
 
-            return $this->request($method, $path, $options, false);
+                return $this->request($method, $path, $options, false);
+            }
+
+            // Une erreur serveur en face vaut une indisponibilité : l'appelant
+            // doit pouvoir dégrader plutôt que renvoyer une 500 au visiteur.
+            if ($statusCode >= 500) {
+                throw new CookbookUnavailableException(sprintf('Cookbook API error %d on %s %s', $statusCode, $method, $path));
+            }
+
+            if ($statusCode >= 400) {
+                throw new \RuntimeException(sprintf('Cookbook API error %d on %s %s', $statusCode, $method, $path));
+            }
+
+            return $response->toArray(false);
+        } catch (TransportExceptionInterface $e) {
+            throw new CookbookUnavailableException(sprintf('Cookbook API unreachable on %s %s', $method, $path), previous: $e);
         }
-
-        if ($statusCode >= 400) {
-            throw new \RuntimeException(sprintf('Cookbook API error %d on %s %s', $statusCode, $method, $path));
-        }
-
-        return $response->toArray(false);
     }
 
     /**

@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -129,6 +130,43 @@ final class PublicRoutesTest extends WebTestCase
         $this->client->request('GET', '/app/cookbook');
 
         self::assertResponseIsSuccessful();
+    }
+
+    /**
+     * Une dépendance externe indisponible ne doit pas casser une page du
+     * portfolio : la liste se rend en mode dégradé, pas en 500 (constat S8).
+     */
+    public function testCookbookDegradesWhenTheApiIsUnreachable(): void
+    {
+        static::getContainer()->set('http_client', new MockHttpClient(
+            static fn () => throw new TransportException('Connection refused'),
+            'https://cookbook.test'
+        ));
+
+        $crawler = $this->client->request('GET', '/app/cookbook');
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString(
+            'injoignable',
+            $crawler->filter('#recipe-grid')->text(),
+            'La page doit dire au visiteur que le service externe est en panne.'
+        );
+    }
+
+    public function testTheCookbookJsonEndpointAnswers503WhenTheApiIsUnreachable(): void
+    {
+        static::getContainer()->set('http_client', new MockHttpClient(
+            static fn () => throw new TransportException('Connection refused'),
+            'https://cookbook.test'
+        ));
+
+        $this->client->request('GET', '/app/cookbook/recipes');
+
+        self::assertResponseStatusCodeSame(Response::HTTP_SERVICE_UNAVAILABLE);
+
+        $payload = json_decode((string) $this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame([], $payload['recipes']);
+        self::assertTrue($payload['unavailable']);
     }
 
     /**

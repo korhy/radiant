@@ -113,7 +113,14 @@
                 <span class="w-12 h-12 text-content-min mx-auto block mb-4">
                     {{ include('components/_icon_cookbook.html.twig') }}
                 </span>
+                {% if apiUnavailable %}
+                <p class="text-content-low">L'API Cookbook est momentanément injoignable.</p>
+                <p class="text-content-min text-sm mt-2">
+                    Les recettes viennent d'un service externe&nbsp;; le reste du portfolio reste consultable.
+                </p>
+                {% else %}
                 <p class="text-content-low">Aucune recette pour l'instant.</p>
+                {% endif %}
             </div>
             {% endif %}
 
