@@ -8,15 +8,11 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Email;
 
-/**
- * Le formulaire de contact envoie un mail depuis une adresse publique : c'est
- * le seul endroit du site où un visiteur anonyme déclenche un envoi.
- */
 final class ContactControllerTest extends WebTestCase
 {
     /**
-     * L'en-tête From doit rester le domaine du site — SPF et DKIM ne signent
-     * que celui-là — et l'adresse saisie repartir en Reply-To (constat S4).
+     * SPF and DKIM only sign our own domain, so the visitor address must never
+     * reach the From header (audit finding S4).
      */
     public function testTheVisitorAddressLandsInReplyToNotInFrom(): void
     {
@@ -32,8 +28,8 @@ final class ContactControllerTest extends WebTestCase
         ]));
 
         self::assertResponseRedirects('/contact');
-        // Les mails partent par Messenger (routing async) : c'est le message
-        // mis en file qu'il faut inspecter, pas un envoi synchrone.
+        // Messenger routes mails to an async transport: the message is queued,
+        // never sent synchronously, so assertEmailCount would see nothing.
         self::assertQueuedEmailCount(1);
 
         $email = self::getMailerMessage();
@@ -56,7 +52,7 @@ final class ContactControllerTest extends WebTestCase
             'contact[message]' => 'court',
         ]));
 
-        // 422 : le formulaire est réaffiché avec ses erreurs, rien n'est envoyé.
+        // 422: the form is re-rendered with its errors, nothing is sent.
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         self::assertQueuedEmailCount(0);
     }

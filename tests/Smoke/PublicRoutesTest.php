@@ -133,8 +133,8 @@ final class PublicRoutesTest extends WebTestCase
     }
 
     /**
-     * Une dépendance externe indisponible ne doit pas casser une page du
-     * portfolio : la liste se rend en mode dégradé, pas en 500 (constat S8).
+     * An unavailable external dependency must not break a portfolio page: the
+     * list renders degraded, not as a 500 (audit finding S8).
      */
     public function testCookbookDegradesWhenTheApiIsUnreachable(): void
     {

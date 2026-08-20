@@ -35,10 +35,8 @@ final class ContactController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // L'expéditeur reste le domaine du site : SPF et DKIM ne peuvent
-            // signer que celui-là, et l'enveloppe (mailer.yaml) porte déjà la
-            // même adresse. Le visiteur passe en Reply-To, ce qui garde le
-            // « Répondre » naturel sans laisser usurper une adresse tierce.
+            // SPF and DKIM can only sign our own domain: the From header must
+            // stay the site address, so the visitor goes to Reply-To instead.
             $this->mailer->send((new NotificationEmail())
                 ->subject('Demande de contact')
                 ->htmlTemplate('email/contact.html.twig')

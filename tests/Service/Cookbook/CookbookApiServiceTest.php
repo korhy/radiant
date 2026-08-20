@@ -106,8 +106,8 @@ final class CookbookApiServiceTest extends TestCase
     }
 
     /**
-     * Une erreur serveur en face est une indisponibilité : l'appelant doit
-     * pouvoir la distinguer pour dégrader la page (constat S8).
+     * A server error upstream is an outage: the caller has to tell it apart to
+     * degrade the page (audit finding S8).
      */
     public function testAServerErrorIsReportedAsAnUnavailability(): void
     {
@@ -122,10 +122,6 @@ final class CookbookApiServiceTest extends TestCase
         $service->getCategories();
     }
 
-    /**
-     * Une connexion refusée, un DNS mort ou un timeout ne doivent plus remonter
-     * en TransportException nue jusqu'au contrôleur.
-     */
     public function testAnUnreachableApiIsReportedAsAnUnavailability(): void
     {
         [$service] = $this->service([
@@ -138,8 +134,8 @@ final class CookbookApiServiceTest extends TestCase
     }
 
     /**
-     * L'indisponibilité s'arrête aux 5xx : une erreur client reste une erreur
-     * de code, elle ne doit pas se faire passer pour une panne réseau.
+     * Unavailability stops at 5xx: a client error stays a bug in our own code
+     * and must not pass itself off as an outage.
      */
     public function testAClientErrorIsNotAnUnavailability(): void
     {
@@ -150,7 +146,7 @@ final class CookbookApiServiceTest extends TestCase
 
         try {
             $service->getRecipe(404);
-            self::fail('Une 404 doit lever une exception.');
+            self::fail('A 404 must raise an exception.');
         } catch (\RuntimeException $e) {
             self::assertNotInstanceOf(CookbookUnavailableException::class, $e);
             self::assertMatchesRegularExpression('/Cookbook API error 404/', $e->getMessage());

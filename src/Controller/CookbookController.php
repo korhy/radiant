@@ -18,8 +18,6 @@ final class CookbookController extends AbstractController
     #[Route('/app/cookbook', name: 'cookbook')]
     public function index(CookbookApiService $cookbookApiService, AppRepository $appRepository): Response
     {
-        // L'API Cookbook est une dépendance externe : son indisponibilité rend
-        // la page en mode dégradé, elle ne renvoie pas une 500 au visiteur.
         $unavailable = false;
 
         try {
@@ -60,8 +58,8 @@ final class CookbookController extends AbstractController
         try {
             $data = $cookbookApiService->getRecipes($page, $itemsPerPage, $filters);
         } catch (CookbookUnavailableException) {
-            // 503 plutôt qu'une charge vide en 200 : le client sait distinguer
-            // « aucun résultat » d'une panne, et n'affiche pas le mauvais message.
+            // 503 rather than an empty payload: the client must be able to
+            // tell an outage from "no result" and show the right message.
             return $this->json([
                 'recipes' => [],
                 'hasNextPage' => false,
@@ -88,8 +86,8 @@ final class CookbookController extends AbstractController
         try {
             $recipe = $cookbookApiService->getRecipe($id);
         } catch (CookbookUnavailableException) {
-            // Une fiche vide n'a rien à montrer : retour à la liste, qui porte
-            // déjà l'état dégradé, avec le message en bandeau.
+            // A recipe page has nothing to degrade to: send the visitor back
+            // to the list, which already carries the degraded state.
             $this->addFlash('warning', 'Le service de recettes est momentanément indisponible. Réessaie dans quelques instants.');
 
             return $this->redirectToRoute('cookbook');

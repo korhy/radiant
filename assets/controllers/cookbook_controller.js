@@ -57,8 +57,8 @@ export default class extends Controller {
 
         const res = await fetch(`/app/cookbook/recipes?${params}`)
 
-        // 503 : l'API est injoignable. Sans ce garde-fou, la charge vide serait
-        // lue comme « aucun résultat » et afficherait le mauvais message.
+        // Without this guard, the empty payload of a 503 would read as
+        // "no result" and show the wrong message.
         if (!res.ok) {
             if (this.hasButtonTarget) this.buttonTarget.textContent = 'Recettes momentanément indisponibles'
             this.#observer?.disconnect()

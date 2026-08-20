@@ -73,8 +73,8 @@ final class CookbookApiService
                 return $this->request($method, $path, $options, false);
             }
 
-            // Une erreur serveur en face vaut une indisponibilité : l'appelant
-            // doit pouvoir dégrader plutôt que renvoyer une 500 au visiteur.
+            // A server error upstream counts as unavailability, so the caller
+            // can degrade instead of returning a 500 of its own.
             if ($statusCode >= 500) {
                 throw new CookbookUnavailableException(sprintf('Cookbook API error %d on %s %s', $statusCode, $method, $path));
             }
