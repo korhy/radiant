@@ -10,6 +10,8 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\MockResponse;
 
 /**
  * Accessibility is an acceptance criterion here, not polish. These tests pin the
@@ -223,5 +225,112 @@ final class AccessibilityTest extends WebTestCase
             $crawler->filter('#contact_message')->text(),
             'Le message saisi doit survivre au réaffichage.'
         );
+    }
+
+    /**
+     * The Cookbook pages talk to an external API. Dispatching on the URL rather
+     * than on call order keeps the stub correct whether or not the JWT is still
+     * in the cache from an earlier request.
+     */
+    private function mockCookbookApi(): void
+    {
+        $recipe = [
+            'id' => 42,
+            'title' => 'Tarte aux pommes',
+            'thumbnail' => null,
+            'duration' => 45,
+            'description' => 'Une tarte.',
+        ];
+
+        static::getContainer()->set('http_client', new MockHttpClient(
+            static function (string $method, string $url) use ($recipe): MockResponse {
+                if (str_contains($url, '/api/login_check')) {
+                    return new MockResponse(json_encode(['token' => 'jwt-test'], JSON_THROW_ON_ERROR));
+                }
+
+                if (preg_match('#/recipes/\d+$#', $url)) {
+                    return new MockResponse(json_encode($recipe, JSON_THROW_ON_ERROR));
+                }
+
+                if (str_contains($url, '/categories')) {
+                    return new MockResponse(json_encode(['member' => [['id' => 1, 'name' => 'Dessert']]], JSON_THROW_ON_ERROR));
+                }
+
+                return new MockResponse(json_encode(['member' => [$recipe]], JSON_THROW_ON_ERROR));
+            },
+            'https://cookbook.test'
+        ));
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function providePublicPages(): iterable
+    {
+        yield 'accueil' => ['/'];
+        yield 'taquin' => ['/app/taquin'];
+        yield 'motus' => ['/app/motus'];
+        yield 'cookbook' => ['/app/cookbook'];
+        yield 'recette' => ['/app/cookbook/recipe/42'];
+        yield 'contact' => ['/contact'];
+        yield 'mentions légales' => ['/mentions-legales'];
+        yield 'connexion' => ['/login'];
+    }
+
+    /**
+     * Every page needs exactly one <main>, or the content sits outside any
+     * landmark and skip-to-content is impossible. base.html.twig provides it;
+     * a template overriding `body` must not add a second one.
+     *
+     * @dataProvider providePublicPages
+     */
+    public function testEveryPublicPageHasExactlyOneMainLandmark(string $path): void
+    {
+        $this->mockCookbookApi();
+
+        $crawler = $this->client->request('GET', $path);
+
+        self::assertResponseIsSuccessful();
+        self::assertSame(1, $crawler->filter('main')->count(), 'Une page porte un <main>, et un seul.');
+    }
+
+    /**
+     * @dataProvider providePublicPages
+     */
+    public function testEveryPublicPageHasExactlyOneLevelOneHeading(string $path): void
+    {
+        $this->mockCookbookApi();
+
+        $crawler = $this->client->request('GET', $path);
+
+        self::assertResponseIsSuccessful();
+        self::assertSame(1, $crawler->filter('h1')->count(), 'Une page porte un <h1>, et un seul.');
+    }
+
+    /**
+     * The Cookbook navbar is shared by the list and a recipe page. Turning its
+     * title into a heading unconditionally would give a recipe an <h1>
+     * competing with the dish's own name — these two pin which one wins where.
+     * One request per test: the client reboots the kernel between requests,
+     * which would throw away the stubbed HTTP client.
+     */
+    public function testTheCookbookListTitleIsItsLevelOneHeading(): void
+    {
+        $this->mockCookbookApi();
+
+        $crawler = $this->client->request('GET', '/app/cookbook');
+
+        self::assertResponseIsSuccessful();
+        self::assertSame('Mon livre de recettes', trim($crawler->filter('h1')->text()));
+    }
+
+    public function testARecipePageUsesTheDishNameAsItsLevelOneHeading(): void
+    {
+        $this->mockCookbookApi();
+
+        $crawler = $this->client->request('GET', '/app/cookbook/recipe/42');
+
+        self::assertResponseIsSuccessful();
+        self::assertSame('Tarte aux pommes', trim($crawler->filter('h1')->text()));
     }
 }
