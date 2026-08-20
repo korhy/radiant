@@ -79,10 +79,10 @@ export default class extends Controller {
 
         this.tabTargets.forEach(tab => {
             const isActive = tab.dataset.tab === activeKey;
-            tab.classList.toggle('text-white', isActive);
+            tab.classList.toggle('text-content-max', isActive);
             tab.classList.toggle('border-b-2', isActive);
-            tab.classList.toggle('border-amber-400', isActive);
-            tab.classList.toggle('text-slate-400', !isActive);
+            tab.classList.toggle('border-accent-light', isActive);
+            tab.classList.toggle('text-content-low', !isActive);
             tab.setAttribute('aria-selected', String(isActive));
             tab.tabIndex = isActive ? 0 : -1;
         });

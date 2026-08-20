@@ -5,9 +5,9 @@
 {% block body %}
     <section class="align-middle">
         <div class="flex flex-col items-center justify-center px-2 py-8 mx-auto md:h-screen lg:py-0">
-            <div class="w-full bg-white rounded-lg shadow-sm dark:border md:mt-0 xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+            <div class="w-full bg-panel border border-panel-line rounded-lg shadow-sm md:mt-0 xl:p-0">
                 <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-content-max md:text-2xl">
                         Me contacter !
                     </h1>
                     {{ form_start(form) }}
@@ -18,8 +18,8 @@
                        on lui repasse les classes du reste du site, sinon la zone de
                        saisie n'a plus d'affordance et son contour tombe sous le
                        contraste exigé (WCAG 1.4.11). #}
-                    {% set label_class = 'block mb-2 text-sm font-medium text-gray-900 dark:text-white' %}
-                    {% set input_class = 'bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-amber-600 focus:border-amber-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-amber-500 dark:focus:border-amber-500' %}
+                    {% set label_class = 'block mb-2 text-sm font-medium text-content-max' %}
+                    {% set input_class = 'bg-field border border-field-line text-field-content placeholder-field-hint sm:text-sm rounded-lg focus:ring-accent-fg focus:border-accent-fg block w-full p-2.5' %}
 
                     <div id="contact" class="flex flex-col gap-6">
                         {{ form_row(form.name, {label_attr: {class: label_class}, attr: {class: input_class, spellcheck: 'false'}}) }}
@@ -27,13 +27,13 @@
                         {{ form_row(form.message, {label_attr: {class: label_class}, attr: {class: input_class, rows: 5}}) }}
                     </div>
                     <div class="flex items-center justify-between gap-4">
-                        <a class="w-1/5 text-white bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:outline-hidden focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                        <a class="w-1/5 text-neutral-on bg-neutral hover:bg-neutral-strong focus:ring-4 focus:outline-hidden focus:ring-accent-fg focus:ring-offset-2 focus:ring-offset-panel font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                             href="{{ path('homepage') }}"
                         >
                             Annuler
                         </a>
                         {{ form_widget(form.submit, {
-                            attr: {class: 'w-3/5 text-white bg-amber-600 hover:bg-amber-700 focus:ring-4 focus:outline-hidden focus:ring-amber-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-amber-600 dark:hover:bg-amber-700 dark:focus:ring-amber-800'},
+                            attr: {class: 'w-3/5 text-accent-on bg-accent-strong hover:bg-accent focus:ring-4 focus:outline-hidden focus:ring-accent-fg focus:ring-offset-2 focus:ring-offset-panel font-medium rounded-lg text-sm px-5 py-2.5 text-center'},
                         }) }}
                     </div>
 

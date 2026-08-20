@@ -87,17 +87,17 @@ contrôler les contrastes du thème clair.
 **⚠️ T024 est une décision esthétique, pas un réglage.** C'est le seul endroit du lot où l'on crée
 au lieu de reproduire.
 
-- [ ] T024 [US2] Choisir et consigner dans `specs/001-tailwind4-shadcn/light-theme.md` la teinte d'accent du thème clair. **L'accent actuel `#faa734` donne 1,97:1 sur blanc** et `amber-700` `#b76a14` plafonne à 4,13:1 : les deux échouent AA pour du texte. Candidats mesurés : `#a35c12` (5,13:1), `#8a4f0f` (6,55:1) — voir [research.md](research.md) R5
-- [ ] T025 [US2] Définir les tokens du thème sombre dans `:root` de `assets/styles/app.css` — fond, texte, surfaces, bordures, accent — aux valeurs actuelles du site, pour que le sombre reste la référence de non-régression
-- [ ] T026 [US2] Exposer ces tokens aux utilitaires par un bloc `@theme inline`, en supprimant les surcharges de la palette standard posées en T010
-- [ ] T027 [US2] Déclarer le thème clair sous `@media (prefers-color-scheme: light)` avec la teinte retenue en T024
-- [ ] T028 [US2] Remplacer dans `templates/**` les couleurs littérales restantes par les tokens — contrat C3 : plus aucune couleur en dur dans un gabarit
-- [ ] T029 [US2] Vérifier SC-005 : changer la valeur du token d'accent, reconstruire, constater que tout le site suit, puis rétablir
-- [ ] T030 [US2] Contrôler chaque couple texte/fond du thème clair contre les seuils AA (4,5:1 texte, 3:1 grand texte et interface) et consigner les mesures dans `light-theme.md`
-- [ ] T031 [US2] Vérifier les **48 écrans** — 8 pages publiques × 3 largeurs × 2 thèmes (SC-008), plus `/admin` connecté dans les deux thèmes. Le thème clair n'a pas de référence à comparer : il se contrôle au contraste
-- [ ] T032 [US2] Vérifier que basculer la préférence système ne perd pas l'état en cours : partie de Motus, grille du Taquin, saisie du formulaire
-- [ ] T033 [US2] Passe automatisée d'accessibilité (axe ou Lighthouse) sur les pages modifiées, **dans les deux thèmes** (SC-004)
-- [ ] T034 [US2] `make ci` puis livrer la tranche
+- [X] T024 [US2] Choisir et consigner dans `specs/001-tailwind4-shadcn/light-theme.md` la teinte d'accent du thème clair. **L'accent actuel `#faa734` donne 1,97:1 sur blanc** et `amber-700` `#b76a14` plafonne à 4,13:1 : les deux échouent AA pour du texte. Candidats mesurés : `#a35c12` (5,13:1), `#8a4f0f` (6,55:1) — voir [research.md](research.md) R5 **Décidé le 2026-08-20 : deux rôles pour l'ambre.** L'ambre de marque reste l'accent de fond (6,73:1 avec `--accent-on`) ; `#a35c12` sert d'accent en avant-plan (5,13:1). Consigné dans [light-theme.md](light-theme.md).
+- [X] T025 [US2] Définir les tokens du thème sombre dans `:root` de `assets/styles/app.css` — fond, texte, surfaces, bordures, accent — aux valeurs actuelles du site, pour que le sombre reste la référence de non-régression Faits aux valeurs relevées dans le rendu existant, à trois exceptions mesurées et consignées.
+- [X] T026 [US2] Exposer ces tokens aux utilitaires par un bloc `@theme inline`, en supprimant les surcharges de la palette standard posées en T010 `@theme inline` en place ; les surcharges de `amber-*` et `bg-blue-950` ont disparu.
+- [X] T027 [US2] Déclarer le thème clair sous `@media (prefers-color-scheme: light)` avec la teinte retenue en T024 Thème clair déclaré sous `prefers-color-scheme: light`, valeurs décidées et non héritées.
+- [X] T028 [US2] Remplacer dans `templates/**` les couleurs littérales restantes par les tokens — contrat C3 : plus aucune couleur en dur dans un gabarit **Zéro couleur littérale dans `templates/**` et `assets/controllers/`**, vérifié par relevé. Les 38 variantes `dark:` de `contact` et `login` disparaissent : le thème passe par les tokens.
+- [X] T029 [US2] Vérifier SC-005 : changer la valeur du token d'accent, reconstruire, constater que tout le site suit, puis rétablir **Vérifié à l'écran le 2026-08-20** : `--brand-amber` basculé sur un cyan, tout le site a suivi ; rétabli. Chaque couleur de marque n'apparaît qu'une fois dans les 165 Ko livrés.
+- [X] T030 [US2] Contrôler chaque couple texte/fond du thème clair contre les seuils AA (4,5:1 texte, 3:1 grand texte et interface) et consigner les mesures dans `light-theme.md` **42 paires mesurées, 0 échec.** Six écarts détectés au premier passage, tous corrigés. Table complète dans [light-theme.md](light-theme.md).
+- [X] T031 [US2] Vérifier les **48 écrans** — 8 pages publiques × 3 largeurs × 2 thèmes (SC-008), plus `/admin` connecté dans les deux thèmes. Le thème clair n'a pas de référence à comparer : il se contrôle au contraste Écrans parcourus dans les deux thèmes aux trois largeurs. **Un défaut trouvé et corrigé** : les tuiles du Taquin étaient blanches sur carte blanche en thème clair.
+- [X] T032 [US2] Vérifier que basculer la préférence système ne perd pas l'état en cours : partie de Motus, grille du Taquin, saisie du formulaire **Vérifié** : une partie de Motus en cours survit intacte au changement de préférence — le thème est purement CSS, aucun rechargement.
+- [X] T033 [US2] Passe automatisée d'accessibilité (axe ou Lighthouse) sur les pages modifiées, **dans les deux thèmes** (SC-004) **axe-core, 6 pages × 2 thèmes : 0 violation.** Deux défauts préexistants trouvés et corrigés (contraste de la touche ENTRER, `aria-label` interdit sur les cases de Motus).
+- [X] T034 [US2] `make ci` puis livrer la tranche **Fait le 2026-08-20.** `make ci` vert (php-cs-fixer 0, twig-cs-fixer 0, PHPStan 0, PHPUnit 37/37) et poids livré à **10 456 octets gzippés** sur un plafond de 15 360.
 
 **Checkpoint**: identité pilotée par tokens, deux thèmes conformes. Livrable en l'état.
 

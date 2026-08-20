@@ -9,7 +9,7 @@
         data-action="click->app-detail-drawer#open"
         aria-label="Ouvrir les coulisses de cette application"
         aria-expanded="false"
-        class="fixed bottom-6 right-6 z-50 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-3 shadow-lg transition-colors {{ hide_drawer_btn_on_mobile is defined and hide_drawer_btn_on_mobile ? 'hidden md:block' : '' }}"
+        class="fixed bottom-6 right-6 z-50 bg-accent hover:bg-accent-strong text-accent-on rounded-full p-3 shadow-lg transition-colors {{ hide_drawer_btn_on_mobile is defined and hide_drawer_btn_on_mobile ? 'hidden md:block' : '' }}"
     >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -20,7 +20,7 @@
     <div
         data-app-detail-drawer-target="overlay"
         data-action="click->app-detail-drawer#close"
-        class="hidden fixed inset-0 bg-black/50 z-40"
+        class="hidden fixed inset-0 bg-scrim/50 z-40"
     ></div>
 
     {# Drawer #}
@@ -30,12 +30,12 @@
         aria-modal="true"
         aria-labelledby="app-detail-drawer-title"
         inert
-        class="fixed top-0 right-0 h-full w-96 max-w-full bg-slate-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col"
+        class="fixed top-0 right-0 h-full w-96 max-w-full bg-surface-raised shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col"
     >
         {# Header #}
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-700 shrink-0">
-            <h2 id="app-detail-drawer-title" class="text-white font-bold text-base tracking-wide flex items-center gap-2">
-                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-line shrink-0">
+            <h2 id="app-detail-drawer-title" class="text-content-max font-bold text-base tracking-wide flex items-center gap-2">
+                <svg class="w-4 h-4 text-accent-fg-em" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
                 </svg>
                 Behind the scenes
@@ -44,7 +44,7 @@
                 type="button"
                 data-action="click->app-detail-drawer#close"
                 aria-label="Fermer les coulisses"
-                class="text-slate-400 hover:text-white transition-colors"
+                class="text-content-low hover:text-content-max transition-colors"
             >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -53,7 +53,7 @@
         </div>
 
         {# Tabs #}
-        <div class="flex border-b border-slate-700 shrink-0" role="tablist" aria-label="Coulisses">
+        <div class="flex border-b border-line shrink-0" role="tablist" aria-label="Coulisses">
             <button type="button" role="tab" id="app-detail-tab-stack"
                 aria-controls="app-detail-panel-stack" aria-selected="false" tabindex="-1"
                 data-app-detail-drawer-target="tab" data-tab="stack"
@@ -91,7 +91,7 @@
             <div role="tabpanel" id="app-detail-panel-stack" aria-labelledby="app-detail-tab-stack" tabindex="0"
                 data-app-detail-drawer-target="panel" data-tab="stack">
                 {% if app_detail.description %}
-                    <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ app_detail.description }}</p>
+                    <p class="text-content-low text-sm leading-relaxed mb-4">{{ app_detail.description }}</p>
                 {% endif %}
                 {% if app_detail.techStack %}
                     {% set categories = {} %}
@@ -102,17 +102,17 @@
                     <div class="flex flex-col gap-4">
                         {% for category, items in categories %}
                             <div>
-                                <p class="text-slate-500 text-xs uppercase tracking-wider mb-2">{{ category }}</p>
+                                <p class="text-content-min text-xs uppercase tracking-wider mb-2">{{ category }}</p>
                                 <div class="flex flex-wrap gap-2">
                                     {% for item in items %}
-                                        <span class="bg-slate-700 text-amber-500 text-xs px-3 py-1 rounded-full border border-amber-400">{{ item }}</span>
+                                        <span class="bg-surface-inset text-accent-fg-em text-xs px-3 py-1 rounded-full border border-accent-light">{{ item }}</span>
                                     {% endfor %}
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-slate-500 text-sm">Aucune information pour l'instant.</p>
+                    <p class="text-content-min text-sm">Aucune information pour l'instant.</p>
                 {% endif %}
             </div>
 
@@ -122,14 +122,14 @@
                 {% if app_detail.challenges %}
                     <div class="flex flex-col gap-4">
                         {% for item in app_detail.challenges %}
-                            <div class="border-l-2 border-amber-400 pl-4">
-                                <p class="text-white text-sm font-medium mb-1">{{ item.title }}</p>
-                                <p class="text-slate-400 text-sm leading-relaxed">{{ item.description }}</p>
+                            <div class="border-l-2 border-accent-light pl-4">
+                                <p class="text-content-max text-sm font-medium mb-1">{{ item.title }}</p>
+                                <p class="text-content-low text-sm leading-relaxed">{{ item.description }}</p>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-slate-500 text-sm">Aucune information pour l'instant.</p>
+                    <p class="text-content-min text-sm">Aucune information pour l'instant.</p>
                 {% endif %}
             </div>
 
@@ -140,18 +140,18 @@
                     <ul class="flex flex-col gap-3">
                         {% for item in app_detail.improvements %}
                             <li class="flex items-start gap-3">
-                                <span class="mt-1 w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                                <span class="mt-1 w-2 h-2 rounded-full bg-accent-light shrink-0"></span>
                                 <div>
-                                    <p class="text-white text-sm font-medium">{# item.title #}</p>
+                                    <p class="text-content-max text-sm font-medium">{# item.title #}</p>
                                     {% if item.description is defined and item.description %}
-                                        <p class="text-slate-400 text-sm leading-relaxed mt-0.5">{{ item.description }}</p>
+                                        <p class="text-content-low text-sm leading-relaxed mt-0.5">{{ item.description }}</p>
                                     {% endif %}
                                 </div>
                             </li>
                         {% endfor %}
                     </ul>
                 {% else %}
-                    <p class="text-slate-500 text-sm">Aucune information pour l'instant.</p>
+                    <p class="text-content-min text-sm">Aucune information pour l'instant.</p>
                 {% endif %}
             </div>
 
@@ -162,19 +162,19 @@
                     <div class="flex flex-col gap-2">
                         {% for item in app_detail.resources %}
                             <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer"
-                                class="flex items-center gap-3 bg-slate-700 hover:bg-slate-600 rounded-lg px-4 py-3 transition-colors group">
-                                <svg class="w-4 h-4 text-slate-400 group-hover:text-amber-400 transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                class="flex items-center gap-3 bg-surface-inset hover:bg-surface-muted rounded-lg px-4 py-3 transition-colors group">
+                                <svg class="w-4 h-4 text-content-low group-hover:text-accent-fg-em transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
                                 </svg>
-                                <span class="text-slate-200 text-sm group-hover:text-white transition-colors">{{ item.label }}</span>
-                                <svg class="w-3 h-3 text-slate-500 group-hover:text-slate-300 ml-auto transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <span class="text-content text-sm group-hover:text-content-max transition-colors">{{ item.label }}</span>
+                                <svg class="w-3 h-3 text-content-min group-hover:text-content-mid ml-auto transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                                 </svg>
                             </a>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-slate-500 text-sm">Aucune information pour l'instant.</p>
+                    <p class="text-content-min text-sm">Aucune information pour l'instant.</p>
                 {% endif %}
             </div>
 

@@ -8,20 +8,235 @@
 @source '../../templates';
 @source '../../assets';
 
-/* La palette du site. Ces noms écrasent délibérément ceux de Tailwind : `amber-500`
-   désigne ici l'ambre du portfolio, pas celui de la palette par défaut. Valeurs
-   reprises telles quelles de l'ancien tailwind.config.js. */
-@theme {
-    --color-night: #23313e;
-    --color-amber-400: #FCC175;
-    --color-amber-500: #faa734ff;
-    --color-amber-600: #E68A1A;
-    --color-amber-700: #B76A14;
+/* ============================================================================
+   TOKENS D'IDENTITÉ
+   Deux niveaux, jamais de couleur en dur ailleurs (contrat C3) :
+   1. les couleurs de marque, brutes, nommées par ce qu'elles sont ;
+   2. les rôles, nommés par ce à quoi ils servent, qui seuls sont exposés
+      aux utilitaires par le bloc `@theme inline` plus bas.
+   Rebrander, c'est éditer ce bloc — jamais un gabarit.
+
+   Le sombre est la définition par défaut : le site est nativement sombre,
+   et le déclarer ainsi évite un flash clair au chargement.
+   Contrastes mesurés et consignés dans specs/001-tailwind4-shadcn/light-theme.md.
+   ========================================================================= */
+:root {
+    /* ---- Couleurs de marque ---- */
+    --brand-amber: #faa734;
+    --brand-amber-light: #fcc175;
+    --brand-amber-strong: #e68a1a;
+    --brand-night: #23313e;
+    /* Deux ambres réservés à l'avant-plan en thème clair : l'ambre de marque
+       plafonne à 1,97:1 sur blanc, inutilisable pour du texte. */
+    --brand-amber-ink: #a35c12;
+    --brand-amber-ink-em: #8a4f0f;
+
+    /* ---- Fonds ---- */
+    --canvas: var(--brand-night);
+    /* Assombri depuis slate-700 : au coin clair du dégradé, le corps de texte
+       n'atteignait que 4,04:1. Écart délibéré, voir light-theme.md. */
+    --canvas-end: #2a3746;
+    --surface: #0f172a;
+    --surface-raised: #1e293b;
+    --surface-inset: #334155;
+    --surface-muted: #475569;
+    --scrim: #000000;
+
+    /* ---- Contenu, du plus appuyé au plus discret ---- */
+    --content-max: #ffffff;
+    --content-high: #f1f5f9;
+    --content: #e2e8f0;
+    --content-mid: #cbd5e1;
+    --content-low: #94a3b8;
+    /* Était slate-500 : 2,79:1 sur le fond, sous le seuil AA. Relevé au cran
+       au-dessus plutôt que conservé — écart délibéré, voir light-theme.md. */
+    --content-min: #94a3b8;
+
+    /* ---- Traits ---- */
+    --line: #334155;
+    --line-subtle: #1e293b;
+    /* Bordure qui délimite un contrôle : tenue à 3:1 (WCAG 1.4.11). */
+    --line-control: #94a3b8;
+
+    /* ---- Accent ---- */
+    --accent: var(--brand-amber);
+    --accent-strong: var(--brand-amber-strong);
+    --accent-light: var(--brand-amber-light);
+    --accent-fg: var(--brand-amber);
+    --accent-fg-em: var(--brand-amber-light);
+    /* Texte posé sur un fond accentué. L'ardoise, pas le blanc : blanc sur
+       ambre donne 1,97:1. */
+    --accent-on: var(--brand-night);
+
+    /* ---- Formulaires ---- */
+    --field: #374151;
+    --field-line: #94a3b8;
+    --field-content: #ffffff;
+    --field-hint: #adb5c0;
+    --panel: #1f2937;
+    --panel-line: #374151;
+    --neutral: #4b5563;
+    --neutral-strong: #374151;
+    --neutral-on: #ffffff;
+
+    /* ---- Messages flash ---- */
+    --notice: #312e81;
+    --notice-raised: #3730a3;
+    --notice-accent: #4f46e5;
+    --notice-content: #e0e7ff;
+    --notice-on: #ffffff;
+
+    /* ---- Taquin ---- */
+    --tile-face: #f1f5f9;
+    --tile-face-hover: #cbd5e1;
+    --tile-content: #1e293b;
+    --tile-empty: #334155;
+
+    /* ---- Motus ---- */
+    --motus-cell: #334155;
+    --motus-cell-line: #475569;
+    --motus-cell-content: #ffffff;
+    /* Était red-500 : blanc dessus donnait 3,76:1. */
+    --motus-correct: #dc2626;
+    --motus-correct-content: #ffffff;
+    --motus-present: #facc15;
+    --motus-present-content: #0f172a;
+    --motus-absent: #475569;
+    --motus-absent-content: #ffffff;
+    --motus-key: #475569;
+    --motus-key-content: #ffffff;
+    --motus-key-hover: #64748b;
+    --motus-keyboard: #1e293b;
+    --motus-surface: #334155;
+    --motus-surface-content: #cbd5e1;
+    --motus-title: #ffffff;
+    --motus-message: #94a3b8;
+}
+
+/* Thème clair. Valeurs décidées, pas héritées (FR-015) : la rampe se resserre
+   par le bas, le fond clair offrant moins de marge que le fond sombre. */
+@media (prefers-color-scheme: light) {
+    :root {
+        --canvas: #f8fafc;
+        --canvas-end: #eef2f7;
+        --surface: #ffffff;
+        --surface-raised: #ffffff;
+        --surface-inset: #e2e8f0;
+        --surface-muted: #cbd5e1;
+        --scrim: #0f172a;
+
+        --content-max: #0f172a;
+        --content-high: #1e293b;
+        --content: #334155;
+        --content-mid: #475569;
+        --content-low: #475569;
+        --content-min: #5b6675;
+
+        --line: #cbd5e1;
+        --line-subtle: #e2e8f0;
+        --line-control: #78828f;
+
+        --accent-light: #b76a14;
+        --accent-fg: var(--brand-amber-ink);
+        --accent-fg-em: var(--brand-amber-ink-em);
+
+        --field: #f9fafb;
+        --field-line: #78828f;
+        --field-content: #111827;
+        --field-hint: #6b7280;
+        --panel: #ffffff;
+        --panel-line: #e5e7eb;
+        --neutral-strong: #1f2937;
+
+        --notice: #e0e7ff;
+        --notice-raised: #c7d2fe;
+        --notice-accent: #4338ca;
+        --notice-content: #1e1b4b;
+
+        /* La tuile s'oppose à la carte, comme en sombre — mais dans l'autre sens.
+           Blanc sur blanc, elle n'avait plus de limite visible. */
+        --tile-face: #334155;
+        --tile-face-hover: #1e293b;
+        --tile-content: #f1f5f9;
+        --tile-empty: #e2e8f0;
+
+        --motus-cell: #e2e8f0;
+        --motus-cell-line: #94a3b8;
+        --motus-cell-content: #0f172a;
+        --motus-correct: #dc2626;
+        --motus-correct-content: #ffffff;
+        --motus-present: #facc15;
+        --motus-present-content: #0f172a;
+        --motus-absent: #94a3b8;
+        --motus-absent-content: #0f172a;
+        --motus-key: #cbd5e1;
+        --motus-key-content: #0f172a;
+        --motus-key-hover: #94a3b8;
+        --motus-keyboard: #e2e8f0;
+        --motus-surface: #cbd5e1;
+        --motus-surface-content: #1e293b;
+        --motus-title: #0f172a;
+        --motus-message: #475569;
+    }
+}
+
+/* Seuls ces noms sont exposés aux utilitaires : `bg-surface-raised`,
+   `text-accent-fg`, `border-line-control`… La palette standard de Tailwind
+   n'est plus surchargée — un composant du kit qui référence `amber-500`
+   obtient l'ambre de Tailwind, pas celui du site, et doit donc passer par
+   les tokens comme le reste. */
+@theme inline {
+    --color-canvas: var(--canvas);
+    --color-canvas-end: var(--canvas-end);
+    --color-surface: var(--surface);
+    --color-surface-raised: var(--surface-raised);
+    --color-surface-inset: var(--surface-inset);
+    --color-surface-muted: var(--surface-muted);
+    --color-scrim: var(--scrim);
+
+    --color-content-max: var(--content-max);
+    --color-content-high: var(--content-high);
+    --color-content: var(--content);
+    --color-content-mid: var(--content-mid);
+    --color-content-low: var(--content-low);
+    --color-content-min: var(--content-min);
+
+    --color-line: var(--line);
+    --color-line-subtle: var(--line-subtle);
+    --color-line-control: var(--line-control);
+
+    --color-accent: var(--accent);
+    --color-accent-strong: var(--accent-strong);
+    --color-accent-light: var(--accent-light);
+    --color-accent-fg: var(--accent-fg);
+    --color-accent-fg-em: var(--accent-fg-em);
+    --color-accent-on: var(--accent-on);
+
+    --color-field: var(--field);
+    --color-field-line: var(--field-line);
+    --color-field-content: var(--field-content);
+    --color-field-hint: var(--field-hint);
+    --color-panel: var(--panel);
+    --color-panel-line: var(--panel-line);
+    --color-neutral: var(--neutral);
+    --color-neutral-strong: var(--neutral-strong);
+    --color-neutral-on: var(--neutral-on);
+
+    --color-notice: var(--notice);
+    --color-notice-raised: var(--notice-raised);
+    --color-notice-accent: var(--notice-accent);
+    --color-notice-content: var(--notice-content);
+    --color-notice-on: var(--notice-on);
+
+    --color-tile-face: var(--tile-face);
+    --color-tile-face-hover: var(--tile-face-hover);
+    --color-tile-content: var(--tile-content);
+    --color-tile-empty: var(--tile-empty);
 }
 
 @layer components {
     .tile {
-        @apply flex items-center justify-center w-16 h-16 bg-slate-100 rounded-lg text-2xl font-bold text-slate-800 cursor-pointer hover:bg-slate-300 transition-colors;
+        @apply flex items-center justify-center w-16 h-16 bg-tile-face rounded-lg text-2xl font-bold text-tile-content cursor-pointer hover:bg-tile-face-hover transition-colors;
     }
 }
 
@@ -42,31 +257,31 @@
     justify-content: center;
     font-weight: 700;
     text-transform: uppercase;
-    color: #fff;
-    background-color: #334155; /* slate-700 */
-    border: 2px solid #475569; /* slate-600 */
+    color: var(--motus-cell-content);
+    background-color: var(--motus-cell); /* slate-700 */
+    border: 2px solid var(--motus-cell-line); /* slate-600 */
     border-radius: 0.25rem;
     transition: background-color .3s, border-color .3s;
 }
 
 /* Bien placée : carré rouge plein */
 .motus-cell--correct {
-    background-color: #ef4444; /* red-500 */
-    border-color: #ef4444;
-    color: #fff;
+    background-color: var(--motus-correct); /* red-500 */
+    border-color: var(--motus-correct);
+    color: var(--motus-correct-content);
 }
 
 /* Mal placée : case jaune pleine, même silhouette que le rouge */
 .motus-cell--present {
-    background-color: #facc15; /* yellow-400 */
-    border-color: #facc15;
-    color: #0f172a; /* slate-900 */
+    background-color: var(--motus-present); /* yellow-400 */
+    border-color: var(--motus-present);
+    color: var(--motus-present-content); /* slate-900 */
 }
 
 .motus-cell--absent {
-    background-color: #475569; /* slate-600 */
-    border-color: #475569;
-    color: #fff;
+    background-color: var(--motus-absent); /* slate-600 */
+    border-color: var(--motus-absent);
+    color: var(--motus-absent-content);
 }
 
 /* Redondance non chromatique (WCAG 1.4.1). En niveaux de gris, ou avec une
@@ -86,8 +301,8 @@
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    color: #fff;
-    background-color: #475569; /* slate-600 */
+    color: var(--motus-key-content);
+    background-color: var(--motus-key); /* slate-600 */
     border-radius: 0.25rem;
     cursor: pointer;
     transition: background-color .15s;
@@ -97,28 +312,28 @@
     user-select: none;
 }
 
-.motus-key--correct { background-color: #ef4444; }
+.motus-key--correct { background-color: var(--motus-correct); }
 
 .motus-key--present {
-    background-color: #facc15;
-    color: #0f172a;
+    background-color: var(--motus-present);
+    color: var(--motus-present-content);
 }
 
 /* Touche éliminée : l'effacement vient du fond assombri, pas d'une opacité
    qui délavait aussi la lettre (contraste 3,4:1, illisible sur mobile). */
 .motus-key--absent {
-    background-color: #334155; /* slate-700 */
-    color: #cbd5e1; /* slate-300 */
+    background-color: var(--motus-surface); /* slate-700 */
+    color: var(--motus-surface-content); /* slate-300 */
 }
 
-.motus-key--enter { background-color: #faa734ff; } /* amber-500 du thème */
+.motus-key--enter { background-color: var(--accent); color: var(--accent-on); } /* amber-500 du thème */
 
 @media (hover: hover) {
-    .motus-key:hover { background-color: #64748b; }
-    .motus-key--correct:hover { background-color: #ef4444; }
-    .motus-key--present:hover { background-color: #facc15; }
-    .motus-key--absent:hover { background-color: #334155; }
-    .motus-key--enter:hover { background-color: #E68A1A; }
+    .motus-key:hover { background-color: var(--motus-key-hover); }
+    .motus-key--correct:hover { background-color: var(--motus-correct); }
+    .motus-key--present:hover { background-color: var(--motus-present); }
+    .motus-key--absent:hover { background-color: var(--motus-surface); }
+    .motus-key--enter:hover { background-color: var(--accent-strong); }
 }
 
 /* Pastilles de légende : reprennent la forme, pas seulement la couleur */
@@ -129,9 +344,9 @@
     height: 1rem;
     border-radius: 3px;
 }
-.motus-swatch--correct { background-color: #ef4444; box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .55); }
-.motus-swatch--present { background-color: #facc15; box-shadow: inset 0 -5px 0 rgba(15, 23, 42, .45); }
-.motus-swatch--absent { background-color: #475569; }
+.motus-swatch--correct { background-color: var(--motus-correct); box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .55); }
+.motus-swatch--present { background-color: var(--motus-present); box-shadow: inset 0 -5px 0 rgba(15, 23, 42, .45); }
+.motus-swatch--absent { background-color: var(--motus-absent); }
 
 /* ---------- Desktop : reproduit l'apparence d'origine à l'identique ---------- */
 
@@ -146,10 +361,10 @@
     .motus-key { width: 2rem; height: 2.5rem; font-size: .75rem; }
     .motus-key--action { width: auto; padding-inline: .75rem; }
 
-    .motus-title { display: flex; align-items: center; gap: .5rem; color: #fff; font-weight: 700; }
+    .motus-title { display: flex; align-items: center; gap: .5rem; color: var(--motus-title); font-weight: 700; }
     .motus-title__icon { width: 1.75rem; height: 1.75rem; }
 
-    .motus-message { height: 1.25rem; color: #94a3b8; font-size: .875rem; text-align: center; }
+    .motus-message { height: 1.25rem; color: var(--motus-message); font-size: .875rem; text-align: center; }
 }
 
 /* ---------- Mobile : layout plein écran ---------- */
@@ -223,7 +438,7 @@
         align-items: center;
         gap: .5rem;
         min-width: 0;
-        color: #fff;
+        color: var(--motus-title);
         font-weight: 700;
         font-size: 1.0625rem;
         letter-spacing: .01em;
@@ -238,8 +453,8 @@
         width: 44px;
         height: 44px;
         border-radius: 9999px;
-        background-color: #334155;
-        color: #cbd5e1;
+        background-color: var(--motus-surface);
+        color: var(--motus-surface-content);
         cursor: pointer;
         list-style: none; /* pour <summary> */
         touch-action: manipulation;
@@ -261,8 +476,8 @@
         overscroll-behavior: contain; /* le scroll du panneau ne remonte pas au document */
         padding: .75rem;
         border-radius: .5rem;
-        background-color: #334155;
-        color: #cbd5e1;
+        background-color: var(--motus-surface);
+        color: var(--motus-surface-content);
         font-size: .875rem;
         box-shadow: 0 20px 25px -5px rgb(0 0 0 / .4);
     }
@@ -300,7 +515,7 @@
         justify-content: center;
         height: var(--motus-msg-h);
         padding-inline: 1rem;
-        color: #94a3b8;
+        color: var(--motus-message);
         font-size: .75rem;
         line-height: 1.35;
         text-align: center;
@@ -313,7 +528,7 @@
         flex-direction: column;
         gap: var(--motus-key-gap);
         width: 100%;
-        background-color: #1e293b; /* slate-800 */
+        background-color: var(--motus-keyboard); /* slate-800 */
         padding: var(--motus-kbd-pad) var(--motus-pad);
         padding-bottom: calc(var(--motus-kbd-pad) + var(--motus-safe-b));
     }

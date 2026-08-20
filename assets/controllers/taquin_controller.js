@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 const SIZE = 4;
-const EMPTY_CLASS = 'empty w-16 h-16 bg-slate-700 rounded-lg';
+const EMPTY_CLASS = 'empty w-16 h-16 bg-tile-empty rounded-lg';
 
 export default class extends Controller {
   static targets = ['grid', 'winOverlay', 'status', 'replay'];
