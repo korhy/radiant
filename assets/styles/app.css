@@ -34,7 +34,7 @@
     --amber-ink-em: #8a4f0f;
 
     /* ---- Fonds ---- */
-    --canvas: var(--brand-night);
+    --canvas: var(--night);
     /* Assombri depuis slate-700 : au coin clair du dégradé, le corps de texte
        n'atteignait que 4,04:1. Écart délibéré, voir light-theme.md. */
     --canvas-end: #2a3746;
