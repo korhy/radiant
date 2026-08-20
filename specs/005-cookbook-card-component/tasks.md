@@ -132,13 +132,13 @@ reste. C'est dit ici plutôt que déguisé en indépendance.
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T027 [P] Ajouter `RecipeCard` à la liste des composants du projet dans `.claude/rules/technical/components-shadcn.md`, avec la raison pour laquelle la recette `card` du kit n'a pas été retenue
-- [ ] T028 [P] Marquer **DU1** et **S3** traités dans `docs/audit/audit-2026-08-18.md`, ajouter l'étape correspondante à la section « Ordre recommandé », et mettre à jour le compte de la dimension Sécurité
-- [ ] T029 Dérouler [quickstart.md](quickstart.md) en entier — les six gestes manuels, aux trois largeurs et dans les deux thèmes
-- [ ] T030 Passer axe-core sur `/app/cookbook` dans les deux thèmes, **avant et après** un chargement par défilement : 0 violation (SC-005)
-- [ ] T031 Faire le contrôle SC-001 : modifier une classe visuelle de `RecipeCard`, vérifier que la modification se voit sur les cartes des **deux** groupes, puis annuler la modification
-- [ ] T032 Supprimer `specs/005-cookbook-card-component/baseline/` une fois la comparaison faite, ou l'y laisser en référence si le diff visuel mérite d'être conservé
-- [ ] T033 `make ci` vert, et `npm run dev` relancé après tout `npm run build` de contrôle
+- [X] T027 [P] Ajouter `RecipeCard` à la liste des composants du projet dans `.claude/rules/technical/components-shadcn.md`, avec la raison pour laquelle la recette `card` du kit n'a pas été retenue
+- [X] T028 [P] Marquer **DU1** et **S3** traités dans `docs/audit/audit-2026-08-18.md`, ajouter l'étape correspondante à la section « Ordre recommandé », et mettre à jour le compte de la dimension Sécurité
+- [X] T029 Dérouler [quickstart.md](quickstart.md) en entier — les six gestes manuels, aux trois largeurs et dans les deux thèmes — *fait contre une API bouchon ; largeurs mobile/tablette/bureau et les deux thèmes*
+- [ ] T030 **Non lancé** — axe-core sur `/app/cookbook` dans les deux thèmes, **avant et après** un chargement par défilement : 0 violation (SC-005)
+- [X] T031 Faire le contrôle SC-001 : modifier une classe visuelle de `RecipeCard`, vérifier que la modification se voit sur les cartes des **deux** groupes, puis annuler la modification
+- [X] T032 Conservé en référence, comme `specs/001-tailwind4-shadcn/baseline/` : `cards-before.html` et `cards-after.html` documentent les trois écarts voulus (`data-slot`, `alt=""`, Badge du kit)
+- [X] T033 `make ci` vert, et `npm run dev` relancé après tout `npm run build` de contrôle
 
 ---
 
