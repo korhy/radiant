@@ -178,6 +178,13 @@ make watch           # rebuild assets on change
 **Assets targets run on the host, not in the container** — an in-container `npm install` rewrites
 `package-lock.json`'s `name` field to the container workdir and produces a bogus lockfile diff.
 
+**Composer reaches only one `vendor/` at a time.** `compose.yaml` mounts an anonymous volume over
+`/var/www/html/vendor`, so the container keeps its own copy while `composer.json`, `composer.lock`
+and `config/bundles.php` are shared. A `composer require` run in the container therefore installs
+the package **and** declares the bundle, but the host gets only the declaration — `symfony serve`
+then dies on a missing class. Run `composer install` on the host afterwards (or the reverse), and
+say which side you ran it on.
+
 > Assets ship from **CI**, not from your machine: `deploy.yml` runs `npm ci && npm run build` and
 > uploads `public/build/` (which is git-ignored). Locally use `npm run dev` / `npm run watch` —
 > `npm run build` is the production build, which enables versioning and emits hashed filenames;
