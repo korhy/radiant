@@ -1,9 +1,9 @@
 <section id="projects" class="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
-    <div class="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-slate-900/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
-        <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 lg:sr-only">Projets</h2>
+    <div class="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-surface/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-content-min lg:sr-only">Projets</h2>
     </div>
     <div>
-        <p class="hidden lg:block text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Projets</p>
+        <p class="hidden lg:block text-xs font-bold uppercase tracking-widest text-content-min mb-3">Projets</p>
         <ol class="">
             {% for project in projects %}
                 <li class="mb-12">
@@ -13,7 +13,7 @@
                             </div>
                         </header>
                         <div class="sm:col-span-6 lg:w-4/5 lg:flex-col ">
-                            <h3 class="font-medium leading-snug text-slate-100 hover:text-amber-500 hover:underline">
+                            <h3 class="font-medium leading-snug text-content-high hover:text-brand-fg hover:underline">
                                 <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer">{{ project.name }}
                                         <span class="sr-only">(nouvelle fenêtre)</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 2 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block h-4 w-4">
@@ -27,7 +27,7 @@
                             <ul class="mt-2 flex flex-wrap">
                                 {% for tag in project.tags.tags %}
                                     <li class="mr-1.5 mt-2">
-                                        <div class="flex items-center rounded-full border-2 border-amber-400 px-3 py-1 text-xs font-medium leading-5 text-amber-500 ">{{ tag }}</div>
+                                        <div class="flex items-center rounded-full border-2 border-brand-light px-3 py-1 text-xs font-medium leading-5 text-brand-fg ">{{ tag }}</div>
                                     </li>
                                 {% endfor %}
                             </ul>

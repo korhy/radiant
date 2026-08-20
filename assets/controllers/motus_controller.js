@@ -148,10 +148,14 @@ export default class extends Controller {
         for (let row = 0; row < MAX_ATTEMPTS; row++) {
             const rowEl = document.createElement('div');
             rowEl.className = 'motus-row';
+            rowEl.setAttribute('role', 'row');
             rowEl.dataset.row = row;
             for (let col = 0; col < this.wordLengthValue; col++) {
                 const cell = document.createElement('div');
                 cell.className = 'motus-cell';
+                // aria-label est interdit sur un div générique : la cellule doit
+                // porter un rôle qui l'autorise, sinon le libellé n'est pas exposé.
+                cell.setAttribute('role', 'cell');
                 cell.dataset.row = row;
                 cell.dataset.col = col;
                 rowEl.appendChild(cell);

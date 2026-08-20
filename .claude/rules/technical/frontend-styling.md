@@ -1,107 +1,100 @@
 ---
-description: Styling conventions — Tailwind utilities in the markup, reuse through partials not a CSS layer, the scale over arbitrary values. Two purge traps that fail silently.
+description: Styling standard — Tailwind 4, tokens en deux niveaux, jamais de couleur littérale dans un gabarit, contrastes AA mesurés dans les deux thèmes.
 paths:
   - "**/*.twig"
-  - "**/*.css"
   - "**/assets/styles/**"
-  - "**/tailwind.config.js"
+  - "**/assets/controllers/**/*.js"
   - "**/postcss.config.js"
 ---
 
-# Styling — Tailwind CSS 3
+# Styling — Tailwind CSS 4
 
-## Golden rule
-**Utilities in the markup; reuse through Twig partials — not through a CSS component layer.**
-When the same cluster of classes appears twice, extract a **partial**, not a `.my-card` class.
+## Règle d'or
+**Des utilitaires dans le balisage ; la réutilisation passe par un composant, pas par une couche
+CSS.** Quand la même grappe de classes revient une seconde fois, extraire un composant — voir
+[components-shadcn.md](components-shadcn.md).
 
-Current setup: **Tailwind 3.4** via PostCSS (`postcss.config.js` → `tailwindcss` + `autoprefixer`),
-wired into Webpack Encore with `enablePostCssLoader()`. Configuration is in
-**`tailwind.config.js`** (Tailwind 3 style — a JS config, not CSS `@theme`).
+Configuration : **Tailwind 4** via PostCSS, `@tailwindcss/postcss` pour unique plugin (il intègre le
+préfixage : ne pas rajouter `autoprefixer`). **Il n'y a pas de `tailwind.config.js`** — tout se
+configure en CSS, dans `assets/styles/app.css`.
 
-## ⚠️ Two purge traps — read before touching styles
+## Déclarer les sources, toujours
 
-**1. The content glob is narrower than Twig's loader.**
-
-```js
-content: ["./assets/**/*.js", "./templates/**/*.html.twig"]
+```css
+@import 'tailwindcss';
+@source '../../templates';
+@source '../../assets';
 ```
 
-But `config/packages/twig.yaml` sets `file_name_pattern: '*.twig'`. So a template named
-`foo.twig` (without `.html`) is invisible to Tailwind and **every utility class in it gets
-purged** — the page renders unstyled, with no error anywhere. **Always name templates
-`*.html.twig`.** If you ever add a `.twig`-only file, widen the glob in the same change.
+`@source '../../assets'` n'est pas facultatif : trois contrôleurs Stimulus posent des utilitaires à
+l'exécution. Une classe qu'aucune source ne montre n'est **pas générée**, l'élément s'affiche sans
+style, et **aucune erreur n'est levée**. Ajouter un répertoire de gabarits ou de scripts, c'est
+ajouter son `@source` dans le même changement.
 
-**2. The MOTUS block is deliberately outside `@layer`.**
+Nommer les gabarits **`*.html.twig`**.
 
-`assets/styles/app.css` ends with a large hand-written Motus block placed **outside**
-`@layer components`, with a French comment explaining why: those classes are applied by JavaScript
-at runtime, so Tailwind's purge cannot see them in any source file. Inside a layer they would be
-stripped. **Do not "tidy" that block into a layer**, and do not reformat it away. Any new
-JS-applied class has the same problem and belongs in the same region.
+## Les tokens — deux niveaux, et rien d'autre
 
-## Design tokens
+1. **Les couleurs brutes** (`--amber`, `--night`…) dans `:root`, nommées par ce qu'elles sont.
+2. **Les rôles** (`--surface-raised`, `--content-low`, `--brand-fg`, `--line-control`…), nommés par
+   ce à quoi ils servent, définis à partir des couleurs brutes.
+3. **`@theme inline`** expose les rôles aux utilitaires, et y adosse le vocabulaire du kit shadcn
+   (`--color-background`, `--color-foreground`, `--color-primary`, `--color-ring`…).
 
-`tailwind.config.js` extends the palette — and note it **shadows Tailwind defaults**:
+**Rebrander, c'est éditer `:root`.** Ne jamais écrire de valeur dans `@theme inline` : ces noms
+pointent vers des rôles, les rôles vers des couleurs.
 
-```js
-colors: {
-  'bg-blue-950': '#23313e',   // custom name, used as bg-bg-blue-950
-  'amber-400': '#FCC175',     // overrides the default amber
-  'amber-500': '#faa734ff',
-  'amber-600': '#E68A1A',
-  'amber-700': '#B76A14',
-}
-```
+- **Aucune couleur littérale dans un gabarit ni dans un contrôleur Stimulus.** Pas de `bg-slate-800`,
+  pas de `text-amber-500`, pas de `#faa734` : `bg-surface-raised`, `text-brand-fg`. Une classe posée
+  depuis le JavaScript suit la même règle.
+- **`accent` appartient au kit** — il y désigne une surface de survol discrète. L'ambre du portfolio,
+  c'est `brand-*`. Ne pas confondre les deux.
+- **Ne pas surcharger la palette standard de Tailwind.** Redéfinir `amber-500` fait mentir un
+  composant du kit qui le référencerait.
+- **Un aplat de marque porte `text-brand-on`**, jamais `text-white` : blanc sur ambre donne 1,97:1.
 
-So `amber-500` in this project is **not** Tailwind's amber-500. Don't "correct" a colour toward the
-default palette, and don't introduce a second accent — the visual language is a dark slate gradient
-with an amber accent.
+## Les deux thèmes
 
-Prefer the scale over arbitrary values: `p-4`, not `p-[17px]`. Reach for `[...]` only for a genuine
-one-off (an `aspect-ratio`, a precise icon size).
+Le sombre est la définition par défaut dans `:root` ; le clair redéfinit les rôles sous
+`@media (prefers-color-scheme: light)`. Ne rien déclarer en variantes `dark:` — le thème passe par
+les tokens, et une variante `dark:` bascule seule pendant que le reste du site ne suit pas.
 
-## When plain CSS is acceptable
-- Overriding third-party DOM you don't control.
-- Runtime-applied classes that purge cannot see (the Motus case above).
-- Keyframes and complex animations.
+**Les deux thèmes doivent satisfaire AA** (4,5:1 pour le texte, 3:1 pour les graphiques, les éléments
+d'interface et les indicateurs de focus). Une teinte se **mesure**, elle ne s'estime pas : calculer
+le rapport pour chaque couple avant de le retenir, et le consigner. Le relevé existant est dans
+[`specs/001-tailwind4-shadcn/light-theme.md`](../../../specs/001-tailwind4-shadcn/light-theme.md) —
+l'étendre plutôt que d'en ouvrir un autre.
 
-Everything else: utilities.
+## Quand du CSS écrit à la main est acceptable
+- Surcharger du DOM tiers qu'on ne contrôle pas.
+- Les keyframes et les animations complexes.
+- Un bloc de composant dense appliqué depuis le JavaScript — le bloc Motus d'`app.css` est le cas.
 
-**When you do write CSS in `assets/styles/**`, prefer Tailwind `@apply`** over raw property
-declarations wherever the utilities can express the rule — it keeps the stylesheet in the design
-system's vocabulary instead of forking a second one. Reach for raw CSS only where Tailwind genuinely
-can't (some vendor overrides, properties with no utility). Design tokens themselves are the token
-layer and stay as CSS custom properties — they are not `@apply`-able.
+Ce bloc reste **hors `@layer`** et n'a pas à être « rangé » : Tailwind 4 n'élague pas le CSS de
+l'auteur. Il consomme les tokens (`var(--motus-cell)`), comme le reste.
 
-## Mockups
-Mockup sizing is **indicative, not pixel-perfect**. Match spacing rhythm, hierarchy and colour
-faithfully; snap dimensions to the Tailwind scale rather than reproducing exact pixel values.
+Partout ailleurs : des utilitaires. Quand du CSS s'impose dans `assets/styles/**`, **préférer
+`@apply`** là où les utilitaires expriment la règle. Les tokens eux-mêmes restent des propriétés
+personnalisées — ils ne sont pas `@apply`-ables.
 
-## Target — Tailwind 4, shipped with the shadcn kit
+Préférer l'échelle aux valeurs arbitraires : `p-4`, pas `p-[17px]`. `[...]` pour un vrai cas isolé
+(un `aspect-ratio`, une taille d'icône précise).
 
-Tailwind 4 is done **in the same batch** as the shadcn kit
-([components-shadcn.md](components-shadcn.md)), never on its own — the reasoning is recorded in
-Étape 5 of [the audit](../../../docs/audit/audit-2026-08-18.md).
+## Poids
+La feuille livrée tient sous **15 Ko une fois compressée**. Mesurer après un `npm run build` :
+`gzip -9 -c public/build/app.*.css | wc -c`. Dépasser ce plafond est un sujet à soulever, pas à
+absorber.
 
-The Tailwind half involves at minimum:
+## Maquettes
+Le dimensionnement d'une maquette est **indicatif**. Respecter le rythme des espacements, la
+hiérarchie et les couleurs ; caler les dimensions sur l'échelle Tailwind plutôt que reproduire des
+pixels.
 
-1. `npm install tailwindcss@^4 @tailwindcss/postcss` and drop `autoprefixer` from
-   `postcss.config.js` in favour of `@tailwindcss/postcss` — which becomes the file's only plugin.
-2. Replace the `@tailwind base/components/utilities` directives with `@import 'tailwindcss'`.
-3. Delete `tailwind.config.js`, porting the colour overrides into a CSS `@theme` block — decided
-   jointly with the shadcn token mapping, not before it.
-4. Replace the content globs with **explicit `@source` directives** (`@source '../../templates'`,
-   `@source '../../src'`, `@source not '../../public'`). Declaring the sources makes the purge
-   deterministic instead of leaning on Tailwind's auto-detection — and it removes purge trap #1
-   above, since it no longer depends on a filename glob.
-5. **Re-solve the Motus purge problem**, the risky part: those classes are applied by JavaScript and
-   appear in no source file. Tailwind 4's `@source inline(...)` exists for exactly this and replaces
-   the current "keep it outside `@layer`" workaround.
-6. Re-check every screen: overriding `amber-*` behaves differently under CSS-first theming.
+## Vérifier
+JS et CSS n'ont **aucun linter** ici. Relire à la main, **charger la page**, et contrôler les deux
+thèmes — pas seulement celui du système. Voir [linting.md](linting.md).
 
-Don't start it inside a feature branch. Spec it with `/speckit-specify`.
-
-## See also
-- Templates & accessibility: [frontend-twig.md](frontend-twig.md)
-- Component standard & the shadcn target: [components-shadcn.md](components-shadcn.md)
-- Twig style gate: [linting.md](linting.md) — `make twig-cs-fixer`
+## Voir aussi
+- Composants et kit : [components-shadcn.md](components-shadcn.md)
+- Gabarits et accessibilité : [frontend-twig.md](frontend-twig.md)
+- Interactivité : [ux-stimulus-turbo.md](ux-stimulus-turbo.md)

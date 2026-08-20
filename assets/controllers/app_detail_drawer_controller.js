@@ -1,49 +1,18 @@
 import { Controller } from '@hotwired/stimulus';
 
+/**
+ * Barre d'onglets du panneau « Behind the scenes ».
+ *
+ * L'ouverture, la fermeture, le piège au focus, Échap, l'inertie de
+ * l'arrière-plan et le retour du focus sont assurés par le composant `Dialog`
+ * du kit, qui s'appuie sur l'élément natif `<dialog>`. Ce contrôleur ne garde
+ * que ce que le navigateur ne fournit pas : le motif `tablist`.
+ */
 export default class extends Controller {
-    static targets = ['drawer', 'overlay', 'panel', 'tab', 'trigger'];
-
-    #onKeyDown = (event) => {
-        if (event.key === 'Escape') this.close();
-    };
+    static targets = ['panel', 'tab'];
 
     connect() {
         this.#activateTab(this.tabTargets[0]);
-    }
-
-    disconnect() {
-        document.removeEventListener('keydown', this.#onKeyDown);
-    }
-
-    open() {
-        this.drawerTarget.classList.remove('translate-x-full');
-        this.overlayTarget.classList.remove('hidden');
-
-        // `inert` sort le tiroir fermé de l'ordre de tabulation et de l'arbre
-        // d'accessibilité : sans ça, ses boutons restent atteignables au clavier
-        // alors qu'ils sont hors écran.
-        this.drawerTarget.removeAttribute('inert');
-
-        if (this.hasTriggerTarget) this.triggerTarget.setAttribute('aria-expanded', 'true');
-
-        const active = this.tabTargets.find(tab => tab.getAttribute('aria-selected') === 'true');
-        (active ?? this.tabTargets[0])?.focus();
-
-        document.addEventListener('keydown', this.#onKeyDown);
-    }
-
-    close() {
-        this.drawerTarget.classList.add('translate-x-full');
-        this.overlayTarget.classList.add('hidden');
-        this.drawerTarget.setAttribute('inert', '');
-
-        document.removeEventListener('keydown', this.#onKeyDown);
-
-        if (this.hasTriggerTarget) {
-            this.triggerTarget.setAttribute('aria-expanded', 'false');
-            // Rendre le focus à son point de départ, sinon il retombe sur le <body>.
-            this.triggerTarget.focus();
-        }
     }
 
     switchTab(event) {
@@ -79,10 +48,10 @@ export default class extends Controller {
 
         this.tabTargets.forEach(tab => {
             const isActive = tab.dataset.tab === activeKey;
-            tab.classList.toggle('text-white', isActive);
+            tab.classList.toggle('text-content-max', isActive);
             tab.classList.toggle('border-b-2', isActive);
-            tab.classList.toggle('border-amber-400', isActive);
-            tab.classList.toggle('text-slate-400', !isActive);
+            tab.classList.toggle('border-brand-light', isActive);
+            tab.classList.toggle('text-content-low', !isActive);
             tab.setAttribute('aria-selected', String(isActive));
             tab.tabIndex = isActive ? 0 : -1;
         });

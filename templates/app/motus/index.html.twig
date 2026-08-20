@@ -22,7 +22,7 @@
     data-motus-first-letter-value="{{ first_letter }}"
     data-motus-guess-url-value="{{ path('motus_guess') }}">
 
-    <div class="motus-card md:flex md:flex-col md:items-center md:gap-6 md:bg-slate-800 md:p-8 md:rounded-2xl md:shadow-2xl md:w-fit">
+    <div class="motus-card md:flex md:flex-col md:items-center md:gap-6 md:bg-surface-raised md:p-8 md:rounded-2xl md:shadow-2xl md:w-fit">
 
         {# md:contents efface la barre sur desktop : le h1 redevient enfant direct
            de la carte, qui retrouve exactement ses cinq enfants flex d'origine. #}
@@ -40,11 +40,11 @@
 
                 {# Desktop : tooltip au survol #}
                 <span class="relative group hidden md:inline-block">
-                    <button type="button" class="text-slate-400 hover:text-white focus-visible:text-white cursor-help text-base"
+                    <button type="button" class="text-content-low hover:text-content-max focus-visible:text-content-max cursor-help text-base"
                         aria-label="Règles du jeu">ⓘ</button>
                     <span class="invisible group-hover:visible group-focus-within:visible opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity
                         absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 block
-                        bg-slate-700 text-slate-300 text-sm font-normal rounded-lg p-3 shadow-xl z-10">
+                        bg-surface-inset text-content-mid text-sm font-normal rounded-lg p-3 shadow-xl z-10">
                         {{ include('app/motus/_legend.html.twig') }}
                     </span>
                 </span>
@@ -60,7 +60,7 @@
         </header>
 
         <div class="motus-stage md:contents">
-            <div data-motus-target="grid" class="motus-grid" role="group" aria-label="Grille des essais"></div>
+            <div data-motus-target="grid" class="motus-grid" role="table" aria-label="Grille des essais"></div>
             <p data-motus-target="message" class="motus-message" role="status" aria-live="polite"></p>
         </div>
 
@@ -91,7 +91,7 @@
 
         {# Desktop : la pilule Retour d'origine. Sur mobile c'est la flèche de la barre. #}
         <a href="{{ path('homepage') }}"
-            class="hidden md:inline-block bg-slate-600 hover:bg-slate-700 text-white font-bold px-6 py-2 rounded-full transition-colors cursor-pointer text-center text-sm">
+            class="hidden md:inline-block bg-surface-muted hover:bg-surface-inset text-content-max font-bold px-6 py-2 rounded-full transition-colors cursor-pointer text-center text-sm">
             Retour
         </a>
     </div>

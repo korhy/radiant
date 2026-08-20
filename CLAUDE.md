@@ -48,8 +48,8 @@ only when relevant.
     ├── testing.md                 # PHPUnit, opt-in critical-only, the SQLite-vs-Postgres caveat
     ├── easyadmin.md               # EasyAdmin 4 CRUD, dashboard menu, JSON-column textarea pattern
     ├── frontend-twig.md           # Twig partials, Webpack Encore, accessibility (RGAA/EAA)
-    ├── frontend-styling.md        # Tailwind 3 utility-first, purge traps, the Tailwind 4 target
-    ├── components-shadcn.md       # Current partial convention + the shadcn/Tailwind 4 target
+    ├── frontend-styling.md        # Tailwind 4, two-level tokens, AA in both themes
+    ├── components-shadcn.md       # shadcn kit standard, Dialog for modals, the Legacy move
     ├── ux-stimulus-turbo.md       # Stimulus vs Turbo, MANUAL controller registration
     └── deployment.md              # Auto-running migrations, CI-built assets, commit-driven releases
 ```
@@ -84,9 +84,8 @@ Non-trivial features go through **[spec-kit](https://github.com/github/spec-kit)
 The **constitution is not recreated**: `.specify/memory/constitution.md` is a thin pointer — this
 file plus `.claude/rules/**` are the real governing rules.
 
-The next candidate is **Étape 5 — Tailwind 3 → 4 *and* the shadcn kit, as a single migration**: the
-kit is Tailwind 4-native and the palette would otherwise be mapped onto CSS tokens twice. See
-[components-shadcn.md](.claude/rules/technical/components-shadcn.md).
+Étape 5 (Tailwind 4 + the shadcn kit) shipped through this workflow; its artifacts live in
+`specs/001-tailwind4-shadcn/`, including the measured contrast record in `light-theme.md`.
 
 ---
 
@@ -97,12 +96,15 @@ kit is Tailwind 4-native and the palette would otherwise be mapped onto CSS toke
   branche 7.3 n'ayant aucun correctif pour quatre CVE (constat **S9** de l'audit)
 - **Doctrine** ORM 3 / DBAL 3 + migrations, on **PostgreSQL 16**
 - **EasyAdmin 4** for the back-office · **VichUploader** for file uploads
-- **Twig** 3 + **Symfony UX**: **Stimulus only**. Turbo was removed on 2026-08-19 — it was declared
-  but never loaded. No Live Components, no Twig Components (the config was removed too). Twig
-  Components come back with the shadcn kit, which requires them; Turbo and Live Components don't
-- **Tailwind CSS 3.4** via PostCSS, configured in `tailwind.config.js` — **not** Tailwind 4, and
-  **no shadcn kit**. Both land together in Étape 5, not one after the other (see
-  `components-shadcn.md` for the plan and the `symfony/ux-toolkit` 2.x version ceiling)
+- **Twig** 3 + **Symfony UX**: **Stimulus** and **Twig Components**. No Turbo, no Live Components —
+  the kit needs neither, and neither is installed
+- **Tailwind CSS 4** via PostCSS (`@tailwindcss/postcss`, sole plugin) — **no `tailwind.config.js`**.
+  Colours go through two levels of tokens in `assets/styles/app.css`; a literal colour in a template
+  is a defect. See [frontend-styling.md](.claude/rules/technical/frontend-styling.md)
+- **Symfony UX Toolkit — shadcn kit** (`symfony/ux-toolkit ^2.36`, dev): components are installed
+  with `ux:install <recipe> --kit=shadcn` and become project code. **3.x requires PHP >= 8.4** and CI
+  compiles 8.2 — moving up is a PHP upgrade, not a front-end one. Re-check before assuming the
+  ceiling still holds
 - **Webpack Encore** for assets — the dormant AssetMapper setup was removed on 2026-08-19
 - **Mailjet** mailer for the contact form
 - **Tests**: PHPUnit — 37 tests since 2026-08-19 (Motus, client Cookbook, routes publiques,

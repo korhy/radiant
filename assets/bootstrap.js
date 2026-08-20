@@ -3,9 +3,11 @@ import TaquinController from './controllers/taquin_controller.js';
 import AppDetailDrawerController from './controllers/app_detail_drawer_controller.js';
 import CookbookController from './controllers/cookbook_controller.js';
 import MotusController from './controllers/motus_controller.js';
+import DialogController from './controllers/dialog_controller.js';
 
 const app = Application.start();
 app.register('taquin', TaquinController);
 app.register('app-detail-drawer', AppDetailDrawerController);
 app.register('cookbook', CookbookController);
 app.register('motus', MotusController);
+app.register('dialog', DialogController);
