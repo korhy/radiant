@@ -84,6 +84,16 @@ définition de balisage écrite en JavaScript (`grid.innerHTML = '<div class="co
 elle a déjà divergé de celle du gabarit (message différent, habillage différent). Corriger la carte
 en laissant celle-là reproduirait le défaut à l'identique, dans le même fichier. C'est FR-010.
 
+**Sous-décision — l'habillage vient du kit.** Le kit a une recette `empty`, et elle **convient** :
+`Empty` apporte une vraie structure (`Empty:Media` pour l'icône, `Empty:Header` / `Empty:Description`
+pour le texte), dont on ne surcharge qu'une chose, le `rounded-lg border-dashed`. C'est l'inverse du
+cas `card` (D1), où les quatre classes déterminantes tombaient. Elle est donc installée.
+
+Les deux messages — « aucune recette » et « aucun résultat pour ces critères » — sont une
+**variation** : ils passent par un partiel de page, `app/cookbook/_recipe_grid_state.html.twig`,
+paramétré par son message, comme `app/cookbook/breadcrumb.html.twig` l'est par ses éléments. Le tiret
+bas sans variation reste la règle de `templates/components/`, pas des partiels de page.
+
 **Alternative considérée** : laisser l'état vide en JavaScript, hors périmètre — rejetée : la
 correction coûte le même geste que la carte, et son absence rendrait FR-002 (« le navigateur
 n'assemble pas de balisage ») faux à la lettre dès la première recherche infructueuse.
