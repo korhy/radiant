@@ -134,11 +134,11 @@ au lieu de reproduire.
 **Purpose**: ces fichiers sont chargés à chaque session. Les laisser périmés propagerait l'erreur —
 c'est déjà arrivé sur ce projet.
 
-- [ ] T050 [P] Corriger `.claude/rules/technical/frontend-styling.md` : le passage sur `@source inline(...)` et le « problème de purge Motus » est **faux** ([research.md](research.md) R1). Réécrire la règle en Tailwind 4 au présent, sans section « cible »
-- [ ] T051 [P] Réécrire `.claude/rules/technical/components-shadcn.md` : retirer l'avertissement « le kit n'est pas installé » et la section des prérequis, devenus de l'historique. La règle énonce la convention en vigueur
-- [ ] T052 [P] Mettre à jour `CLAUDE.md` : stack en Tailwind 4 + kit shadcn, et la mention des Twig Components
-- [ ] T053 [P] Mettre à jour `.claude/rules/technical/frontend-twig.md` : les composants du kit deviennent la convention, les partiels `_*.html.twig` l'exception
-- [ ] T054 Marquer l'Étape 5 comme faite dans `docs/audit/audit-2026-08-18.md`, et y consigner que DU2/DU3 restent ouverts (hors périmètre par FR-013)
+- [X] T050 [P] Corriger `.claude/rules/technical/frontend-styling.md` : le passage sur `@source inline(...)` et le « problème de purge Motus » est **faux** ([research.md](research.md) R1). Réécrire la règle en Tailwind 4 au présent, sans section « cible » Réécrite au présent, en Tailwind 4 : sources déclarées, tokens en deux niveaux, AA dans les deux thèmes, plafond de poids. Plus de section « cible ».
+- [X] T051 [P] Réécrire `.claude/rules/technical/components-shadcn.md` : retirer l'avertissement « le kit n'est pas installé » et la section des prérequis, devenus de l'historique. La règle énonce la convention en vigueur Réécrite : le kit est la convention en vigueur, `Dialog` pour les modales, le « Legacy move » pour reprendre un composant existant. Prérequis et avertissements retirés.
+- [X] T052 [P] Mettre à jour `CLAUDE.md` : stack en Tailwind 4 + kit shadcn, et la mention des Twig Components Stack en Tailwind 4 + kit shadcn, Twig Components actifs, plafond PHP du kit rappelé.
+- [X] T053 [P] Mettre à jour `.claude/rules/technical/frontend-twig.md` : les composants du kit deviennent la convention, les partiels `_*.html.twig` l'exception Les composants du kit deviennent la convention ; les partiels `_*.html.twig` l'exception. Contrastes et passe automatisée exigés **dans les deux thèmes**.
+- [X] T054 Marquer l'Étape 5 comme faite dans `docs/audit/audit-2026-08-18.md`, et y consigner que DU2/DU3 restent ouverts (hors périmètre par FR-013) Étape 5 marquée traitée, avec la liste des défauts corrigés au-delà du périmètre. DU1/DU2/DU3 restent ouverts, hors périmètre par FR-013. `.claude/rules/business/radiant.md` suit.
 - [ ] T055 Après merge, vérifier la production : les 8 routes répondent, le panneau s'ouvre, et les deux thèmes rendent — le déploiement part tout seul au merge sur `main`
 
 ---

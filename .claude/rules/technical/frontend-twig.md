@@ -1,5 +1,5 @@
 ---
-description: Frontend conventions — Twig templates, partials, Webpack Encore, accessibility (RGAA/EAA).
+description: Frontend conventions — Twig templates, shadcn kit components, underscore partials as the exception, Webpack Encore, accessibility (RGAA/EAA) in both themes.
 paths:
   - "**/*.twig"
   - "**/assets/**"
@@ -12,9 +12,8 @@ paths:
 
 ## Principles
 - Twig stays **declarative**: minimal logic, no heavy processing, no Doctrine queries.
-- **Reuse partials instead of duplicating markup.** Before adding markup, check
-  `templates/components/**` for an existing partial (`_app_detail_drawer`, `_icon_*`, `_legend`).
-  Extract one as soon as markup repeats.
+- **Réutiliser avant d'écrire.** Avant d'ajouter du balisage, chercher un composant du kit, puis un
+  partiel existant dans `templates/components/**`. Extraire dès que le balisage se répète.
 - **No inline `<script>`**: JS goes through Webpack Encore + Stimulus (see
   [ux-stimulus-turbo.md](ux-stimulus-turbo.md)).
 - Load assets with the Encore helpers — `{{ encore_entry_link_tags('app') }}` /
@@ -23,34 +22,37 @@ paths:
   is a decision, not a reflex.
 - Styling is **Tailwind utility-first** — see [frontend-styling.md](frontend-styling.md).
 
-## Components — the current shape
+## Composants
 
-**Les Twig Components sont disponibles mais inutilisés.** Le bundle arrive comme dépendance
-transitive d'EasyAdmin, et `config/packages/twig_component.yaml` ne déclare que
-`anonymous_template_directory` : le mapping `App\Twig\Components\` a été retiré, `src/Twig/Components/`
-n'ayant jamais existé. Aucun gabarit n'est rendu en `<twig:Xxx>`.
+**Un composant visuel part du kit shadcn**, rendu avec la syntaxe namespacée :
 
-What the project actually does — and what you should follow until that changes:
+```twig
+<twig:Dialog id="app-detail">
+    <twig:block name="content">…</twig:block>
+</twig:Dialog>
+```
+
+Les Twig Components sont configurés pour cela : `config/packages/twig_component.yaml` déclare
+`anonymous_template_directory` **et** le mappage `App\Twig\Components\`. Voir
+[components-shadcn.md](components-shadcn.md).
+
+**Les partiels préfixés d'un tiret bas restent l'exception**, pour ce qui n'a pas d'équivalent dans
+le kit :
 
 ```twig
 {{ include('components/_app_detail_drawer.html.twig', { app_detail: app_detail }) }}
 ```
 
-- Partials live in `templates/components/`, **underscore-prefixed**, `snake_case`.
-- They take explicit variables through `include()`'s second argument. Pass what the partial needs;
-  don't rely on ambient context.
-- One partial = one responsibility.
-- **The `_icon_<slug>.html.twig` family is contractual**, not decorative: the Stream Deck resolves
-  the filename from the `App` slug at render time. See [../business/radiant.md](../business/radiant.md).
+- Ils vivent dans `templates/components/`, **préfixés d'un `_`**, en `snake_case`.
+- Ils reçoivent leurs variables **explicitement**, par le second argument d'`include()`. Ne pas
+  compter sur le contexte ambiant.
+- Un partiel, une responsabilité.
+- **La famille `_icon_<slug>.html.twig` est contractuelle**, pas décorative : le Stream Deck résout
+  le nom de fichier depuis le slug de l'`App` au rendu. Voir
+  [../business/radiant.md](../business/radiant.md).
 
-When a partial starts needing **data from the database**, don't query in the template — the
-controller passes it in. Passer à un Twig Component adossé à une classe suppose d'ajouter le mapping
-`defaults` à `twig_component.yaml` : c'est une décision, pas un réflexe. Repositories only, never
-Doctrine in Twig.
-
-The target is the shadcn kit, adopted **together with Tailwind 4** as a single migration (Étape 5
-of the audit) — which also restores the Twig Components configuration removed on 2026-08-19,
-since the kit requires it. See [components-shadcn.md](components-shadcn.md).
+Quand un composant a besoin de **données**, ne pas interroger la base dans le gabarit : le contrôleur
+les passe. Repositories uniquement, jamais de Doctrine dans Twig.
 
 ## Accessibility (mandatory)
 
@@ -82,14 +84,15 @@ since the kit requires it. See [components-shadcn.md](components-shadcn.md).
   Icon-only buttons/links need an accessible name (`aria-label` or visually-hidden text). The
   Stream Deck's inline SVGs are decorative and correctly carry `aria-hidden="true"` — the adjacent
   text label is what names the link. Keep that pairing.
-- **Colour & contrast.** Meet AA contrast (4.5:1 body, 3:1 large text / UI). Never convey information
-  by colour alone — **Motus is the obvious trap**: correct/present/absent must not be signalled by
-  colour only, and the legend must stay reachable.
+- **Colour & contrast.** Meet AA contrast (4.5:1 body, 3:1 large text / UI) **in both themes** —
+  measure the ratio, don't eyeball it. Never convey information by colour alone — **Motus is the
+  obvious trap**: correct/present/absent must not be signalled by colour only, and the legend must
+  stay reachable.
 - **Motion.** Respect `prefers-reduced-motion`. No content flashing > 3×/s.
 - **Language & titles.** `<html lang="fr">` is set in `base.html.twig`; each page has a unique,
   descriptive `<title>`.
 - **Verify.** Check keyboard-only navigation and run an automated pass (axe / Lighthouse a11y)
-  before considering a screen done — the `playwright-skill` can drive both.
+  **in both themes** before considering a screen done — the `playwright-skill` can drive both.
 
 ## Style gate
 

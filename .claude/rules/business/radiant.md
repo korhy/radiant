@@ -100,10 +100,10 @@ L'audit du 2026-08-18 (`docs/audit/audit-2026-08-18.md`) a traité les étapes 0
   rate limiting ni anti-spam.
 - **Les messages de validation s'affichent en anglais** (`default_locale: en`) sur un site français.
 - **Les colonnes JSON `tags`** emballent le tableau dans une clé `tags` redondante.
-- **Migration Tailwind 3 → 4 *et* adoption du kit shadcn**, traitées comme un seul lot (Étape 5).
 
 Ce qui a été corrigé et ne doit pas être re-signalé : `declare(strict_types=1)` (imposé par
 php-cs-fixer), la casse des propriétés d'entité, la typo `$projetcs`, le code mort (AssetMapper,
 Platform.sh, contrôleurs Stimulus non enregistrés), l'accessibilité des mini-apps, l'absence de
 tests, l'absence de gate Twig (twig-cs-fixer depuis le 2026-08-19), et les failles de dépendances
-(constat **S9**, `composer audit` à 0 depuis la montée Symfony 7.4).
+(constat **S9**, `composer audit` à 0 depuis la montée Symfony 7.4). Étape 5 close le 2026-08-20 :
+Tailwind 4, tokens, thème clair et kit shadcn sont en place. **DU2** et **DU3** restent ouverts.

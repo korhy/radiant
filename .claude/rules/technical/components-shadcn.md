@@ -6,121 +6,90 @@ paths:
   - "**/assets/controllers/**/*.js"
 ---
 
-## Today's convention
+# Composants — le kit shadcn
 
-UI is composed from **underscore-prefixed Twig partials** in `templates/components/`, included
-explicitly:
+## La règle
+**Tout composant visuel part du kit** ([Symfony UX Toolkit](https://ux.symfony.com/toolkit/kits/shadcn)).
+Ne pas réécrire à la main, en Tailwind brut, ce que le kit livre déjà.
 
-```twig
-{{ include('components/_app_detail_drawer.html.twig', { app_detail: app_detail }) }}
+```bash
+php bin/console ux:install <recipe> --kit=shadcn
 ```
 
-Rules that already apply, and that carry over unchanged to shadcn:
+Les fichiers sont **copiés** dans `templates/components/<Nom>.html.twig` (plus
+`templates/components/<Nom>/…` pour un composant composite) et dans `assets/controllers/`. Ils
+deviennent **du code du projet** : les relire à l'installation, les éditer librement. Ce n'est pas
+une dépendance figée.
 
-- **Reuse over duplication.** Check `templates/components/` before writing markup. Extract a partial
-  the second time a block repeats.
-- **One partial, one responsibility.**
-- **Pass data explicitly** through `include()`'s second argument.
-- **No Doctrine in templates** — the controller supplies the data.
-- Accessibility is part of "done" — see [frontend-twig.md](frontend-twig.md).
-
-A class-backed component needs the `defaults` mapping, which `config/packages/twig_component.yaml`
-deliberately omits — it declares only `anonymous_template_directory`, `src/Twig/Components/` having
-never existed. Add the mapping when a component genuinely needs data, not before.
-
----
-
-## Target state — the shadcn kit, adopted with Tailwind 4
-
-The intent is to build UI from the **Symfony UX Toolkit shadcn kit**
-(<https://ux.symfony.com/toolkit/kits/shadcn>). Once it lands, the standard becomes:
-
-- **Every visual component starts from the kit.** Don't hand-write a component out of raw Tailwind
-  when the kit ships one — install it and compose from it.
-- **Install** a component into the project:
-  ```bash
-  php bin/console ux:install <component> --kit shadcn
-  ```
-  Files are **copied** into `templates/components/<Name>.html.twig` (plus
-  `templates/components/<Name>/…` for compound components) and any
-  `assets/controllers/*_controller.js`. You then **own** them — edit freely, like shadcn/ui. It is
-  not a vendored dependency.
-- **Render** with the namespaced syntax: `<twig:Button>`, `<twig:Card>`, `<twig:Dialog>`. Classes and
-  attributes passed by the caller are merged via `tailwind_merge`, not overwritten.
-- **Modals use `Dialog`** — never hand-rolled overlay markup. In this project that means
-  `_app_detail_drawer.html.twig` and its Stimulus controller are the primary migration target: they
-  currently re-implement by hand (`role="dialog"`, `aria-modal`, `inert`, focus return, Escape,
-  roving tabs) exactly what `Dialog` provides.
-- **Keep the kit's accessibility.** The components ship correct `aria-*`, focus management and
-  keyboard wiring — never strip it. A migrated screen that regresses RGAA/EAA (WCAG 2.1 AA) is not
-  shippable. Checklist in [frontend-twig.md](frontend-twig.md).
-- **User-facing text stays French; component and prop names stay English** — see
+- **Rendre avec la syntaxe namespacée** : `<twig:Dialog>`, `<twig:Button>`, `<twig:Card>`. Les
+  classes passées par l'appelant sont **fusionnées** par `tailwind_merge`, pas concaténées : elles
+  écrasent bien celles du composant.
+- **Enregistrer à la main tout contrôleur Stimulus copié** dans `assets/bootstrap.js`, sans quoi il
+  ne tourne jamais — voir [ux-stimulus-turbo.md](ux-stimulus-turbo.md).
+- **`data-controller` est fusionné, pas écrasé.** Pour ajouter un contrôleur à un composant, ne
+  passer que le sien : celui du kit s'ajoute tout seul.
+- **Les modales passent par `Dialog`.** Ne jamais réécrire une superposition à la main : `Dialog`
+  s'appuie sur l'élément natif `<dialog>`, d'où viennent le piège au focus, Échap, l'inertie de
+  l'arrière-plan et le retour du focus. N'écrire que ce que le natif ne couvre pas.
+- **Ne pas dépouiller l'accessibilité du kit.** Les composants arrivent avec leurs `aria-*`, leur
+  gestion du focus et leur câblage clavier. Un écran repris qui régresse en RGAA/EAA (WCAG 2.1 AA)
+  n'est pas livrable — liste de contrôle dans [frontend-twig.md](frontend-twig.md).
+- **Le texte visible reste français ; les noms de composants et de props restent anglais** — voir
   [naming.md](naming.md).
 
-### Prerequisites — in order
+## Les couleurs viennent des tokens du site
 
-The kit is Tailwind 4-native, so it ships **with** the Tailwind 3 → 4 migration, in one batch — the
-reasoning is recorded in Étape 5 of [the audit](../../../docs/audit/audit-2026-08-18.md). Don't
-split them.
+Les composants du kit emploient le vocabulaire shadcn : `bg-background`, `text-foreground`,
+`text-muted-foreground`, `border`, `ring-ring`, `bg-primary`… Ces noms sont **adossés aux rôles du
+site** dans le bloc `@theme inline` d'`assets/styles/app.css`. Un composant installé prend donc
+l'identité du portfolio sans être retouché.
 
-1. **Migrate Tailwind 3 → 4.** See the outline in [frontend-styling.md](frontend-styling.md); the
-   Motus purge block is the hard part.
-2. **Declare Twig Components explicitly, and add the class mapping.** The bundle is already active,
-   but only as a **transitive dependency of EasyAdmin** — promote it to `composer require
-   symfony/ux-twig-component`, since the kit makes it load-bearing and a dependency the project
-   relies on must be declared rather than inherited. Then add `defaults` to
-   `config/packages/twig_component.yaml`:
-   ```yaml
-   twig_component:
-       anonymous_template_directory: 'components/'
-       defaults:
-           App\Twig\Components\: 'components/'
-   ```
-   > Turbo and Live Components stay removed — the kit needs neither.
-3. **Install the toolkit — pinned to the 2.x line**: `composer require --dev symfony/ux-toolkit:^2.36`.
-   > **Version ceiling, verified 2026-08-19.** `symfony/ux-toolkit` **3.x requires PHP >= 8.4**. The
-   > Symfony half of that requirement (`^7.4|^8.0`) is satisfied since the 7.4 upgrade, so **PHP is
-   > the only remaining blocker** — CI runs 8.2. Moving to 3.x is a PHP upgrade, not a front-end
-   > change. Re-check the constraint before assuming the ceiling still holds.
-4. **Install the components' runtime dependencies.** They are dev-dependencies of the toolkit but
-   **runtime** dependencies of the copied components, so they go in `require`, not `require-dev`:
-   `twig/html-extra`, `tales-from-a-dev/twig-tailwind-extra` (provides `tailwind_merge`),
-   `symfony/ux-icons`.
-5. **Install the kit's CSS package**: `npm install tw-animate-css`, imported from
-   `assets/styles/app.css` right after `@import 'tailwindcss'`.
-   > There is **no `shadcn` npm package** to install — that is the React CLI, unrelated to the Symfony
-   > kit. `tw-animate-css` is the only npm dependency the kit adds.
-6. **Reconcile the palette.** The project overrides `amber-400/500/600/700` and adds `bg-blue-950`;
-   shadcn drives everything from `--primary`, `--background`, `--accent`, `--ring`… Decide how the
-   dark-slate + amber identity maps onto those tokens **before** installing any component, or the
-   first one will look foreign. The shape to aim for: raw brand colours defined once in `:root`
-   (`--primary`, `--secondary`…), and an `@theme inline` block mapping them to the Tailwind utility
-   names. Rebrand by editing the tokens, never the components.
+- **Ne pas modifier les couleurs d'un composant copié** pour l'adapter au site : si sa teinte détonne,
+  c'est un token qui manque au mappage, pas le composant qu'il faut peindre.
+- **`accent` a chez shadcn le sens d'une surface de survol discrète.** L'ambre du portfolio, c'est
+  `brand-*`. Un composant qui référence `bg-accent` doit rester discret.
+- Détail du dispositif : [frontend-styling.md](frontend-styling.md).
 
-### Migration strategy — the "Legacy move"
+## Un composant adossé à une classe
 
-Never big-bang overwrite a component that is in use: the API differs and templates break silently.
-When a kit component's name collides with something that already exists:
+`config/packages/twig_component.yaml` déclare `anonymous_template_directory` **et** le mappage
+`App\Twig\Components\`. Un composant qui a besoin de logique se pose donc en classe sous
+`src/Twig/Components/`, sans configuration supplémentaire. Y mettre de la présentation, jamais une
+requête Doctrine — la donnée arrive du contrôleur.
 
-1. **Move the old one aside** so the canonical name is free —
+## Ce qui reste écrit en utilitaires
+
+Les éléments récurrents non encore repris du kit — pastilles de tags, en-têtes de section, champs de
+formulaire — restent des utilitaires dans le gabarit. Les migrer est un lot à part, à mener une fois
+le kit éprouvé, pas un à-côté d'un autre changement.
+
+Les partiels préfixés d'un tiret bas (`templates/components/_*.html.twig`) restent valables pour ce
+qui n'a pas d'équivalent dans le kit — l'icône d'une tuile, une légende. Ils s'incluent
+explicitement, avec leurs variables :
+
+```twig
+{{ include('components/_icon_motus.html.twig') }}
+```
+
+## Reprendre un composant existant — le « Legacy move »
+
+Ne **jamais** écraser d'un coup un composant en service : l'API diffère et les gabarits cassent en
+silence. Quand le nom d'un composant du kit entre en collision avec un existant :
+
+1. **Déplacer l'ancien** pour libérer le nom canonique —
    `templates/components/X.html.twig` → `templates/components/Legacy/X.html.twig`
-   (rendered `<twig:Legacy:X>`); class-backed equivalents move to `src/Twig/Components/Legacy/`.
-2. **Repoint every current usage** to `Legacy:X`, then run `php bin/console lint:twig templates` —
-   nothing should break.
-3. **Install the shadcn component** under the canonical name.
-4. **Migrate usages screen by screen**, adapting the API, and **verify each screen** in the browser
-   including keyboard-only navigation plus an automated a11y pass (axe / Lighthouse) — the
-   `playwright-skill` drives both. Migrating to shadcn must *improve* accessibility, never regress it.
-5. **Delete the `Legacy/` component** once it has zero usages.
+   (rendu `<twig:Legacy:X>`) ; l'équivalent adossé à une classe va dans `src/Twig/Components/Legacy/`.
+2. **Repointer chaque usage** vers `Legacy:X`, puis `php bin/console lint:twig templates` — rien ne
+   doit casser.
+3. **Installer le composant du kit** sous le nom canonique.
+4. **Migrer écran par écran**, en adaptant l'API, et **vérifier chaque écran** au navigateur, clavier
+   seul compris, plus une passe automatisée (axe / Lighthouse) dans les deux thèmes. Une reprise doit
+   *améliorer* l'accessibilité, jamais la dégrader.
+5. **Supprimer le composant `Legacy/`** une fois son nombre d'usages tombé à zéro.
 
-Radiant's partials are underscore-prefixed includes rather than `<twig:X>` components, so most of
-them have **no name collision** — they are migrated by replacing the `include()` call, and the
-Legacy move only applies where a partial is genuinely reused across screens.
+Un partiel inclus par `include()` n'entre pas en collision : il se reprend en remplaçant l'appel.
 
-This is a spec-sized change: run it through `/speckit-specify` rather than folding it into a feature
-branch.
-
-## See also
-- Partial conventions & accessibility: [frontend-twig.md](frontend-twig.md)
-- Tailwind setup, purge traps and the v4 outline: [frontend-styling.md](frontend-styling.md)
-- Interactivity: [ux-stimulus-turbo.md](ux-stimulus-turbo.md)
+## Voir aussi
+- Gabarits, partiels et accessibilité : [frontend-twig.md](frontend-twig.md)
+- Tokens et utilitaires : [frontend-styling.md](frontend-styling.md)
+- Interactivité : [ux-stimulus-turbo.md](ux-stimulus-turbo.md)
