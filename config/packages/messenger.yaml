@@ -27,3 +27,13 @@ framework:
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
+
+# La CI part d'une base vierge : sans transport dédié, le moindre mail envoyé
+# depuis un test tente d'écrire dans `messenger_messages` et échoue sur une
+# table absente. En mémoire, l'envoi reste asynchrone — donc conforme à la
+# prod — sans toucher la base.
+when@test:
+    framework:
+        messenger:
+            transports:
+                async: 'in-memory://'
