@@ -30,9 +30,9 @@ reste. C'est dit ici plutôt que déguisé en indépendance.
 
 **Purpose**: partir d'un état connu, et se donner la référence qui servira à prouver l'absence de régression.
 
-- [ ] T001 Vérifier le point de départ : `make ci` vert (45 tests) et `npm run dev` sans erreur
-- [ ] T002 Capturer la référence du rendu actuel — enregistrer le balisage d'une carte du premier écran et celui d'une carte du défilement dans `specs/005-cookbook-card-component/baseline/cards-before.html`, avec au moins une recette sans vignette
-- [ ] T003 [P] Relever les classes visuelles de la carte actuelle (`templates/app/cookbook/index.html.twig` lignes de la boucle) pour que le composant les reprenne à l'identique
+- [X] T001 Vérifier le point de départ : `make ci` vert (45 tests) et `npm run dev` sans erreur
+- [X] T002 Capturer la référence du rendu actuel — enregistrer le balisage d'une carte du premier écran et celui d'une carte du défilement dans `specs/005-cookbook-card-component/baseline/cards-before.html`, avec au moins une recette sans vignette
+- [X] T003 [P] Relever les classes visuelles de la carte actuelle (`templates/app/cookbook/index.html.twig` lignes de la boucle) pour que le composant les reprenne à l'identique
 
 **Checkpoint**: le rendu actuel est documenté — toute différence ultérieure sera visible, pas supposée.
 
@@ -44,10 +44,10 @@ reste. C'est dit ici plutôt que déguisé en indépendance.
 
 **⚠️ Ces trois fichiers sont la fondation du lot : tant qu'ils n'existent pas, les deux chemins de rendu restent séparés.**
 
-- [ ] T004 Installer la recette d'état vide du kit : `make console C="ux:install empty --kit=shadcn"`, relire les fichiers copiés dans `templates/components/Empty*`, et vérifier qu'aucun contrôleur Stimulus n'accompagne la recette (sinon l'enregistrer dans `assets/bootstrap.js`)
-- [ ] T005 Créer `templates/components/RecipeCard.html.twig` — prop `recipe` documentée en tête, lien de bout en bout via `path('cookbook_recipe', {id: recipe.id})`, vignette avec repli sur `components/_icon_cookbook.html.twig`, catégorie rendue par `<twig:Badge>`, durée conditionnelle, `attributes` fusionnés par `tailwind_merge`, `data-slot` par partie. Classes reprises de T003, à l'identique. Contrat : [contracts/recipe-card-component.md](contracts/recipe-card-component.md)
-- [ ] T006 [P] Créer `templates/app/cookbook/_recipe_grid_items.html.twig` — boucle sur `recipes` appelant `<twig:RecipeCard>`, sans aucune classe de grille (la grille appartient à l'appelant)
-- [ ] T007 [P] Créer `templates/app/cookbook/_recipe_grid_state.html.twig` — l'état vide bâti sur `<twig:Empty>`, paramétré par une variable `message`, habillé aux classes du site
+- [X] T004 Installer la recette d'état vide du kit : `make console C="ux:install empty --kit=shadcn"`, relire les fichiers copiés dans `templates/components/Empty*`, et vérifier qu'aucun contrôleur Stimulus n'accompagne la recette (sinon l'enregistrer dans `assets/bootstrap.js`)
+- [X] T005 Créer `templates/components/RecipeCard.html.twig` — prop `recipe` documentée en tête, lien de bout en bout via `path('cookbook_recipe', {id: recipe.id})`, vignette avec repli sur `components/_icon_cookbook.html.twig`, catégorie rendue par `<twig:Badge>`, durée conditionnelle, `attributes` fusionnés par `tailwind_merge`, `data-slot` par partie. Classes reprises de T003, à l'identique. Contrat : [contracts/recipe-card-component.md](contracts/recipe-card-component.md)
+- [X] T006 [P] Créer `templates/app/cookbook/_recipe_grid_items.html.twig` — boucle sur `recipes` appelant `<twig:RecipeCard>`, sans aucune classe de grille (la grille appartient à l'appelant)
+- [X] T007 [P] Créer `templates/app/cookbook/_recipe_grid_state.html.twig` — l'état vide bâti sur `<twig:Empty>`, paramétré par une variable `message`, habillé aux classes du site
 
 **Checkpoint**: la carte a une définition unique, utilisable par les deux chemins. Rien ne la consomme encore.
 
@@ -63,15 +63,15 @@ reste. C'est dit ici plutôt que déguisé en indépendance.
 
 > Écrire T008 **avant** T010–T012 et le voir échouer : c'est lui qui distingue « la carte est unique » de « les deux copies se ressemblent aujourd'hui ».
 
-- [ ] T008 [US1] Créer `tests/Controller/CookbookCardTest.php` avec `testBothRenderPathsProduceTheSameCard` — même recette servie par `/app/cookbook` et par `/app/cookbook/recipes` via `MockHttpClient`, comparaison du balisage de carte normalisé (espaces réduits), assertion d'égalité stricte
-- [ ] T009 [P] [US1] Ajouter `testTheEndpointServesRenderedMarkup` — la réponse de `/app/cookbook/recipes` porte `html` non vide contenant le lien de la fiche, et **ne porte plus** de champ `recipes`
+- [X] T008 [US1] Créer `tests/Controller/CookbookCardTest.php` avec `testBothRenderPathsProduceTheSameCard` — même recette servie par `/app/cookbook` et par `/app/cookbook/recipes` via `MockHttpClient`, comparaison du balisage de carte normalisé (espaces réduits), assertion d'égalité stricte
+- [X] T009 [P] [US1] Ajouter `testTheEndpointServesRenderedMarkup` — la réponse de `/app/cookbook/recipes` porte `html` non vide contenant le lien de la fiche, et **ne porte plus** de champ `recipes`
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Dans `templates/app/cookbook/index.html.twig`, remplacer le balisage de carte de la boucle par un include de `_recipe_grid_items.html.twig`, et supprimer les lignes qu'il remplace
-- [ ] T011 [US1] Dans `src/Controller/CookbookController.php`, faire renvoyer à `recipesJson()` la charge décrite par [contracts/recipes-endpoint.md](contracts/recipes-endpoint.md) — `html` rendu par `renderView('app/cookbook/_recipe_grid_items.html.twig', …)`, plus `empty`, `hasNextPage`, `nextPage`. Le bloc `catch (CookbookUnavailableException)` et sa réponse 503 ne bougent pas
-- [ ] T012 [US1] Dans `assets/controllers/cookbook_controller.js`, supprimer `#cardHtml()` et injecter `data.html` par `insertAdjacentHTML` ; conserver l'observateur, les filtres, le tri et le garde-fou `!res.ok`
-- [ ] T013 [US1] Lancer `npm run dev`, recharger `/app/cookbook` et faire défiler : vérifier T008 en conditions réelles, puis comparer avec `baseline/cards-before.html`
+- [X] T010 [US1] Dans `templates/app/cookbook/index.html.twig`, remplacer le balisage de carte de la boucle par un include de `_recipe_grid_items.html.twig`, et supprimer les lignes qu'il remplace
+- [X] T011 [US1] Dans `src/Controller/CookbookController.php`, faire renvoyer à `recipesJson()` la charge décrite par [contracts/recipes-endpoint.md](contracts/recipes-endpoint.md) — `html` rendu par `renderView('app/cookbook/_recipe_grid_items.html.twig', …)`, plus `empty`, `hasNextPage`, `nextPage`. Le bloc `catch (CookbookUnavailableException)` et sa réponse 503 ne bougent pas
+- [X] T012 [US1] Dans `assets/controllers/cookbook_controller.js`, supprimer `#cardHtml()` et injecter `data.html` par `insertAdjacentHTML` ; conserver l'observateur, les filtres, le tri et le garde-fou `!res.ok`
+- [X] T013 [US1] Lancer `npm run dev`, recharger `/app/cookbook` et faire défiler : vérifier T008 en conditions réelles, puis comparer avec `baseline/cards-before.html`
 
 **Checkpoint**: **DU1 est refermé.** Le navigateur n'assemble plus de carte. US2 et US3 sont désormais vrais — les phases suivantes le prouvent.
 

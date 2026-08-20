@@ -165,7 +165,7 @@ final class PublicRoutesTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_SERVICE_UNAVAILABLE);
 
         $payload = json_decode((string) $this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        self::assertSame([], $payload['recipes']);
+        self::assertSame('', $payload['html']);
         self::assertTrue($payload['unavailable']);
     }
 
