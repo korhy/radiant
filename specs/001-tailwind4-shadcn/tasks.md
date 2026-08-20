@@ -139,7 +139,7 @@ c'est déjà arrivé sur ce projet.
 - [X] T052 [P] Mettre à jour `CLAUDE.md` : stack en Tailwind 4 + kit shadcn, et la mention des Twig Components Stack en Tailwind 4 + kit shadcn, Twig Components actifs, plafond PHP du kit rappelé.
 - [X] T053 [P] Mettre à jour `.claude/rules/technical/frontend-twig.md` : les composants du kit deviennent la convention, les partiels `_*.html.twig` l'exception Les composants du kit deviennent la convention ; les partiels `_*.html.twig` l'exception. Contrastes et passe automatisée exigés **dans les deux thèmes**.
 - [X] T054 Marquer l'Étape 5 comme faite dans `docs/audit/audit-2026-08-18.md`, et y consigner que DU2/DU3 restent ouverts (hors périmètre par FR-013) Étape 5 marquée traitée, avec la liste des défauts corrigés au-delà du périmètre. DU1/DU2/DU3 restent ouverts, hors périmètre par FR-013. `.claude/rules/business/radiant.md` suit.
-- [ ] T055 Après merge, vérifier la production : les 8 routes répondent, le panneau s'ouvre, et les deux thèmes rendent — le déploiement part tout seul au merge sur `main`
+- [X] T055 Après merge, vérifier la production : les 8 routes répondent, le panneau s'ouvre, et les deux thèmes rendent — le déploiement part tout seul au merge sur `main` **Vérifié le 2026-08-20**, après le merge de la PR #28. Les 8 routes répondent (`/admin` en 302, comme attendu anonymement) ; la feuille livrée porte le bloc du thème clair, le correctif `--canvas`, le vocabulaire shadcn, et **une seule** occurrence de l'ambre de marque. 11 387 octets gzippés servis.
 
 ---
 

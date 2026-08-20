@@ -91,8 +91,6 @@ the token. If the API contract changes, the fix belongs in that service.
 
 L'audit du 2026-08-18 (`docs/audit/audit-2026-08-18.md`) a traité les étapes 0 à 4. Ce qui reste :
 
-- **`README.md` est périmé** : son tableau des routes et sa liste de fonctionnalités datent d'avant
-  Cookbook et Motus, et son arborescence omet `src/Service/`, `src/DTO/` et `templates/components/`.
 - **La carte recette est écrite deux fois** — en Twig et en littéral JS dans
   `cookbook_controller.js` —, et cette version JS interpole les champs de l'API sans échappement.
 - **`/app/cookbook` renvoie une 500 si l'API Cookbook est injoignable** au lieu d'un état dégradé.
@@ -105,5 +103,6 @@ Ce qui a été corrigé et ne doit pas être re-signalé : `declare(strict_types
 php-cs-fixer), la casse des propriétés d'entité, la typo `$projetcs`, le code mort (AssetMapper,
 Platform.sh, contrôleurs Stimulus non enregistrés), l'accessibilité des mini-apps, l'absence de
 tests, l'absence de gate Twig (twig-cs-fixer depuis le 2026-08-19), et les failles de dépendances
-(constat **S9**, `composer audit` à 0 depuis la montée Symfony 7.4). Étape 5 close le 2026-08-20 :
-Tailwind 4, tokens, thème clair et kit shadcn sont en place. **DU2** et **DU3** restent ouverts.
+(constat **S9**, `composer audit` à 0 depuis la montée Symfony 7.4). Étapes 5 et 6 closes
+le 2026-08-20 : Tailwind 4, tokens, thème clair, kit shadcn, et le README refait à partir du
+dépôt. **DU1**, **DU2** et **DU3** restent ouverts.
