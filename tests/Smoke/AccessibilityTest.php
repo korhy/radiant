@@ -88,6 +88,25 @@ final class AccessibilityTest extends WebTestCase
     }
 
     /**
+     * axe-core, 2026-08-21: the category filter was announced as "menu" and
+     * nothing else — its options are not an accessible name.
+     */
+    public function testTheCategoryFilterHasAnAccessibleName(): void
+    {
+        static::getContainer()->set('http_client', new MockHttpClient(
+            static fn (string $method, string $url): MockResponse => new MockResponse(json_encode(
+                str_contains($url, 'login_check') ? ['token' => 'jwt'] : ['member' => []],
+                JSON_THROW_ON_ERROR
+            )),
+            'https://cookbook.test'
+        ));
+
+        $crawler = $this->client->request('GET', '/app/cookbook');
+
+        self::assertSame(1, $crawler->filter('select[data-cookbook-target="categorySelect"][aria-label]')->count());
+    }
+
+    /**
      * A3 — « Bravo ! » et « Perdu ! » n'étaient jamais annoncés.
      */
     public function testMotusMessageIsALiveRegion(): void

@@ -26,7 +26,9 @@
                     class="flex-1 bg-surface-raised border border-line-control rounded-xl px-4 py-2 text-sm text-content-max placeholder-content-min focus:outline-hidden focus:border-brand-fg transition-colors">
 
                 <div class="relative">
-                    <select data-cookbook-target="categorySelect"
+                    {# The visible option text is not an accessible name: without this
+                       label the select is announced as "menu", nothing more. #}
+                    <select data-cookbook-target="categorySelect" aria-label="Filtrer par catégorie"
                         class="w-full bg-surface-raised border border-line-control rounded-xl px-4 pr-10 py-2 text-sm text-content-max focus:outline-hidden focus:border-brand-fg transition-colors appearance-none">
                         <option value="">Toutes les catégories</option>
                         {% for category in categories %}

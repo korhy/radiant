@@ -135,7 +135,7 @@ reste. C'est dit ici plutôt que déguisé en indépendance.
 - [X] T027 [P] Ajouter `RecipeCard` à la liste des composants du projet dans `.claude/rules/technical/components-shadcn.md`, avec la raison pour laquelle la recette `card` du kit n'a pas été retenue
 - [X] T028 [P] Marquer **DU1** et **S3** traités dans `docs/audit/audit-2026-08-18.md`, ajouter l'étape correspondante à la section « Ordre recommandé », et mettre à jour le compte de la dimension Sécurité
 - [X] T029 Dérouler [quickstart.md](quickstart.md) en entier — les six gestes manuels, aux trois largeurs et dans les deux thèmes — *fait contre une API bouchon ; largeurs mobile/tablette/bureau et les deux thèmes*
-- [ ] T030 **Non lancé** — axe-core sur `/app/cookbook` dans les deux thèmes, **avant et après** un chargement par défilement : 0 violation (SC-005)
+- [X] T030 axe-core sur `/app/cookbook` dans les deux thèmes, **avant et après** un chargement par défilement — **0 violation WCAG 2.1 A/AA** sur les quatre passes, barre de debug Symfony exclue. Une violation critique préexistante trouvée au passage (`select-name` sur le filtre de catégorie) et corrigée ici. Restent 3 constats de bonnes pratiques, structurels et hors périmètre : pas de `<main>`, pas de `<h1>`, contenu hors points de repère
 - [X] T031 Faire le contrôle SC-001 : modifier une classe visuelle de `RecipeCard`, vérifier que la modification se voit sur les cartes des **deux** groupes, puis annuler la modification
 - [X] T032 Conservé en référence, comme `specs/001-tailwind4-shadcn/baseline/` : `cards-before.html` et `cards-after.html` documentent les trois écarts voulus (`data-slot`, `alt=""`, Badge du kit)
 - [X] T033 `make ci` vert, et `npm run dev` relancé après tout `npm run build` de contrôle
