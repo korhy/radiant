@@ -1,9 +1,11 @@
 ---
-description: Testing strategy — PHPUnit, critical paths only, no coverage target. Assert HTTP status, never dialect-specific SQL: CI runs SQLite, production runs PostgreSQL.
+description: Testing strategy — PHPUnit for the code, Playwright + axe for accessibility. Critical paths only, no coverage target. Assert HTTP status, never dialect-specific SQL: CI runs SQLite, production runs PostgreSQL.
 paths:
   - "**/tests/**"
   - "**/*Test.php"
+  - "**/*.spec.js"
   - "**/phpunit.xml*"
+  - "**/playwright.config.js"
   - "**/.env.test"
 ---
 
@@ -11,7 +13,7 @@ paths:
 
 ## Current state
 
-**37 tests depuis le 2026-08-19** — auparavant `tests/` ne contenait que `bootstrap.php` et la CI
+**52 tests PHPUnit et 16 cas Playwright au 2026-08-21** (37 le 2026-08-19) — auparavant `tests/` ne contenait que `bootstrap.php` et la CI
 passait à vide. Ce qui existe :
 
 - `tests/Service/Motus/MotusServiceTest.php` — `checkGuess()`, lettres doublées comprises ;
@@ -60,6 +62,8 @@ Aligning CI onto Postgres is a worthwhile change — propose it separately.
 ## Layout & naming
 - `tests/` mirrors `src/`: `tests/Service/Motus/MotusServiceTest.php` for
   `src/Service/Motus/MotusService.php`.
+- Browser specs live in `tests/e2e/`, named `*.spec.js`, written in English like the rest of the
+  code — they are read by developers, not by visitors.
 - Class `XxxTest` extending `TestCase` (unit) or `WebTestCase` (functional); methods
   `testItDoesSomething()`.
 - Namespace `App\Tests\` (already mapped in `composer.json` autoload-dev).
@@ -69,13 +73,34 @@ Aligning CI onto Postgres is a worthwhile change — propose it separately.
 ```bash
 make phpunit
 make phpunit TEST=tests/Service/Motus/MotusServiceTest.php
+make e2e        # Playwright + axe, starts its own servers
 ```
 
-## Browser checks
-**Playwright is not installed** and there is no JS test runner. For exploratory UI verification —
-does the Stream Deck render, does the Motus grid colour correctly, does the Cookbook infinite scroll
-fire — use the `playwright-skill`, which writes throwaway scripts outside the repo. Those are checks,
-not committed tests; don't leave artefacts behind.
+## Browser checks — Playwright + axe
+
+The **accessibility pass is automated and gated in CI**: `tests/e2e/accessibility.spec.js` audits the
+seven public pages with axe-core, in both themes, plus the recipe list after an infinite-scroll load.
+
+```bash
+make e2e                       # or: npx playwright test
+npx playwright test --ui       # pick and replay a single case
+BASE_URL=http://localhost:8080 npx playwright test   # audit an already-running server
+```
+
+- **Gate WCAG 2.0/2.1 levels A and AA only** — the project's standard. axe's `best-practice` tag is
+  left out on purpose: it reports structural advice ("the page should have an `h1`") that is worth
+  acting on but is not a conformance failure.
+- **The suite starts its own servers**: the site through `symfony server:start`, and a stub Cookbook
+  API (`tests/e2e/cookbook-api-stub.php`). Without the stub the recipe page renders its degraded
+  state and no card is ever audited — the obstacle that kept `/app/cookbook` out of the Étape 5 pass.
+- **Its database is its own** (`var/e2e.db`), built and seeded by `tests/e2e/global-setup.js`. One
+  Stream Deck tile is inserted so the homepage exercises the dynamic `_icon_<slug>` include.
+- **Add a page to `PAGES`** when a route becomes public. A screen that is not covered here has not
+  had its automated pass.
+
+For anything else — exploratory UI verification, a one-off screenshot, reproducing a JS bug — use
+the `playwright-skill`, which writes throwaway scripts outside the repo. Those are checks, not
+committed tests; don't leave artefacts behind.
 
 ## See also
 - Linting gate: [linting.md](linting.md)

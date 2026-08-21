@@ -89,6 +89,14 @@ phpstan.neon
 .mcp.json
 /config/reference.php
 
+###> playwright ###
+/test-results/
+/playwright-report/
+/playwright/.cache/
+# The e2e suite runs on its own SQLite file, rebuilt by tests/e2e/global-setup.js.
+/var/e2e.db
+###< playwright ###
+
 ###> claude code ###
 # The global core.excludesFile (/Users/clement/code/.gitignore) ignores /.claude.
 # The workspace (CLAUDE.md rules & skills) is versioned on purpose — re-include it,

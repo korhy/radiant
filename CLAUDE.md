@@ -62,7 +62,7 @@ only when relevant.
 .claude/skills/
 ├── new-app/SKILL.md          # /new-app — scaffold a Stream Deck mini-app end to end
 ├── audit-existing/SKILL.md   # /audit-existing — audit the code vs the standards, report what to redo
-└── playwright-skill/SKILL.md # browser-automation helper (exploratory checks — no committed E2E here)
+└── playwright-skill/SKILL.md # browser-automation helper (exploratory checks, outside the repo)
 ```
 
 - **`/new-app`** — the project's real repeated pattern: the `App` row, the route + controller action,
@@ -107,10 +107,11 @@ file plus `.claude/rules/**` are the real governing rules.
   ceiling still holds
 - **Webpack Encore** for assets — the dormant AssetMapper setup was removed on 2026-08-19
 - **Mailjet** mailer for the contact form
-- **Tests**: PHPUnit — 37 tests since 2026-08-19 (Motus, client Cookbook, routes publiques,
-  accessibilité). Voir [testing.md](.claude/rules/technical/testing.md)
+- **Tests**: PHPUnit — 52 tests (Motus, client Cookbook, routes publiques, accessibilité) **et
+  Playwright + axe-core** — 16 cas auditant les sept pages publiques dans les deux thèmes, gate CI
+  depuis le 2026-08-21. Voir [testing.md](.claude/rules/technical/testing.md)
 - **Linters**: php-cs-fixer (`@Symfony`), **twig-cs-fixer** and PHPStan level 5 — all three gated in
-  CI. JS/CSS still have none
+  CI. JS/CSS have no style linter ; leur filet, c'est la passe axe du job `e2e`
 
 Two operational traps worth knowing before you change anything:
 
@@ -147,8 +148,9 @@ Two operational traps worth knowing before you change anything:
 10. **Conventional Commits are load-bearing**: `release.yml` parses the commit subject to auto-tag
     semver (`feat:` → minor, `fix:` → patch, `type!:` → major). Write the subject deliberately.
 11. **A change is not done until its linter passes** — php-cs-fixer, twig-cs-fixer and PHPStan, the
-    same three CI runs. **JS/CSS** still have no automated gate, so review them by hand and load the
-    page. See [linting.md](.claude/rules/technical/linting.md).
+    same three CI runs. **JS/CSS have no style gate**, so review them by hand and load the page —
+    but accessibility *is* gated: `make e2e` runs axe over the public pages in both themes. See
+    [linting.md](.claude/rules/technical/linting.md).
 12. **Accessibility is an acceptance criterion**, not polish (RGAA/EAA → WCAG 2.1 AA) — see
     [frontend-twig.md](.claude/rules/technical/frontend-twig.md).
 
@@ -168,6 +170,7 @@ make twig-cs-fixer   # check Twig code style              / -fix to autofix
 make phpstan         # static analysis (level 5)
 make lint            # all three linters
 make phpunit         # run the PHPUnit suite (TEST=path for a subset)
+make e2e             # Playwright + axe: accessibility of the public pages, both themes
 make ci              # exactly what .github/workflows/ci.yml runs
 make db-migration    # generate a migration (review the SQL!)
 make db-migrate      # apply pending migrations
