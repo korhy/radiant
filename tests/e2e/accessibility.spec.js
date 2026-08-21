@@ -16,6 +16,9 @@ import AxeBuilder from '@axe-core/playwright';
 
 const WCAG_AA = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
+/** Three pages of six, as served by tests/e2e/cookbook-api-stub.php. */
+const EVERY_RECIPE = 18;
+
 const PAGES = [
     ['the homepage', '/'],
     ['Taquin', '/app/taquin'],
@@ -75,11 +78,14 @@ for (const colorScheme of ['light', 'dark']) {
          * The cards appended by the infinite scroll are the same markup as the first screen
          * (see specs/005-cookbook-card-component), but only an audit run after loading proves
          * that what JavaScript inserts is still conformant.
+         *
+         * Reaching the last page also pins the paging chain itself: an observer reports
+         * transitions, not states, and a short document used to stop producing them halfway.
          */
         test('the recipe list stays conformant once scrolled', async ({ page }) => {
             await page.goto('/app/cookbook');
 
-            expect(await loadEveryRecipe(page)).toBeGreaterThan(6);
+            expect(await loadEveryRecipe(page)).toBe(EVERY_RECIPE);
             expect(await violationsOf(page)).toEqual([]);
         });
     });
