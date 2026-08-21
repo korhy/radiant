@@ -148,7 +148,7 @@ final class PublicRoutesTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertStringContainsString(
             'injoignable',
-            $crawler->filter('#recipe-grid')->text(),
+            $crawler->filter('[data-cookbook-target="emptyState"]')->text(),
             'La page doit dire au visiteur que le service externe est en panne.'
         );
     }
