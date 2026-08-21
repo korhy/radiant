@@ -41,8 +41,8 @@ final class ContactType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        // Sans data_class, les contraintes portées par le DTO ne sont pas
-        // rattachées au formulaire de façon explicite.
+        // Without data_class, the constraints carried by the DTO are never
+        // attached to the form.
         $resolver->setDefaults(['data_class' => ContactDTO::class]);
     }
 }

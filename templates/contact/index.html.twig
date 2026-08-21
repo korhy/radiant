@@ -11,13 +11,13 @@
                         Me contacter !
                     </h1>
                     {{ form_start(form) }}
-                    {# form_row applique le thème tailwind_2_layout configuré et rend
-                       form_errors : recâbler les champs à la main court-circuitait les
-                       deux, et un message refusé disparaissait sans rien afficher. #}
-                    {# Le thème tailwind_2_layout rend des champs sans bordure ni fond :
-                       on lui repasse les classes du reste du site, sinon la zone de
-                       saisie n'a plus d'affordance et son contour tombe sous le
-                       contraste exigé (WCAG 1.4.11). #}
+                    {# form_row applies the configured tailwind_2_layout theme and renders
+                       form_errors: wiring the fields by hand bypassed both, and a rejected
+                       message vanished without showing anything. #}
+                    {# The tailwind_2_layout theme renders fields with no border and no
+                       background: hand it back the classes used across the site, or the
+                       input loses its affordance and its outline falls below the required
+                       contrast (WCAG 1.4.11). #}
                     {% set label_class = 'block mb-2 text-sm font-medium text-content-max' %}
                     {% set input_class = 'bg-field border border-field-line text-field-content placeholder-field-hint sm:text-sm rounded-lg focus:ring-brand-fg focus:border-brand-fg block w-full p-2.5' %}
 

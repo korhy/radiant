@@ -123,10 +123,6 @@ final class CookbookApiService
         return $this->request('GET', '/api/'.$this->apiVersion.'/categories');
     }
 
-    /**
-     * L'URL publique de la documentation de l'API consommée. Elle se construisait
-     * dans le contrôleur à partir de deux #[Autowire(env:)] dupliqués.
-     */
     public function getDocUrl(): string
     {
         return $this->apiUrl.'/api/'.$this->apiVersion.'/docs';

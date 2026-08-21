@@ -2,25 +2,25 @@
 /* Animations attendues par les composants du kit shadcn. */
 @import 'tw-animate-css';
 
-/* Sources déclarées explicitement plutôt que laissées à la détection automatique.
-   `assets` n'est pas facultatif : trois contrôleurs Stimulus posent des utilitaires
-   à l'exécution — la carte recette du Cookbook, les bascules du panneau « Behind the
-   scenes » — et ces classes n'apparaissent dans aucun gabarit. Sans cette ligne elles
-   ne seraient pas générées, sans la moindre erreur. */
+/* Sources declared explicitly rather than left to auto-detection. `assets` is not
+   optional: three Stimulus controllers apply utilities at runtime — the Cookbook
+   recipe card, the "Behind the scenes" toggles — and those classes appear in no
+   template. Without this line they would not be generated, and nothing would
+   report it. */
 @source '../../templates';
 @source '../../assets';
 
 /* ============================================================================
-   TOKENS D'IDENTITÉ
-   Deux niveaux, jamais de couleur en dur ailleurs (contrat C3) :
-   1. les couleurs de marque, brutes, nommées par ce qu'elles sont ;
-   2. les rôles, nommés par ce à quoi ils servent, qui seuls sont exposés
-      aux utilitaires par le bloc `@theme inline` plus bas.
-   Rebrander, c'est éditer ce bloc — jamais un gabarit.
+   IDENTITY TOKENS
+   Two levels, and never a hard-coded colour anywhere else (contract C3):
+   1. brand colours, raw, named after what they are;
+   2. roles, named after what they serve, the only ones exposed to the
+      utilities by the `@theme inline` block below.
+   Rebranding means editing this block — never a template.
 
-   Le sombre est la définition par défaut : le site est nativement sombre,
-   et le déclarer ainsi évite un flash clair au chargement.
-   Contrastes mesurés et consignés dans specs/001-tailwind4-shadcn/light-theme.md.
+   Dark is the default definition: the site is natively dark, and declaring it
+   this way avoids a light flash on load.
+   Contrasts measured and recorded in specs/001-tailwind4-shadcn/light-theme.md.
    ========================================================================= */
 :root {
     /* ---- Couleurs brutes ---- */
@@ -28,15 +28,15 @@
     --amber-light: #fcc175;
     --amber-strong: #e68a1a;
     --night: #23313e;
-    /* Deux ambres réservés à l'avant-plan en thème clair : l'ambre de marque
-       plafonne à 1,97:1 sur blanc, inutilisable pour du texte. */
+    /* Two ambers reserved for foreground use in the light theme: the brand amber
+       tops out at 1.97:1 on white, unusable for text. */
     --amber-ink: #a35c12;
     --amber-ink-em: #8a4f0f;
 
     /* ---- Fonds ---- */
     --canvas: var(--night);
-    /* Assombri depuis slate-700 : au coin clair du dégradé, le corps de texte
-       n'atteignait que 4,04:1. Écart délibéré, voir light-theme.md. */
+    /* Darkened from slate-700: at the light corner of the gradient, body text only
+       reached 4.04:1. Deliberate deviation, see light-theme.md. */
     --canvas-end: #2a3746;
     --surface: #0f172a;
     --surface-raised: #1e293b;
@@ -44,31 +44,31 @@
     --surface-muted: #475569;
     --scrim: #000000;
 
-    /* ---- Contenu, du plus appuyé au plus discret ---- */
+    /* ---- Content, from the strongest to the faintest ---- */
     --content-max: #ffffff;
     --content-high: #f1f5f9;
     --content: #e2e8f0;
     --content-mid: #cbd5e1;
     --content-low: #94a3b8;
-    /* Était slate-500 : 2,79:1 sur le fond, sous le seuil AA. Relevé au cran
-       au-dessus plutôt que conservé — écart délibéré, voir light-theme.md. */
+    /* Was slate-500: 2.79:1 on the background, below the AA threshold. Raised one
+       step rather than kept — deliberate deviation, see light-theme.md. */
     --content-min: #94a3b8;
 
     /* ---- Traits ---- */
     --line: #334155;
     --line-subtle: #1e293b;
-    /* Bordure qui délimite un contrôle : tenue à 3:1 (WCAG 1.4.11). */
+    /* Border outlining a control: held at 3:1 (WCAG 1.4.11). */
     --line-control: #94a3b8;
 
-    /* ---- Marque. `accent` est réservé au sens que lui donne le kit shadcn :
-       une surface de survol discrète, pas l'ambre du portfolio. ---- */
+    /* ---- Brand. `accent` keeps the meaning the shadcn kit gives it: a quiet
+       hover surface, not the portfolio amber. ---- */
     --brand: var(--amber);
     --brand-strong: var(--amber-strong);
     --brand-light: var(--amber-light);
     --brand-fg: var(--amber);
     --brand-fg-em: var(--amber-light);
-    /* Texte posé sur un fond de marque. L'ardoise, pas le blanc : blanc sur
-       ambre donne 1,97:1. */
+    /* Text sitting on a brand background. Slate, not white: white on amber
+       gives 1.97:1. */
     --brand-on: var(--night);
 
     /* ---- Alerte ---- */
@@ -103,7 +103,7 @@
     --motus-cell: #334155;
     --motus-cell-line: #475569;
     --motus-cell-content: #ffffff;
-    /* Était red-500 : blanc dessus donnait 3,76:1. */
+    /* Was red-500: white on top gave 3.76:1. */
     --motus-correct: #dc2626;
     --motus-correct-content: #ffffff;
     --motus-present: #facc15;
@@ -120,8 +120,8 @@
     --motus-message: #94a3b8;
 }
 
-/* Thème clair. Valeurs décidées, pas héritées (FR-015) : la rampe se resserre
-   par le bas, le fond clair offrant moins de marge que le fond sombre. */
+/* Light theme. Values decided, not inherited (FR-015): the ramp tightens at the
+   bottom, a light background leaving less headroom than a dark one. */
 @media (prefers-color-scheme: light) {
     :root {
         --canvas: #f8fafc;
@@ -160,8 +160,8 @@
         --notice-accent: #4338ca;
         --notice-content: #1e1b4b;
 
-        /* La tuile s'oppose à la carte, comme en sombre — mais dans l'autre sens.
-           Blanc sur blanc, elle n'avait plus de limite visible. */
+        /* The tile contrasts with the card, as in dark — but the other way round.
+           White on white left it with no visible edge. */
         --tile-face: #334155;
         --tile-face-hover: #1e293b;
         --tile-content: #f1f5f9;
@@ -187,11 +187,11 @@
     }
 }
 
-/* Seuls ces noms sont exposés aux utilitaires : `bg-surface-raised`,
-   `text-accent-fg`, `border-line-control`… La palette standard de Tailwind
-   n'est plus surchargée — un composant du kit qui référence `amber-500`
-   obtient l'ambre de Tailwind, pas celui du site, et doit donc passer par
-   les tokens comme le reste. */
+/* Only these names are exposed to the utilities: `bg-surface-raised`,
+   `text-accent-fg`, `border-line-control`… Tailwind's standard palette is no
+   longer overridden — a kit component referencing `amber-500` gets Tailwind's
+   amber, not the site's, and has to go through the tokens like everything
+   else. */
 @theme inline {
     --color-canvas: var(--canvas);
     --color-canvas-end: var(--canvas-end);
@@ -241,10 +241,10 @@
     --color-tile-empty: var(--tile-empty);
 
     /* ------------------------------------------------------------------
-       Vocabulaire du kit shadcn, adossé aux rôles ci-dessus. C'est ce qui
-       fait qu'un composant installé depuis le kit prend l'identité du site
-       sans être retouché (FR-004). Ne pas y écrire de valeur : ces noms
-       pointent vers des rôles, les rôles vers des couleurs.
+       The shadcn kit vocabulary, mapped onto the roles above. This is what
+       makes a component installed from the kit take on the site identity
+       untouched (FR-004). Never write a value here: these names point at
+       roles, and roles point at colours.
        ------------------------------------------------------------------ */
     --color-background: var(--surface-raised);
     --color-foreground: var(--content-max);
@@ -258,7 +258,7 @@
     --color-secondary-foreground: var(--content-max);
     --color-muted: var(--surface-inset);
     --color-muted-foreground: var(--content-low);
-    /* `accent` au sens du kit : la surface discrète d'un état survolé. */
+    /* `accent` as the kit means it: the quiet surface of a hover state. */
     --color-accent: var(--surface-inset);
     --color-accent-foreground: var(--content-max);
     --color-destructive: var(--danger);
@@ -268,10 +268,9 @@
     --color-ring: var(--brand-fg);
 }
 
-/* Tailwind 4 donne `currentColor` pour couleur de bordure par défaut ; les
-   composants du kit écrivent `border` sans couleur et attendent le token.
-   Sans effet sur les gabarits du projet : chaque bordure y porte déjà sa
-   couleur (relevé T014). */
+/* Tailwind 4 defaults the border colour to `currentColor`; kit components write
+   `border` with no colour and expect the token. No effect on this project's
+   templates: every border there already carries its colour (survey T014). */
 @layer base {
     *,
     ::after,
@@ -290,14 +289,14 @@
 
 /* ============================================================================
    MOTUS
-   Volontairement hors de @layer components : Tailwind élague les règles d'un
-   layer dont le sélecteur n'apparaît pas dans `content`, or ces classes sont
-   posées depuis le JS. Hors layer, aucun risque de purge.
-   Les media queries mobile et desktop sont disjointes, donc ce bloc n'entre
-   jamais en conflit avec les utilitaires `md:` posés dans le Twig.
+   Deliberately outside @layer components: Tailwind prunes the rules of a layer
+   whose selector never appears in `content`, and these classes are applied from
+   the JS. Outside a layer, there is no purge risk.
+   The mobile and desktop media queries are disjoint, so this block never
+   conflicts with the `md:` utilities written in the Twig.
    ========================================================================= */
 
-/* ---------- États des cellules et des touches (tous breakpoints) ---------- */
+/* ---------- Cell and key states (all breakpoints) ---------- */
 
 .motus-cell {
     display: flex;
@@ -312,14 +311,14 @@
     transition: background-color .3s, border-color .3s;
 }
 
-/* Bien placée : carré rouge plein */
+/* Well placed: solid red square */
 .motus-cell--correct {
     background-color: var(--motus-correct); /* red-500 */
     border-color: var(--motus-correct);
     color: var(--motus-correct-content);
 }
 
-/* Mal placée : case jaune pleine, même silhouette que le rouge */
+/* Misplaced: solid yellow square, same silhouette as the red one */
 .motus-cell--present {
     background-color: var(--motus-present); /* yellow-400 */
     border-color: var(--motus-present);
@@ -332,12 +331,11 @@
     color: var(--motus-absent-content);
 }
 
-/* Redondance non chromatique (WCAG 1.4.1). En niveaux de gris, ou avec une
-   déficience de perception des couleurs, le rouge et le jaune se confondent :
-   la couleur seule ne peut donc pas porter l'état. Liseré intérieur pour « bien
-   placée », barre basse pour « mal placée », rien pour « absente » — les trois
-   restent distincts par la forme. Le nom accessible est posé en parallèle
-   depuis le JS. */
+/* Non-chromatic redundancy (WCAG 1.4.1). In greyscale, or with a colour vision
+   deficiency, red and yellow merge: colour alone cannot carry the state. Inner
+   outline for "well placed", bottom bar for "misplaced", nothing for "absent" —
+   all three stay distinct by shape. The accessible name is set alongside from
+   the JS. */
 .motus-cell--correct,
 .motus-key--correct { box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .55); }
 
@@ -367,14 +365,14 @@
     color: var(--motus-present-content);
 }
 
-/* Touche éliminée : l'effacement vient du fond assombri, pas d'une opacité
-   qui délavait aussi la lettre (contraste 3,4:1, illisible sur mobile). */
+/* Eliminated key: the fading comes from the darkened background, not from an
+   opacity that also washed out the letter (3.4:1, unreadable on mobile). */
 .motus-key--absent {
     background-color: var(--motus-surface); /* slate-700 */
     color: var(--motus-surface-content); /* slate-300 */
 }
 
-.motus-key--enter { background-color: var(--brand); color: var(--brand-on); } /* amber-500 du thème */
+.motus-key--enter { background-color: var(--brand); color: var(--brand-on); } /* theme amber-500 */
 
 @media (hover: hover) {
     .motus-key:hover { background-color: var(--motus-key-hover); }
@@ -384,7 +382,7 @@
     .motus-key--enter:hover { background-color: var(--brand-strong); }
 }
 
-/* Pastilles de légende : reprennent la forme, pas seulement la couleur */
+/* Legend dots: they repeat the shape, not only the colour */
 .motus-swatch {
     display: inline-block;
     flex: none;
@@ -396,7 +394,7 @@
 .motus-swatch--present { background-color: var(--motus-present); box-shadow: inset 0 -5px 0 rgba(15, 23, 42, .45); }
 .motus-swatch--absent { background-color: var(--motus-absent); }
 
-/* ---------- Desktop : reproduit l'apparence d'origine à l'identique ---------- */
+/* ---------- Desktop: reproduces the original look exactly ---------- */
 
 @media (min-width: 768px) {
     .motus-app { --motus-gap: 0.375rem; } /* = gap-1.5 */
@@ -415,11 +413,11 @@
     .motus-message { height: 1.25rem; color: var(--motus-message); font-size: .875rem; text-align: center; }
 }
 
-/* ---------- Mobile : layout plein écran ---------- */
+/* ---------- Mobile: full-screen layout ---------- */
 
 @media (max-width: 767.98px) {
     .motus-app {
-        /* --motus-cols est injecté en style inline par le Twig (5 à 8) */
+        /* --motus-cols is injected inline by the Twig (5 to 8) */
         --motus-gap: 4px;
         --motus-pad: 6px;
         --motus-key-h: 46px;
@@ -439,14 +437,14 @@
         --motus-kbd-h: calc(3 * var(--motus-key-h) + 2 * var(--motus-key-gap)
             + 2 * var(--motus-kbd-pad) + var(--motus-safe-b));
 
-        /* vh en premier : un UA sans svh invalide la seconde déclaration
-           à l'analyse et conserve celle-ci. */
+        /* vh first: a UA without svh invalidates the second declaration at parse
+           time and keeps this one. */
         --motus-grid-h: calc(100vh - var(--motus-header-h) - var(--motus-kbd-h)
             - var(--motus-msg-h) - 2 * var(--motus-vpad) - 12px);
         --motus-grid-h: calc(100svh - var(--motus-header-h) - var(--motus-kbd-h)
             - var(--motus-msg-h) - 2 * var(--motus-vpad) - 12px);
 
-        /* Plafond à 3rem = 48px = md:w-12 : continuité exacte au breakpoint */
+        /* Capped at 3rem = 48px = md:w-12: exact continuity at the breakpoint */
         --motus-cell-cap: min(calc((var(--motus-grid-h) - 5 * var(--motus-gap)) / 6), 3rem);
 
         display: flex;
@@ -455,8 +453,8 @@
         height: 100svh;
         padding-left: var(--motus-safe-l);
         padding-right: var(--motus-safe-r);
-        /* `clip` et pas `hidden` : `hidden` forcerait overflow-y à auto et
-           créerait un conteneur de défilement qui avalerait le pull-to-refresh. */
+        /* `clip`, not `hidden`: `hidden` would force overflow-y to auto and create
+           a scroll container that swallows pull-to-refresh. */
         overflow-x: clip;
         touch-action: manipulation;
     }
@@ -533,7 +531,7 @@
     /* Zone centrale */
     .motus-stage {
         flex: 1 1 auto;
-        min-height: 0; /* sans ça la grille pousse le clavier hors écran */
+        min-height: 0; /* without this the grid pushes the keyboard off screen */
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -548,7 +546,7 @@
         flex: 1 1 0;
         min-width: 0;
         aspect-ratio: 1;
-        max-width: var(--motus-cell-cap); /* aspect-ratio propage le plafond à la hauteur */
+        max-width: var(--motus-cell-cap); /* aspect-ratio carries the cap over to the height */
         /* La hauteur min-content du texte l'emporterait sur aspect-ratio et
            rendrait la cellule rectangulaire : on borne la police au plafond
            de la cellule, et line-height:1 supprime la marge du line-box. */
@@ -569,7 +567,7 @@
         text-align: center;
     }
 
-    /* Clavier ancré en bas */
+    /* Keyboard anchored at the bottom */
     .motus-keyboard {
         flex: 0 0 auto;
         display: flex;
@@ -584,7 +582,7 @@
     .motus-key {
         flex: 1 1 0;
         min-width: 0;
-        height: var(--motus-key-h); /* 46px, au-dessus des 44px recommandés */
+        height: var(--motus-key-h); /* 46px, above the recommended 44px */
         font-size: .875rem;
     }
     .motus-key--action {
@@ -595,14 +593,14 @@
     }
 }
 
-/* Paysage court : la hauteur manque, la largeur est en excès. Le clavier passe
-   à côté de la grille plutôt qu'en dessous, ce qui rend les deux utilisables
-   sans descendre les touches sous 44 px. */
+/* Short landscape: height is missing, width is in excess. The keyboard sits
+   beside the grid rather than below it, which keeps both usable without dropping
+   the keys under 44px. */
 @media (max-width: 767.98px) and (orientation: landscape) and (max-height: 460px) {
     .motus-app {
         --motus-header-h: calc(40px + var(--motus-safe-t));
         --motus-msg-h: 0px;
-        /* Le clavier n'est plus empilé sous la grille : il ne consomme plus de hauteur */
+        /* The keyboard is no longer stacked under the grid: it costs no height */
         --motus-grid-h: calc(100vh - var(--motus-header-h) - 2 * var(--motus-vpad));
         --motus-grid-h: calc(100svh - var(--motus-header-h) - 2 * var(--motus-vpad));
     }

@@ -16,11 +16,11 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Filet de sécurité minimal : chaque route publique doit rendre sans exception.
+ * Minimal safety net: every public route must render without an exception.
  *
- * Ces tests attrapent notamment les régressions du contrat Stream Deck — toute
- * ligne `App` dont le partiel `_icon_<slug>.html.twig` manque fait échouer la
- * page d'accueil, pas la page de la mini-app.
+ * These catch Stream Deck contract regressions in particular — an `App` row
+ * whose `_icon_<slug>.html.twig` partial is missing breaks the homepage, not
+ * the mini-app's own page.
  */
 final class PublicRoutesTest extends WebTestCase
 {
@@ -44,8 +44,8 @@ final class PublicRoutesTest extends WebTestCase
     }
 
     /**
-     * Une tuile réelle sur le Stream Deck, pour que la page d'accueil exerce
-     * vraiment l'include dynamique `components/_icon_<slug>.html.twig`.
+     * A real Stream Deck tile, so the homepage actually exercises the dynamic
+     * `components/_icon_<slug>.html.twig` include.
      */
     private function seedStreamDeckTile(string $slug, string $route): void
     {
@@ -100,8 +100,8 @@ final class PublicRoutesTest extends WebTestCase
     }
 
     /**
-     * Chaque page porte désormais son propre <title> : le bloc `title` de
-     * base.html.twig existe et les gabarits enfants le remplissent (constat F3).
+     * Every page carries its own <title>: the `title` block of base.html.twig
+     * exists and child templates fill it in (audit finding F3).
      */
     public function testEachPageHasItsOwnTitle(): void
     {
@@ -148,7 +148,7 @@ final class PublicRoutesTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertStringContainsString(
             'injoignable',
-            $crawler->filter('#recipe-grid')->text(),
+            $crawler->filter('[data-cookbook-target="emptyState"]')->text(),
             'La page doit dire au visiteur que le service externe est en panne.'
         );
     }
@@ -170,8 +170,8 @@ final class PublicRoutesTest extends WebTestCase
     }
 
     /**
-     * Les endpoints JSON reçoivent des entrées non typées : c'est le point le
-     * plus exposé depuis l'ajout de declare(strict_types=1).
+     * JSON endpoints take untyped input: the most exposed spot since
+     * declare(strict_types=1) landed.
      */
     public function testMotusGuessRejectsAWrongLength(): void
     {
@@ -204,7 +204,7 @@ final class PublicRoutesTest extends WebTestCase
     }
 
     /**
-     * Une entrée vide ne doit pas produire une 500 : le corps est du JSON libre.
+     * The body is free-form JSON: an empty one must yield 400, never 500.
      */
     public function testMotusGuessSurvivesAnEmptyBody(): void
     {
@@ -214,8 +214,8 @@ final class PublicRoutesTest extends WebTestCase
     }
 
     /**
-     * Seul `^/admin` est protégé par `access_control` : ce test verrouille le
-     * fait que le back-office n'est pas atteignable anonymement.
+     * Only `^/admin` is covered by `access_control`: this pins down that the
+     * back-office cannot be reached anonymously.
      */
     public function testAdminIsNotReachableAnonymously(): void
     {
