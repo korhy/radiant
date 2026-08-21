@@ -141,15 +141,21 @@ final class CookbookCardTest extends WebTestCase
         self::assertStringContainsString(sprintf('href="%s"', $expected), $html);
     }
 
-    public function testAnEmptyResultSetServesTheEmptyState(): void
+    /**
+     * The "no result" message lives in the template, hidden, and the payload only
+     * says whether to reveal it: no state markup travels over the wire either.
+     */
+    public function testAnEmptyResultSetIsReportedWithoutMarkup(): void
     {
         $this->mockApi([]);
 
         $payload = $this->payloadOf('/app/cookbook/recipes');
 
         self::assertTrue($payload['empty']);
-        self::assertStringContainsString('data-slot="empty"', $payload['html'], 'L\'état vide doit venir du serveur.');
+        self::assertSame(0, $payload['count']);
+        self::assertSame('', $payload['html']);
         self::assertFalse($payload['hasNextPage']);
+        self::assertSame('', $payload['announcement']);
     }
 
     public function testTheEndpointServesRenderedMarkup(): void

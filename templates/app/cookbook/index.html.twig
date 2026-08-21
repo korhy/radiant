@@ -6,8 +6,8 @@
 {% block body %}
 <div class="min-h-screen pt-4 pb-10 sm:py-10 px-4">
     <div class="max-w-4xl mx-auto flex flex-col gap-6">
-        {# Navbar #}
-        {{ include('app/cookbook/navbar.html.twig') }}
+        {# Navbar — the list is the Cookbook root, so its title is the page's <h1>. #}
+        {{ include('app/cookbook/navbar.html.twig', {as_page_heading: true}) }}
 
         {# Breadcrumb #}
         {{ include('app/cookbook/breadcrumb.html.twig', {breadcrumbs: [
@@ -16,10 +16,12 @@
         ]}) }}
 
         {# Filters & sorts #}
-        <div data-controller="cookbook" data-cookbook-next-page-value="2"
+        <div data-controller="cookbook"
+            data-cookbook-next-page-value="{{ hasNextPage ? 2 : 0 }}"
             data-cookbook-recipes-url-value="{{ path('cookbook_recipes_json') }}"
-            data-cookbook-unavailable-label-value="Recettes momentanément indisponibles"
-            data-cookbook-categories-value="{{ categories|json_encode }}">
+            data-cookbook-loading-label-value="Chargement…"
+            data-cookbook-load-more-label-value="↓"
+            data-cookbook-unavailable-label-value="Recettes momentanément indisponibles">
 
             <div class="flex flex-col sm:flex-row gap-3">
                 <input data-cookbook-target="searchInput" type="search" placeholder="Rechercher une recette…"
@@ -43,50 +45,76 @@
                 </div>
             </div>
 
+            {# The three `data-label*` carry every wording the controller may need:
+               the labels are visitor-facing text, so they stay in the template. #}
             <div class="flex flex-wrap gap-2 mt-3">
                 <span class="text-content-min text-xs self-center">Trier par :</span>
                 <button data-cookbook-target="sortBtn" data-sort="title" data-action="cookbook#sort"
+                    data-label="Titre" data-label-asc="Titre A→Z" data-label-desc="Titre Z→A" aria-pressed="false"
                     class="px-3 py-1 rounded-full text-xs border border-line-control text-content-low hover:border-brand-fg hover:text-brand-fg-em transition-colors">
                     Titre
                 </button>
                 <button data-cookbook-target="sortBtn" data-sort="createdAt" data-action="cookbook#sort"
+                    data-label="Date" data-label-asc="Date ↑" data-label-desc="Date ↓" aria-pressed="false"
                     class="px-3 py-1 rounded-full text-xs border border-line-control text-content-low hover:border-brand-fg hover:text-brand-fg-em transition-colors">
                     Date
                 </button>
                 <button data-cookbook-target="sortBtn" data-sort="duration" data-action="cookbook#sort"
+                    data-label="Durée" data-label-asc="Durée ↑" data-label-desc="Durée ↓" aria-pressed="false"
                     class="px-3 py-1 rounded-full text-xs border border-line-control text-content-low hover:border-brand-fg hover:text-brand-fg-em transition-colors">
                     Durée
                 </button>
             </div>
 
             {# Recipe cards #}
-            <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                {% if recipes is not empty %}
-                    {{ include('app/cookbook/_recipe_grid_items.html.twig') }}
-                {% elseif apiUnavailable %}
-                    {{ include('app/cookbook/_recipe_grid_state.html.twig', {
-                        message: "L'API Cookbook est momentanément injoignable.",
-                        hint: "Les recettes viennent d'un service externe ; le reste du portfolio reste consultable.",
-                    }) }}
-                {% else %}
-                    {{ include('app/cookbook/_recipe_grid_state.html.twig', {
-                        message: "Aucune recette pour l'instant.",
-                    }) }}
-                {% endif %}
+            <div id="recipe-grid" data-cookbook-target="grid"
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6{{ recipes is empty ? ' hidden' : '' }}">
+                {{ include('app/cookbook/_recipe_grid_items.html.twig') }}
             </div>
+
+            {# Shown when a search or a category filter comes back empty. #}
+            <p data-cookbook-target="noResult" class="hidden text-center py-12 text-content-low">
+                Aucune recette ne correspond à ces critères.
+            </p>
+
+            {# Landing state, hidden as soon as a search brings something back. #}
+            <twig:Empty data-cookbook-target="emptyState"
+                class="bg-surface-raised rounded-2xl p-12 mt-6{{ recipes is empty ? '' : ' hidden' }}">
+                <twig:Empty:Media class="w-12 h-12 text-content-min">
+                    {{ include('components/_icon_cookbook.html.twig') }}
+                </twig:Empty:Media>
+                <twig:Empty:Header>
+                    {% if apiUnavailable %}
+                        <twig:Empty:Description class="text-content-low">
+                            L'API Cookbook est momentanément injoignable.
+                        </twig:Empty:Description>
+                        <twig:Empty:Description class="text-content-min text-sm">
+                            Les recettes viennent d'un service externe&nbsp;; le reste du portfolio reste consultable.
+                        </twig:Empty:Description>
+                    {% else %}
+                        <twig:Empty:Description class="text-content-low">
+                            Aucune recette pour l'instant.
+                        </twig:Empty:Description>
+                    {% endif %}
+                </twig:Empty:Header>
+            </twig:Empty>
 
             {# Present from the first render, and empty: an announcement region
                added later is unevenly reported by assistive technology. #}
             <p data-cookbook-target="announcement" role="status" class="sr-only"></p>
 
-            {# Always rendered, hidden when there is nothing more to load: the
-               controller toggles it instead of rebuilding it, which keeps every
-               piece of visible text in this template. #}
+            {# Sentinel watched by the infinite scroll. It stays in the DOM so a
+               search or a sort can bring it back, and it is a real button so the
+               visitor always has a way forward — an observer only reports
+               transitions, and a short page may stop producing them. #}
             <div data-cookbook-target="loadMoreContainer"
                 class="flex justify-center mt-6{{ hasNextPage ? '' : ' hidden' }}">
-                <span data-cookbook-target="button" class="text-content-min text-sm animate-pulse">
-                    Chargement…
-                </span>
+                <button type="button" data-cookbook-target="button" data-action="cookbook#loadMore"
+                    aria-label="Charger plus de recettes"
+                    class="rounded-full px-4 py-1 text-sm text-content-min hover:text-brand-fg-em focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-fg transition-colors">
+                    <span data-cookbook-target="buttonLabel" aria-hidden="true" class="animate-pulse">Chargement…</span>
+                </button>
+                <p data-cookbook-target="status" role="status" class="hidden text-sm text-content-low"></p>
             </div>
 
         </div>{# /data-controller #}

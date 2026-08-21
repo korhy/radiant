@@ -25,11 +25,11 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    # tales-from-a-dev/twig-tailwind-extra ne fournit ni bundle ni configuration :
-    # le filtre `tailwind_merge` vient d'une recette contrib, que Flex n'applique
-    # pas sans autorisation explicite. Les composants du kit shadcn en dépendent
-    # pour fusionner leurs classes avec celles passées par l'appelant — sans ces
-    # deux lignes, chaque composant lève « Unknown "tailwind_merge" filter ».
+    # tales-from-a-dev/twig-tailwind-extra ships neither a bundle nor a config:
+    # the `tailwind_merge` filter comes from a contrib recipe, which Flex does not
+    # apply without explicit consent. Every shadcn kit component needs it to merge
+    # its classes with the caller's — without these two lines they all throw
+    # 'Unknown "tailwind_merge" filter'.
     TalesFromADev\Twig\Extra\Tailwind\TailwindExtension:
         tags: ['twig.extension']
 

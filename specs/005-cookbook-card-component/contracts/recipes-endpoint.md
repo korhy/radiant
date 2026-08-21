@@ -20,17 +20,19 @@ Inchangée. Tous les paramètres restent facultatifs.
 ```json
 {
   "html": "<a href=\"/app/cookbook/recipe/12\" …>…</a><a …>…</a>",
+  "count": 10,
   "empty": false,
   "hasNextPage": true,
   "nextPage": 3,
-  "announcement": "10 recettes ajoutées."
+  "announcement": "10 recettes ajoutées à la liste."
 }
 ```
 
 | Champ | Type | Contrat |
 |---|---|---|
-| `html` | chaîne | Le balisage **déjà rendu par le serveur** à insérer dans la grille. Cartes concaténées, ou le bloc d'état vide quand `empty` est vrai. Jamais de données brutes. |
-| `empty` | booléen | Vrai quand la requête ne ramène aucune recette **et** qu'il s'agit de la première page : `html` porte alors l'état vide et doit **remplacer** le contenu de la grille, pas s'y ajouter. |
+| `html` | chaîne | Le balisage **déjà rendu par le serveur** à insérer dans la grille : les cartes de cette page, concaténées. Jamais de données brutes, et jamais de message d'état — ceux-là vivent dans le gabarit, masqués. |
+| `count` | entier | Nombre de recettes servies par cette page. Le client s'en sert pour savoir qu'un chargement n'a rien rapporté et arrêter la pagination. |
+| `empty` | booléen | Vrai quand la requête ne ramène aucune recette **et** qu'il s'agit de la première page. Le client révèle alors le bloc « aucun résultat » déjà présent dans la page. |
 | `hasNextPage` | booléen | Vrai s'il reste une page après celle-ci. |
 | `nextPage` | entier \| `null` | Numéro de la page suivante, `null` si `hasNextPage` est faux. |
 | `announcement` | chaîne | Phrase française rendue par le serveur, destinée à la région `role="status"`. Vide si rien n'est à annoncer. |
@@ -43,7 +45,7 @@ champ de recette dans une chaîne. Il insère `html`, lit les trois drapeaux, re
 Contrat acquis au lot S4/S8, **inchangé** :
 
 ```json
-{ "html": "", "empty": false, "hasNextPage": false, "nextPage": null, "unavailable": true }
+{ "html": "", "count": 0, "empty": false, "hasNextPage": false, "nextPage": null, "announcement": "", "unavailable": true }
 ```
 
 Le client affiche l'indisponibilité et **n'affiche jamais** l'état « aucun résultat » dans ce cas.

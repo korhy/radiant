@@ -62,6 +62,7 @@ final class CookbookController extends AbstractController
             // tell an outage from "no result" and show the right message.
             return $this->json([
                 'html' => '',
+                'count' => 0,
                 'empty' => false,
                 'hasNextPage' => false,
                 'nextPage' => null,
@@ -72,30 +73,24 @@ final class CookbookController extends AbstractController
 
         $recipes = $data['member'] ?? [];
         $hasNextPage = isset($data['view']['next']);
-        $isEmpty = [] === $recipes && 1 === $page;
 
-        // The markup is rendered here, from the same templates as the first
-        // screen: the browser never assembles a card or a state of its own.
-        $html = $isEmpty
-            ? $this->renderView('app/cookbook/_recipe_grid_state.html.twig', [
-                'message' => 'Aucune recette ne correspond à ces critères.',
-            ])
-            : $this->renderView('app/cookbook/_recipe_grid_items.html.twig', ['recipes' => $recipes]);
-
+        // The markup is rendered here, from the same template as the first
+        // screen: the browser never assembles a card of its own.
         return $this->json([
-            'html' => $html,
-            'empty' => $isEmpty,
+            'html' => $this->renderView('app/cookbook/_recipe_grid_items.html.twig', ['recipes' => $recipes]),
+            'count' => \count($recipes),
+            'empty' => [] === $recipes && 1 === $page,
             'hasNextPage' => $hasNextPage,
             'nextPage' => $hasNextPage ? $page + 1 : null,
-            'announcement' => $isEmpty ? '' : trim($this->renderView(
+            'announcement' => [] === $recipes ? '' : trim($this->renderView(
                 'app/cookbook/_recipe_grid_announcement.html.twig',
                 ['count' => \count($recipes)]
             )),
         ]);
     }
 
-    // Sans la contrainte \d+, un identifiant non numérique produisait une 500
-    // (TypeError) au lieu d'une 404.
+    // Without the \d+ requirement, a non-numeric id raised a TypeError — a 500
+    // where a 404 is expected.
     #[Route('/app/cookbook/recipe/{id}', name: 'cookbook_recipe', requirements: ['id' => '\d+'])]
     public function recipe(
         CookbookApiService $cookbookApiService,

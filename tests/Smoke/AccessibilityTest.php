@@ -14,9 +14,8 @@ use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
 /**
- * L'accessibilité est un critère d'acceptation du projet, pas une finition.
- * Ces tests figent les correctifs de l'étape 2 : sans eux, chacun se déferait
- * à la première retouche de gabarit sans que rien ne le signale.
+ * Accessibility is an acceptance criterion here, not polish. These tests pin the
+ * fixes down: without them, a template edit would silently undo any of them.
  */
 final class AccessibilityTest extends WebTestCase
 {
@@ -44,8 +43,7 @@ final class AccessibilityTest extends WebTestCase
     }
 
     /**
-     * A1 — les 15 tuiles étaient des <div> pilotées par un clic délégué : le jeu
-     * était strictement inutilisable sans souris.
+     * A1 — the 15 tiles must stay operable without a mouse.
      */
     public function testTaquinTilesAreRealButtons(): void
     {
@@ -59,7 +57,7 @@ final class AccessibilityTest extends WebTestCase
     }
 
     /**
-     * A11 — les déplacements et la victoire doivent être annoncés.
+     * A11 — moves and the win must be announced.
      */
     public function testTaquinExposesALiveRegion(): void
     {
@@ -107,7 +105,7 @@ final class AccessibilityTest extends WebTestCase
     }
 
     /**
-     * A3 — « Bravo ! » et « Perdu ! » n'étaient jamais annoncés.
+     * A3 — the end-of-game messages must reach assistive technology.
      */
     public function testMotusMessageIsALiveRegion(): void
     {
@@ -117,12 +115,9 @@ final class AccessibilityTest extends WebTestCase
     }
 
     /**
-     * A12 + DU3 — l'aide « ⓘ » était une infobulle révélée au survol seul sur
-     * Motus, et le même motif était recopié dans le Taquin.
-     *
-     * Depuis la reprise sur `InfoDisclosure`, c'est un `<details>` natif :
-     * activable à la souris, au clavier et au doigt. Le test fige la forme,
-     * pas l'habillage — un retour au survol le casse.
+     * A12 + DU3 — the ⓘ help is a native `<details>`, reachable by mouse,
+     * keyboard and touch alike. This pins the markup, not the styling: going
+     * back to a hover-only tooltip breaks it.
      *
      * @dataProvider provideMiniAppsWithRules
      */
@@ -159,13 +154,9 @@ final class AccessibilityTest extends WebTestCase
     }
 
     /**
-     * A5 + A6 — le tiroir n'avait aucun nom accessible, aucune sémantique
-     * d'onglets, et restait dans l'ordre de tabulation une fois fermé.
-     *
-     * Depuis la reprise sur le composant `Dialog` du kit, le panneau est un
-     * `<dialog>` natif : sans l'attribut `open`, il n'est ni affiché, ni
-     * focusable, ni exposé — ce que `inert` obtenait à la main. Le rôle et
-     * `aria-modal` viennent de l'élément lui-même.
+     * A5 + A6 — the drawer is a native `<dialog>`: without the `open` attribute
+     * it is neither rendered, nor focusable, nor exposed, which is what `inert`
+     * used to achieve by hand. Its role and `aria-modal` come from the element.
      */
     public function testBehindTheScenesDrawerIsAccessible(): void
     {
@@ -216,7 +207,7 @@ final class AccessibilityTest extends WebTestCase
     }
 
     /**
-     * A8 — quatre <a> sans href servaient uniquement à colorer du texte.
+     * A8 — coloured text must not be marked up as anchors without href.
      */
     public function testHomepageHasNoAnchorWithoutHref(): void
     {
@@ -245,8 +236,7 @@ final class AccessibilityTest extends WebTestCase
     }
 
     /**
-     * A10 — les champs recâblés à la main n'affichaient aucune erreur, et le
-     * <textarea value="..."> invalide perdait le message à chaque échec.
+     * A10 — a rejected submission must show its errors and keep what was typed.
      */
     public function testContactFormShowsErrorsAndKeepsWhatWasTyped(): void
     {
@@ -260,8 +250,8 @@ final class AccessibilityTest extends WebTestCase
 
         $crawler = $this->client->submit($form);
 
-        // Symfony renvoie 422 sur un formulaire invalide depuis la 6.2 : le
-        // formulaire se réaffiche avec ses erreurs, il ne redirige pas.
+        // Symfony answers 422 on an invalid form since 6.2: the form is
+        // re-rendered with its errors instead of redirecting.
         self::assertResponseStatusCodeSame(422, 'Le formulaire doit se réafficher, pas rediriger.');
         self::assertGreaterThan(
             0,
@@ -273,5 +263,112 @@ final class AccessibilityTest extends WebTestCase
             $crawler->filter('#contact_message')->text(),
             'Le message saisi doit survivre au réaffichage.'
         );
+    }
+
+    /**
+     * The Cookbook pages talk to an external API. Dispatching on the URL rather
+     * than on call order keeps the stub correct whether or not the JWT is still
+     * in the cache from an earlier request.
+     */
+    private function mockCookbookApi(): void
+    {
+        $recipe = [
+            'id' => 42,
+            'title' => 'Tarte aux pommes',
+            'thumbnail' => null,
+            'duration' => 45,
+            'description' => 'Une tarte.',
+        ];
+
+        static::getContainer()->set('http_client', new MockHttpClient(
+            static function (string $method, string $url) use ($recipe): MockResponse {
+                if (str_contains($url, '/api/login_check')) {
+                    return new MockResponse(json_encode(['token' => 'jwt-test'], JSON_THROW_ON_ERROR));
+                }
+
+                if (preg_match('#/recipes/\d+$#', $url)) {
+                    return new MockResponse(json_encode($recipe, JSON_THROW_ON_ERROR));
+                }
+
+                if (str_contains($url, '/categories')) {
+                    return new MockResponse(json_encode(['member' => [['id' => 1, 'name' => 'Dessert']]], JSON_THROW_ON_ERROR));
+                }
+
+                return new MockResponse(json_encode(['member' => [$recipe]], JSON_THROW_ON_ERROR));
+            },
+            'https://cookbook.test'
+        ));
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function providePublicPages(): iterable
+    {
+        yield 'accueil' => ['/'];
+        yield 'taquin' => ['/app/taquin'];
+        yield 'motus' => ['/app/motus'];
+        yield 'cookbook' => ['/app/cookbook'];
+        yield 'recette' => ['/app/cookbook/recipe/42'];
+        yield 'contact' => ['/contact'];
+        yield 'mentions légales' => ['/mentions-legales'];
+        yield 'connexion' => ['/login'];
+    }
+
+    /**
+     * Every page needs exactly one <main>, or the content sits outside any
+     * landmark and skip-to-content is impossible. base.html.twig provides it;
+     * a template overriding `body` must not add a second one.
+     *
+     * @dataProvider providePublicPages
+     */
+    public function testEveryPublicPageHasExactlyOneMainLandmark(string $path): void
+    {
+        $this->mockCookbookApi();
+
+        $crawler = $this->client->request('GET', $path);
+
+        self::assertResponseIsSuccessful();
+        self::assertSame(1, $crawler->filter('main')->count(), 'Une page porte un <main>, et un seul.');
+    }
+
+    /**
+     * @dataProvider providePublicPages
+     */
+    public function testEveryPublicPageHasExactlyOneLevelOneHeading(string $path): void
+    {
+        $this->mockCookbookApi();
+
+        $crawler = $this->client->request('GET', $path);
+
+        self::assertResponseIsSuccessful();
+        self::assertSame(1, $crawler->filter('h1')->count(), 'Une page porte un <h1>, et un seul.');
+    }
+
+    /**
+     * The Cookbook navbar is shared by the list and a recipe page. Turning its
+     * title into a heading unconditionally would give a recipe an <h1>
+     * competing with the dish's own name — these two pin which one wins where.
+     * One request per test: the client reboots the kernel between requests,
+     * which would throw away the stubbed HTTP client.
+     */
+    public function testTheCookbookListTitleIsItsLevelOneHeading(): void
+    {
+        $this->mockCookbookApi();
+
+        $crawler = $this->client->request('GET', '/app/cookbook');
+
+        self::assertResponseIsSuccessful();
+        self::assertSame('Mon livre de recettes', trim($crawler->filter('h1')->text()));
+    }
+
+    public function testARecipePageUsesTheDishNameAsItsLevelOneHeading(): void
+    {
+        $this->mockCookbookApi();
+
+        $crawler = $this->client->request('GET', '/app/cookbook/recipe/42');
+
+        self::assertResponseIsSuccessful();
+        self::assertSame('Tarte aux pommes', trim($crawler->filter('h1')->text()));
     }
 }
