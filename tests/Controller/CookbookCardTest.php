@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
@@ -71,9 +73,26 @@ final class CookbookCardTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        $this->resetSchema();
         // Two requests per test hit the same mocked API: without this, the kernel
         // reboots between them and the mocked http_client is lost.
         $this->client->disableReboot();
+    }
+
+    /**
+     * The recipe page renders the "Behind the scenes" drawer, which reads the `app` table.
+     * CI starts from an empty database, so the schema has to be built here — a local
+     * var/test.db left over from an earlier run would hide the need for it.
+     */
+    private function resetSchema(): void
+    {
+        /** @var EntityManagerInterface $em */
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $metadata = $em->getMetadataFactory()->getAllMetadata();
+
+        $tool = new SchemaTool($em);
+        $tool->dropSchema($metadata);
+        $tool->createSchema($metadata);
     }
 
     /**
