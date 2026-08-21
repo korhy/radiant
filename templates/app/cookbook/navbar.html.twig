@@ -1,6 +1,18 @@
-<nav class="flex items-center justify-between">
+{# Shared by the recipe list and a recipe's page.
+
+   `as_page_heading` — the list is the Cookbook root, where this brand line *is*
+   the subject of the page, so it carries the <h1>. A recipe page leaves it
+   unwrapped: there the <h1> is the recipe title, and two would compete.
+
+   A <header>, not a <nav>: the single link points at the page itself, so it
+   brands the section rather than navigating it. Inside <main> it is scoped, not
+   a banner landmark. #}
+{% set as_page_heading = as_page_heading|default(false) %}
+<header class="flex items-center justify-between">
+    {% if as_page_heading %}<h1>{% endif %}
     <a href="{{ path('cookbook') }}" class="flex items-center gap-2">
         <span class="w-6 h-6 text-brand-fg-em">{{ include('components/_icon_cookbook.html.twig') }}</span>
         <span class="text-content-max font-bold tracking-wide">Mon livre de recettes</span>
     </a>
-</nav>
+    {% if as_page_heading %}</h1>{% endif %}
+</header>

@@ -6,8 +6,8 @@
 {% block body %}
 <div class="min-h-screen pt-4 pb-10 sm:py-10 px-4">
     <div class="max-w-4xl mx-auto flex flex-col gap-6">
-        {# Navbar #}
-        {{ include('app/cookbook/navbar.html.twig') }}
+        {# Navbar — the list is the Cookbook root, so its title is the page's <h1>. #}
+        {{ include('app/cookbook/navbar.html.twig', {as_page_heading: true}) }}
 
         {# Breadcrumb #}
         {{ include('app/cookbook/breadcrumb.html.twig', {breadcrumbs: [
