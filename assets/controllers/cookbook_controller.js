@@ -1,23 +1,31 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['loadMoreContainer', 'button', 'searchInput', 'categorySelect', 'sortBtn']
-    static values = { nextPage: Number }
+    static targets = [
+        'grid', 'noResult', 'emptyState', 'loadMoreContainer', 'button', 'buttonLabel',
+        'status', 'searchInput', 'categorySelect', 'sortBtn',
+    ]
+
+    static values = {
+        nextPage: Number,
+        loadingLabel: String,
+        loadMoreLabel: String,
+        unavailableLabel: String,
+    }
 
     #loading = false
     #observer = null
     #sortField = null
     #sortDir = null
     #debounceTimer = null
+    #generation = 0
 
     connect() {
         this.#observer = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) this.loadMore()
+            if (entries[entries.length - 1].isIntersecting) this.loadMore()
         }, { rootMargin: '200px' })
 
-        if (this.hasLoadMoreContainerTarget) {
-            this.#observer.observe(this.loadMoreContainerTarget)
-        }
+        this.#observer.observe(this.loadMoreContainerTarget)
 
         this.searchInputTarget.addEventListener('input', () => {
             clearTimeout(this.#debounceTimer)
@@ -28,6 +36,7 @@ export default class extends Controller {
     }
 
     disconnect() {
+        clearTimeout(this.#debounceTimer)
         this.#observer?.disconnect()
     }
 
@@ -45,72 +54,121 @@ export default class extends Controller {
 
     async loadMore() {
         if (!this.nextPageValue || this.#loading) return
-        this.#loading = true
-        if (this.hasButtonTarget) this.buttonTarget.textContent = 'Chargement…'
 
-        const params = new URLSearchParams({ page: this.nextPageValue })
+        const page = this.nextPageValue
+        const generation = this.#generation
+        this.#loading = true
+        this.#showLoading()
+
+        let data
+        try {
+            const res = await fetch(`/app/cookbook/recipes?${this.#params(page)}`)
+
+            // Without this guard, the empty payload of a 503 would read as
+            // "no result" and show the wrong message.
+            if (!res.ok) throw new Error(`Cookbook answered ${res.status}`)
+
+            data = await res.json()
+        } catch {
+            // A newer request already owns the UI: stay quiet rather than
+            // reporting an outage over its results.
+            if (generation === this.#generation) {
+                this.#loading = false
+                this.#showUnavailable()
+            }
+
+            return
+        }
+
+        // Same reasoning: these results answer a query the visitor has replaced.
+        if (generation !== this.#generation) return
+
+        this.#loading = false
+
+        data.recipes.forEach(recipe => {
+            this.gridTarget.insertAdjacentHTML('beforeend', this.#cardHtml(recipe))
+        })
+
+        if (data.recipes.length === 0 && page === 1) {
+            this.noResultTarget.classList.remove('hidden')
+        }
+
+        // Paging stops when the API says so, but also when a page brings nothing
+        // or fails to move forward: both would let the re-arming below spin.
+        if (!data.hasNextPage || data.recipes.length === 0 || data.nextPage <= page) {
+            this.#endOfStream()
+
+            return
+        }
+
+        this.nextPageValue = data.nextPage
+        this.#showLoadMore()
+        this.#rearmObserver()
+    }
+
+    #rearmObserver() {
+        // An IntersectionObserver reports transitions, not states. On a document
+        // barely taller than the viewport the sentinel never leaves the 200px
+        // margin, so the first callback is also the last one and paging stops
+        // halfway. Observing it again asks the browser for a fresh verdict on
+        // the layout the page we just appended produced.
+        this.#observer.unobserve(this.loadMoreContainerTarget)
+        this.#observer.observe(this.loadMoreContainerTarget)
+    }
+
+    #reset() {
+        // Anything still in flight belongs to the previous query.
+        this.#generation += 1
+        this.#loading = false
+
+        this.gridTarget.innerHTML = ''
+        this.gridTarget.classList.remove('hidden')
+        this.noResultTarget.classList.add('hidden')
+        this.emptyStateTarget.classList.add('hidden')
+
+        this.nextPageValue = 1
+        this.loadMore()
+    }
+
+    #showLoading() {
+        this.loadMoreContainerTarget.classList.remove('hidden')
+        this.buttonTarget.classList.remove('hidden')
+        this.buttonTarget.setAttribute('aria-busy', 'true')
+        this.buttonLabelTarget.textContent = this.loadingLabelValue
+        this.buttonLabelTarget.classList.add('animate-pulse')
+        this.statusTarget.classList.add('hidden')
+        this.statusTarget.textContent = ''
+    }
+
+    #showLoadMore() {
+        this.buttonTarget.setAttribute('aria-busy', 'false')
+        this.buttonLabelTarget.textContent = this.loadMoreLabelValue
+        this.buttonLabelTarget.classList.remove('animate-pulse')
+    }
+
+    #showUnavailable() {
+        this.nextPageValue = 0
+        this.buttonTarget.classList.add('hidden')
+        this.statusTarget.textContent = this.unavailableLabelValue
+        this.statusTarget.classList.remove('hidden')
+    }
+
+    #endOfStream() {
+        // A zeroed next page is what closes `loadMore` to both the observer and
+        // the button, so the hidden sentinel cannot be reawakened by either.
+        this.nextPageValue = 0
+        this.loadMoreContainerTarget.classList.add('hidden')
+    }
+
+    #params(page) {
+        const params = new URLSearchParams({ page })
         const query = this.searchInputTarget.value.trim()
         const category = this.categorySelectTarget.value
         if (query) params.set('query', query)
         if (category) params.set('category', category)
         if (this.#sortField) params.set(`order[${this.#sortField}]`, this.#sortDir)
 
-        const res = await fetch(`/app/cookbook/recipes?${params}`)
-
-        // Without this guard, the empty payload of a 503 would read as
-        // "no result" and show the wrong message.
-        if (!res.ok) {
-            if (this.hasButtonTarget) this.buttonTarget.textContent = 'Recettes momentanément indisponibles'
-            this.#observer?.disconnect()
-            this.#loading = false
-            return
-        }
-
-        const data = await res.json()
-
-        const grid = document.getElementById('recipe-grid')
-        if (data.recipes.length === 0 && this.nextPageValue === 1) {
-            grid.innerHTML = `<div class="col-span-full text-center py-12 text-content-low">Aucune recette ne correspond à ces critères.</div>`
-            if (this.hasLoadMoreContainerTarget) this.loadMoreContainerTarget.remove()
-            this.#observer.disconnect()
-            this.#loading = false
-            return
-        }
-
-        data.recipes.forEach(recipe => {
-            grid.insertAdjacentHTML('beforeend', this.#cardHtml(recipe))
-        })
-
-        if (data.hasNextPage) {
-            this.nextPageValue = data.nextPage
-            if (this.hasButtonTarget) this.buttonTarget.textContent = '↓'
-            this.#loading = false
-        } else {
-            if (this.hasLoadMoreContainerTarget) this.loadMoreContainerTarget.remove()
-            this.#observer.disconnect()
-        }
-    }
-
-    #reset() {
-        const grid = document.getElementById('recipe-grid')
-        grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6'
-        grid.innerHTML = ''
-
-        if (this.hasLoadMoreContainerTarget) {
-            this.#observer.unobserve(this.loadMoreContainerTarget)
-            this.loadMoreContainerTarget.remove()
-        }
-
-        const container = document.createElement('div')
-        container.setAttribute('data-cookbook-target', 'loadMoreContainer')
-        container.className = 'flex justify-center mt-6'
-        container.innerHTML = `<span data-cookbook-target="button" class="text-content-min text-sm animate-pulse">Chargement…</span>`
-        this.element.appendChild(container)
-        this.#observer.observe(container)
-
-        this.nextPageValue = 1
-        this.#loading = false
-        this.loadMore()
+        return params
     }
 
     #updateSortButtons() {
@@ -120,16 +178,10 @@ export default class extends Controller {
             btn.classList.toggle('text-brand-fg-em', isActive)
             btn.classList.toggle('border-line-control', !isActive)
             btn.classList.toggle('text-content-low', !isActive)
-            if (isActive) {
-                btn.textContent = btn.dataset.sort === 'title'
-                    ? (this.#sortDir === 'asc' ? 'Titre A→Z' : 'Titre Z→A')
-                    : btn.dataset.sort === 'createdAt'
-                        ? (this.#sortDir === 'asc' ? 'Date ↑' : 'Date ↓')
-                        : (this.#sortDir === 'asc' ? 'Durée ↑' : 'Durée ↓')
-            } else {
-                btn.textContent = btn.dataset.sort === 'title' ? 'Titre'
-                    : btn.dataset.sort === 'createdAt' ? 'Date' : 'Durée'
-            }
+            btn.setAttribute('aria-pressed', String(isActive))
+            btn.textContent = isActive
+                ? (this.#sortDir === 'asc' ? btn.dataset.labelAsc : btn.dataset.labelDesc)
+                : btn.dataset.label
         })
     }
 

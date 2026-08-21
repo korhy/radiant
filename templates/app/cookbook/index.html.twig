@@ -16,8 +16,11 @@
         ]}) }}
 
         {# Filters & sorts #}
-        <div data-controller="cookbook" data-cookbook-next-page-value="2"
-            data-cookbook-categories-value="{{ categories|json_encode }}">
+        <div data-controller="cookbook"
+            data-cookbook-next-page-value="{{ hasNextPage ? 2 : 0 }}"
+            data-cookbook-loading-label-value="Chargement…"
+            data-cookbook-load-more-label-value="↓"
+            data-cookbook-unavailable-label-value="Recettes momentanément indisponibles">
 
             <div class="flex flex-col sm:flex-row gap-3">
                 <input data-cookbook-target="searchInput" type="search" placeholder="Rechercher une recette…"
@@ -39,25 +42,30 @@
                 </div>
             </div>
 
+            {# The three `data-label*` carry every wording the controller may need:
+               the labels are visitor-facing text, so they stay in the template. #}
             <div class="flex flex-wrap gap-2 mt-3">
                 <span class="text-content-min text-xs self-center">Trier par :</span>
                 <button data-cookbook-target="sortBtn" data-sort="title" data-action="cookbook#sort"
+                    data-label="Titre" data-label-asc="Titre A→Z" data-label-desc="Titre Z→A" aria-pressed="false"
                     class="px-3 py-1 rounded-full text-xs border border-line-control text-content-low hover:border-brand-fg hover:text-brand-fg-em transition-colors">
                     Titre
                 </button>
                 <button data-cookbook-target="sortBtn" data-sort="createdAt" data-action="cookbook#sort"
+                    data-label="Date" data-label-asc="Date ↑" data-label-desc="Date ↓" aria-pressed="false"
                     class="px-3 py-1 rounded-full text-xs border border-line-control text-content-low hover:border-brand-fg hover:text-brand-fg-em transition-colors">
                     Date
                 </button>
                 <button data-cookbook-target="sortBtn" data-sort="duration" data-action="cookbook#sort"
+                    data-label="Durée" data-label-asc="Durée ↑" data-label-desc="Durée ↓" aria-pressed="false"
                     class="px-3 py-1 rounded-full text-xs border border-line-control text-content-low hover:border-brand-fg hover:text-brand-fg-em transition-colors">
                     Durée
                 </button>
             </div>
 
             {# Recipe cards #}
-            {% if recipes is not empty %}
-            <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+            <div id="recipe-grid" data-cookbook-target="grid"
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6{{ recipes is empty ? ' hidden' : '' }}">
                 {% for recipe in recipes %}
                 <a href="{{ path('cookbook_recipe', {id: recipe.id}) }}"
                     class="group bg-surface-raised rounded-2xl overflow-hidden shadow-lg hover:shadow-brand/10 hover:-translate-y-1 transition-all duration-200">
@@ -101,15 +109,15 @@
                 </a>
                 {% endfor %}
             </div>
-            {% if hasNextPage %}
-            <div data-cookbook-target="loadMoreContainer" class="flex justify-center mt-6">
-                <span data-cookbook-target="button" class="text-content-min text-sm animate-pulse">
-                    Chargement…
-                </span>
-            </div>
-            {% endif %}
-            {% else %}
-            <div id="recipe-grid" class="bg-surface-raised rounded-2xl p-12 text-center mt-6">
+
+            {# Shown when a search or a category filter comes back empty. #}
+            <p data-cookbook-target="noResult" class="hidden text-center py-12 text-content-low">
+                Aucune recette ne correspond à ces critères.
+            </p>
+
+            {# Landing state, hidden as soon as a search brings something back. #}
+            <div data-cookbook-target="emptyState"
+                class="bg-surface-raised rounded-2xl p-12 text-center mt-6{{ recipes is empty ? '' : ' hidden' }}">
                 <span class="w-12 h-12 text-content-min mx-auto block mb-4">
                     {{ include('components/_icon_cookbook.html.twig') }}
                 </span>
@@ -122,7 +130,20 @@
                 <p class="text-content-low">Aucune recette pour l'instant.</p>
                 {% endif %}
             </div>
-            {% endif %}
+
+            {# Sentinel watched by the infinite scroll. It stays in the DOM so a
+               search or a sort can bring it back, and it is a real button so the
+               visitor always has a way forward — an observer only reports
+               transitions, and a short page may stop producing them. #}
+            <div data-cookbook-target="loadMoreContainer"
+                class="flex justify-center mt-6{{ hasNextPage ? '' : ' hidden' }}">
+                <button type="button" data-cookbook-target="button" data-action="cookbook#loadMore"
+                    aria-label="Charger plus de recettes"
+                    class="rounded-full px-4 py-1 text-sm text-content-min hover:text-brand-fg-em focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-fg transition-colors">
+                    <span data-cookbook-target="buttonLabel" aria-hidden="true" class="animate-pulse">Chargement…</span>
+                </button>
+                <p data-cookbook-target="status" role="status" class="hidden text-sm text-content-low"></p>
+            </div>
 
         </div>{# /data-controller #}
 
