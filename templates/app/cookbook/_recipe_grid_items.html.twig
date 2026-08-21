@@ -1,0 +1,6 @@
+{# The cards of one page. Rendered both by the first screen and by the scroll
+   endpoint — the single definition the whole feature rests on. No grid class
+   here: the grid belongs to the caller. #}
+{% for recipe in recipes %}
+    <twig:RecipeCard :recipe="recipe" />
+{% endfor %}

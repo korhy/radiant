@@ -61,17 +61,31 @@ final class CookbookController extends AbstractController
             // 503 rather than an empty payload: the client must be able to
             // tell an outage from "no result" and show the right message.
             return $this->json([
-                'recipes' => [],
+                'html' => '',
+                'count' => 0,
+                'empty' => false,
                 'hasNextPage' => false,
                 'nextPage' => null,
+                'announcement' => '',
                 'unavailable' => true,
             ], Response::HTTP_SERVICE_UNAVAILABLE);
         }
 
+        $recipes = $data['member'] ?? [];
+        $hasNextPage = isset($data['view']['next']);
+
+        // The markup is rendered here, from the same template as the first
+        // screen: the browser never assembles a card of its own.
         return $this->json([
-            'recipes' => $data['member'] ?? [],
-            'hasNextPage' => isset($data['view']['next']),
-            'nextPage' => isset($data['view']['next']) ? $page + 1 : null,
+            'html' => $this->renderView('app/cookbook/_recipe_grid_items.html.twig', ['recipes' => $recipes]),
+            'count' => \count($recipes),
+            'empty' => [] === $recipes && 1 === $page,
+            'hasNextPage' => $hasNextPage,
+            'nextPage' => $hasNextPage ? $page + 1 : null,
+            'announcement' => [] === $recipes ? '' : trim($this->renderView(
+                'app/cookbook/_recipe_grid_announcement.html.twig',
+                ['count' => \count($recipes)]
+            )),
         ]);
     }
 

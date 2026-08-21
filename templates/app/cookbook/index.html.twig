@@ -18,6 +18,7 @@
         {# Filters & sorts #}
         <div data-controller="cookbook"
             data-cookbook-next-page-value="{{ hasNextPage ? 2 : 0 }}"
+            data-cookbook-recipes-url-value="{{ path('cookbook_recipes_json') }}"
             data-cookbook-loading-label-value="Chargement…"
             data-cookbook-load-more-label-value="↓"
             data-cookbook-unavailable-label-value="Recettes momentanément indisponibles">
@@ -27,7 +28,9 @@
                     class="flex-1 bg-surface-raised border border-line-control rounded-xl px-4 py-2 text-sm text-content-max placeholder-content-min focus:outline-hidden focus:border-brand-fg transition-colors">
 
                 <div class="relative">
-                    <select data-cookbook-target="categorySelect"
+                    {# The visible option text is not an accessible name: without this
+                       label the select is announced as "menu", nothing more. #}
+                    <select data-cookbook-target="categorySelect" aria-label="Filtrer par catégorie"
                         class="w-full bg-surface-raised border border-line-control rounded-xl px-4 pr-10 py-2 text-sm text-content-max focus:outline-hidden focus:border-brand-fg transition-colors appearance-none">
                         <option value="">Toutes les catégories</option>
                         {% for category in categories %}
@@ -66,48 +69,7 @@
             {# Recipe cards #}
             <div id="recipe-grid" data-cookbook-target="grid"
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6{{ recipes is empty ? ' hidden' : '' }}">
-                {% for recipe in recipes %}
-                <a href="{{ path('cookbook_recipe', {id: recipe.id}) }}"
-                    class="group bg-surface-raised rounded-2xl overflow-hidden shadow-lg hover:shadow-brand/10 hover:-translate-y-1 transition-all duration-200">
-
-                    {# Thumbnail #}
-                    {% if recipe.thumbnail %}
-                    <img src="{{ recipe.thumbnail }}" alt="{{ recipe.title }}"
-                        class="w-full h-40 object-cover group-hover:brightness-110 transition-all duration-200">
-                    {% else %}
-                    <div class="w-full h-40 bg-surface-inset flex items-center justify-center">
-                        <span class="w-10 h-10 text-content-min">
-                            {{ include('components/_icon_cookbook.html.twig') }}
-                        </span>
-                    </div>
-                    {% endif %}
-
-                    <div class="p-4 flex flex-col gap-2">
-                        <h2
-                            class="text-content-max font-semibold text-sm leading-snug group-hover:text-brand-fg-em transition-colors">
-                            {{ recipe.title }}
-                        </h2>
-                        <div class="flex items-center gap-2 flex-wrap mt-auto">
-                            {% if recipe.category is defined and recipe.category %}
-                            <span class="bg-brand/20 text-brand-fg-em text-xs font-medium px-2 py-0.5 rounded-full">
-                                {{ recipe.category.name }}
-                            </span>
-                            {% endif %}
-                            {% if recipe.duration %}
-                            <span class="text-content-low text-xs flex items-center gap-1 ml-auto">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5"
-                                    viewBox="0 0 24 24">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M12 6v6l4 2" />
-                                </svg>
-                                {{ recipe.duration }} min
-                            </span>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                </a>
-                {% endfor %}
+                {{ include('app/cookbook/_recipe_grid_items.html.twig') }}
             </div>
 
             {# Shown when a search or a category filter comes back empty. #}
@@ -116,20 +78,30 @@
             </p>
 
             {# Landing state, hidden as soon as a search brings something back. #}
-            <div data-cookbook-target="emptyState"
-                class="bg-surface-raised rounded-2xl p-12 text-center mt-6{{ recipes is empty ? '' : ' hidden' }}">
-                <span class="w-12 h-12 text-content-min mx-auto block mb-4">
+            <twig:Empty data-cookbook-target="emptyState"
+                class="bg-surface-raised rounded-2xl p-12 mt-6{{ recipes is empty ? '' : ' hidden' }}">
+                <twig:Empty:Media class="w-12 h-12 text-content-min">
                     {{ include('components/_icon_cookbook.html.twig') }}
-                </span>
-                {% if apiUnavailable %}
-                <p class="text-content-low">L'API Cookbook est momentanément injoignable.</p>
-                <p class="text-content-min text-sm mt-2">
-                    Les recettes viennent d'un service externe&nbsp;; le reste du portfolio reste consultable.
-                </p>
-                {% else %}
-                <p class="text-content-low">Aucune recette pour l'instant.</p>
-                {% endif %}
-            </div>
+                </twig:Empty:Media>
+                <twig:Empty:Header>
+                    {% if apiUnavailable %}
+                        <twig:Empty:Description class="text-content-low">
+                            L'API Cookbook est momentanément injoignable.
+                        </twig:Empty:Description>
+                        <twig:Empty:Description class="text-content-min text-sm">
+                            Les recettes viennent d'un service externe&nbsp;; le reste du portfolio reste consultable.
+                        </twig:Empty:Description>
+                    {% else %}
+                        <twig:Empty:Description class="text-content-low">
+                            Aucune recette pour l'instant.
+                        </twig:Empty:Description>
+                    {% endif %}
+                </twig:Empty:Header>
+            </twig:Empty>
+
+            {# Present from the first render, and empty: an announcement region
+               added later is unevenly reported by assistive technology. #}
+            <p data-cookbook-target="announcement" role="status" class="sr-only"></p>
 
             {# Sentinel watched by the infinite scroll. It stays in the DOM so a
                search or a sort can bring it back, and it is a real button so the

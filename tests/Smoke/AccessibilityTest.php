@@ -67,6 +67,44 @@ final class AccessibilityTest extends WebTestCase
     }
 
     /**
+     * The infinite scroll used to load silently: what the eye sees appear must
+     * be announced too.
+     */
+    public function testCookbookExposesALiveRegionForLoadedRecipes(): void
+    {
+        static::getContainer()->set('http_client', new MockHttpClient(
+            static fn (string $method, string $url): MockResponse => new MockResponse(json_encode(
+                str_contains($url, 'login_check') ? ['token' => 'jwt'] : ['member' => []],
+                JSON_THROW_ON_ERROR
+            )),
+            'https://cookbook.test'
+        ));
+
+        $crawler = $this->client->request('GET', '/app/cookbook');
+
+        self::assertSame(1, $crawler->filter('[data-cookbook-target="announcement"][role="status"]')->count());
+    }
+
+    /**
+     * axe-core, 2026-08-21: the category filter was announced as "menu" and
+     * nothing else — its options are not an accessible name.
+     */
+    public function testTheCategoryFilterHasAnAccessibleName(): void
+    {
+        static::getContainer()->set('http_client', new MockHttpClient(
+            static fn (string $method, string $url): MockResponse => new MockResponse(json_encode(
+                str_contains($url, 'login_check') ? ['token' => 'jwt'] : ['member' => []],
+                JSON_THROW_ON_ERROR
+            )),
+            'https://cookbook.test'
+        ));
+
+        $crawler = $this->client->request('GET', '/app/cookbook');
+
+        self::assertSame(1, $crawler->filter('select[data-cookbook-target="categorySelect"][aria-label]')->count());
+    }
+
+    /**
      * A3 — the end-of-game messages must reach assistive technology.
      */
     public function testMotusMessageIsALiveRegion(): void
