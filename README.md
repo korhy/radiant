@@ -102,6 +102,22 @@ npm run dev
 The app is then available at [http://localhost:8080](http://localhost:8080), and Mailpit catches
 outgoing mail at [http://localhost:8025](http://localhost:8025).
 
+### The Cookbook mini-app needs the Cookbook stack
+
+`/app/cookbook` is a **client** of the separate [Cookbook](https://github.com/korhy/cookbook) API,
+which runs in its own Docker stack. The two are joined by an external Docker network, `korhy_net`,
+created by `make net` (a prerequisite of `make up`). Point Radiant at the container, not at the
+host:
+
+```dotenv
+# .env.local
+COOKBOOK_API_URL=http://cookbook_app
+```
+
+`127.0.0.1:8001` does **not** work from inside this container — it resolves to the container itself.
+Start the other stack with `make up` in the cookbook checkout; without it, `/app/cookbook` cannot
+load recipes.
+
 ### Two traps worth knowing
 
 > **Assets build on the host, not in the container.** An in-container `npm install` rewrites

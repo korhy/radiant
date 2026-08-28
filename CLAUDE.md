@@ -178,6 +178,11 @@ make psql            # psql shell on the dev database
 make watch           # rebuild assets on change
 ```
 
+**The Cookbook mini-app needs the Cookbook stack up.** Both projects join an external Docker
+network, `korhy_net`, created by `make net` (a prerequisite of `make up`). `COOKBOOK_API_URL` is
+`http://cookbook_app` — the container name — not `127.0.0.1:8001`, which from inside this container
+resolves to this container. Start the other stack with `make up` in the cookbook checkout.
+
 **Assets targets run on the host, not in the container** — an in-container `npm install` rewrites
 `package-lock.json`'s `name` field to the container workdir and produces a bogus lockfile diff.
 

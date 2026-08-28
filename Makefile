@@ -32,8 +32,12 @@ help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 ## —— Docker (local dev) ————————————————————————————————————————————
+.PHONY: net
+net: ## Create the shared korhy_net network if missing (idempotent)
+	@docker network inspect korhy_net >/dev/null 2>&1 || docker network create korhy_net
+
 .PHONY: up
-up: ## Start the dev stack (app :8080, Postgres, Mailpit :8025)
+up: net ## Start the dev stack (app :8080, Postgres, Mailpit :8025)
 	$(DOCKER_COMPOSE) up -d
 
 .PHONY: down
