@@ -59,6 +59,13 @@ for 3500 s, retries **once** after dropping the cached token on a 401, and reads
 Never reimplement recipe logic locally, never persist recipes in Radiant's database, and never log
 the token. If the API contract changes, the fix belongs in that service.
 
+**How the API is reached in local dev.** Cookbook runs in its own Docker stack. Both stacks join an
+external network, **`korhy_net`**, so `COOKBOOK_API_URL` is `http://cookbook_app` — the container
+name, on port 80. It is **not** `127.0.0.1:8001`: from inside this container that address resolves
+to *this* container, and the call fails. `make net` (a prerequisite of `make up`) creates the
+network. Cookbook does not have to be running — when it is down the client raises
+`CookbookUnavailableException`.
+
 ## Roles & access
 
 - `ROLE_ADMIN` — the only meaningful role; `access_control` gates `^/admin`.
@@ -93,7 +100,6 @@ L'audit du 2026-08-18 (`docs/audit/audit-2026-08-18.md`) a traité les étapes 0
 
 - **La carte recette est écrite deux fois** — en Twig et en littéral JS dans
   `cookbook_controller.js` —, et cette version JS interpole les champs de l'API sans échappement.
-- **`/app/cookbook` renvoie une 500 si l'API Cookbook est injoignable** au lieu d'un état dégradé.
 - **Le formulaire de contact** part avec l'adresse du visiteur en `From` (SPF/DKIM), et n'a ni
   rate limiting ni anti-spam.
 - **Les messages de validation s'affichent en anglais** (`default_locale: en`) sur un site français.

@@ -30,6 +30,9 @@ services:
         condition: service_started
     networks:
       - radiant_network
+      # Shared with the Cookbook stack — this is how the Cookbook mini-app reaches
+      # the API, at http://cookbook_app. See COOKBOOK_API_URL in .env.local.
+      - korhy_net
 
 ###> doctrine/doctrine-bundle ###
   database:
@@ -61,3 +64,11 @@ volumes:
 networks:
   radiant_network:
     driver: bridge
+
+  # Cross-project network shared with ~/code/korhy/PHP/Symfony/cookbook.
+  # External on purpose: it outlives `make down` on either side, and the Cookbook
+  # stack does not have to be running for this one to start — when it is down the
+  # client degrades through CookbookUnavailableException, as it already did.
+  # `make net` (a prerequisite of `make up`) creates it if missing.
+  korhy_net:
+    external: true
