@@ -123,7 +123,8 @@ migrations/
 └── VersionYYYYMMDDHHMMSS.php        # CRÉÉ — table + amorçage
 tests/
 ├── Service/Content/HighlightParserTest.php  # CRÉÉ — les treize cas du contrat
-└── Controller/SiteContentRenderingTest.php  # CRÉÉ — rendu conditionnel de la page d'accueil
+├── Controller/AboutSectionRenderingTest.php # CRÉÉ — rendu conditionnel de la section (US1)
+└── Controller/CvDownloadLinkTest.php        # CRÉÉ — rendu conditionnel du lien CV (US2)
 .gitignore                           # MODIFIÉ — /public/documents/CV/
 ```
 
