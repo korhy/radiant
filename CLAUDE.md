@@ -107,7 +107,8 @@ file plus `.claude/rules/**` are the real governing rules.
   ceiling still holds
 - **Webpack Encore** for assets — the dormant AssetMapper setup was removed on 2026-08-19
 - **Mailjet** mailer for the contact form
-- **Tests**: PHPUnit — 52 tests (Motus, client Cookbook, routes publiques, accessibilité) **et
+- **Tests**: PHPUnit — 109 tests (Motus, client Cookbook, routes publiques, accessibilité, grammaire
+  de mise en valeur et rendu du contenu éditable) **et
   Playwright + axe-core** — 16 cas auditant les sept pages publiques dans les deux thèmes, gate CI
   depuis le 2026-08-21. Voir [testing.md](.claude/rules/technical/testing.md)
 - **Linters**: php-cs-fixer (`@Symfony`), **twig-cs-fixer** and PHPStan level 5 — all three gated in

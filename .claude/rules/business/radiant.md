@@ -24,6 +24,12 @@ quality on display matters as much as the feature itself.
   with `path()` in Twig.
 - **Experience** (`company`, `position`, `description`, `url`, `startDate`, `endDate`, `tags`) —
   a CV entry.
+- **SiteContent** (`aboutText`, `cvFile`/`cvFileName`/`cvOriginalName`, `updatedAt`) — **une seule
+  ligne**, amorcée par migration. Porte le paragraphe « À propos » de la page d'accueil, marqueurs
+  `**…**` compris, et le CV proposé au téléchargement. `#[Vich\Uploadable]`, mapping `cv` ; le binaire
+  vit sous `public/documents/CV/`, **ignoré par git** — c'est ce qui le fait survivre au
+  `reset --hard` du déploiement. Lire la ligne par `SiteContentRepository::findCurrent()`, jamais
+  autrement ; `NEW` et `DELETE` restent désactivées dans le CRUD.
 - **PersonalProject** (`name`, `description`, `url`, `file`/`fileName`, `tags`, `updatedAt`) —
   `#[Vich\Uploadable]`, mapping `personal_projects`; the binary lives on the server filesystem
   under `public/images/personal_projects/`.
@@ -104,6 +110,12 @@ L'audit du 2026-08-18 (`docs/audit/audit-2026-08-18.md`) a traité les étapes 0
   rate limiting ni anti-spam.
 - **Les messages de validation s'affichent en anglais** (`default_locale: en`) sur un site français.
 - **Les colonnes JSON `tags`** emballent le tableau dans une clé `tags` redondante.
+- **Le CV hérité est encore versionné.** `public/documents/CV/CV_Clement_BOUDINEL_Fullstack_PHP-Symfony.pdf`
+  amorce `SiteContent.cvFileName` et doit le rester tant qu'aucun CV n'a été déposé depuis
+  l'administration en production : le déploiement remet l'arbre à l'état de `main` **avant** de jouer
+  les migrations, donc le retirer plus tôt laisserait la ligne pointer sur un fichier absent. Une
+  fois un dépôt fait, **le retirer du dépôt par un commit dédié** — sinon le `reset --hard` le
+  restaure et il reste accessible à son ancienne URL. Contexte : `specs/008-editable-about-cv/research.md`, R4.
 
 Ce qui a été corrigé et ne doit pas être re-signalé : `declare(strict_types=1)` (imposé par
 php-cs-fixer), la casse des propriétés d'entité, la typo `$projetcs`, le code mort (AssetMapper,
