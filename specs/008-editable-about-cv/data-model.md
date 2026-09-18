@@ -20,7 +20,7 @@ relation, ni collection, ni état à faire transiter.
 | `cvOriginalName` | `?string` | `cv_original_name` VARCHAR(255) | oui | nom d'origine du fichier déposé, servi dans l'attribut `download` |
 | `updatedAt` | `?\DateTimeImmutable` | `updated_at` TIMESTAMP | oui | horodatage exigé par Vich pour déclencher la persistance sur remplacement de fichier |
 
-`#[Vich\Uploadable]` sur la classe ; `#[Vich\UploadableField(mapping: 'cv', fileNameProperty: 'cvFileName', originalNameProperty: 'cvOriginalName')]` sur `cvFile`.
+`#[Vich\Uploadable]` sur la classe ; `#[Vich\UploadableField(mapping: 'cv', fileNameProperty: 'cvFileName', originalName: 'cvOriginalName')]` sur `cvFile`.
 
 ### Pourquoi `updatedAt` n'est pas décoratif
 

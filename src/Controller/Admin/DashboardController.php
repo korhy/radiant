@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\App;
 use App\Entity\Experience;
 use App\Entity\PersonalProject;
+use App\Entity\SiteContent;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -37,5 +38,6 @@ final class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Experiences', 'fa-solid fa-book', Experience::class);
         yield MenuItem::linkToCrud('Projects', 'fa-solid fa-list', PersonalProject::class);
         yield MenuItem::linkToCrud('Apps', 'fa-solid fa-grid-2', App::class);
+        yield MenuItem::linkToCrud('Site content', 'fa-solid fa-id-card', SiteContent::class);
     }
 }

@@ -24,6 +24,9 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 /public/images/personal_projects/
+# The deploy runs `git reset --hard` without `git clean`, so only an ignored
+# file survives it. The CV uploaded through the admin lands here.
+/public/documents/CV/
 
 ###> docker ###
 /.docker/
