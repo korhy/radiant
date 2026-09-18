@@ -116,8 +116,6 @@ L'audit du 2026-08-18 (`docs/audit/audit-2026-08-18.md`) a traité les étapes 0
   les migrations, donc le retirer plus tôt laisserait la ligne pointer sur un fichier absent. Une
   fois un dépôt fait, **le retirer du dépôt par un commit dédié** — sinon le `reset --hard` le
   restaure et il reste accessible à son ancienne URL. Contexte : `specs/008-editable-about-cv/research.md`, R4.
-- **`public/documents/CV/CV_champs_formulaires_en_ligne.md` est versionné et servi publiquement.**
-  Document de travail, accessible à qui devine l'URL. À trancher.
 
 Ce qui a été corrigé et ne doit pas être re-signalé : `declare(strict_types=1)` (imposé par
 php-cs-fixer), la casse des propriétés d'entité, la typo `$projetcs`, le code mort (AssetMapper,
