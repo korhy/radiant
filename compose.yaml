@@ -1,23 +1,25 @@
 
 services:
-  # Symfony Application
+  # Symfony Application — FrankenPHP (PHP 8.3 + Caddy), no nginx / php-fpm.
   app:
     build:
       context: .
-      target: development
-      dockerfile: Dockerfile
+      dockerfile: docker/frankenphp/Dockerfile
     image: radiant:dev
     container_name: radiant_app
     ports:
       - "8080:80"
     volumes:
       # Mount source code for development
-      - .:/var/www/html
+      - .:/app
       # Exclude vendor and node_modules for performance
-      - /var/www/html/vendor
-      - /var/www/html/node_modules
+      - /app/vendor
+      - /app/node_modules
+      # Caddyfile is baked into the image too, but mounted read-only so it can be
+      # edited without a rebuild.
+      - ./docker/frankenphp/Caddyfile:/etc/frankenphp/Caddyfile:ro
       # Mount uploads directory
-      - ./public/documents:/var/www/html/public/documents
+      - ./public/documents:/app/public/documents
     environment:
       - APP_ENV=dev
       - APP_DEBUG=1

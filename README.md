@@ -23,6 +23,7 @@ The site is a professional showcase, so the quality of the code and of the deliv
 | Admin | EasyAdmin 4, VichUploader for file uploads |
 | Mail | Mailjet (Mailpit locally) |
 | Quality | PHP-CS-Fixer, twig-cs-fixer, PHPStan level 5, PHPUnit — all gated in CI |
+| App server | FrankenPHP (PHP 8.3 + Caddy) |
 | Local | Docker Compose (app, PostgreSQL, Mailpit) |
 | Production | OVH VPS, deployed by GitHub Actions over SSH |
 

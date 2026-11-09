@@ -1,0 +1,101 @@
+# syntax=docker/dockerfile:1
+# ─── FrankenPHP (PHP 8.3 + Caddy) — PRODUCTION image ──────────────────────────
+# Multi-stage: PHP vendor → Webpack Encore assets → runtime.
+# Built and pushed to GHCR by .github/workflows/ci.yml (job build-images), then
+# pulled as-is by Coolify — see docs/deploy/coolify-migration.md.
+
+# ── Stage 1: PHP dependencies (production, no dev) ────────────────────────────
+FROM composer:2 AS vendor
+WORKDIR /app
+COPY composer.json composer.lock symfony.lock ./
+# --ignore-platform-reqs: this stage only downloads packages; extensions are
+# verified in the runtime stage where they are actually installed.
+RUN composer install --no-dev --no-scripts --prefer-dist --no-interaction --ignore-platform-reqs
+
+# ── Stage 2: Front-end assets (Webpack Encore, production) ────────────────────
+FROM node:20-bookworm-slim AS assets
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY webpack.config.js postcss.config.js ./
+COPY assets ./assets
+# Tailwind 4 scans the project for the utility classes actually used and purges
+# the rest. Those classes live only in the Twig templates for this project — see
+# the @source directives in assets/styles/app.css.
+COPY templates ./templates
+RUN npm run build
+
+# ── Stage 3: Runtime (FrankenPHP) ─────────────────────────────────────────────
+FROM dunglas/frankenphp:php8.3.36 AS app
+
+# unzip: Composer needs it (or the zip PHP extension, which the app itself does not require) to
+# reconcile vendor/ to the production set below — without it the step fails outright.
+RUN apt-get update && apt-get install -y --no-install-recommends unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Matches what composer.lock + the Postgres driver actually need (see
+# docker/frankenphp/Dockerfile for the same list, kept dev/prod in sync).
+RUN install-php-extensions \
+    pdo_pgsql \
+    intl \
+    opcache \
+    mbstring \
+    xsl
+
+# Production OPcache: cache compiled files, never revalidate (image is immutable).
+RUN { \
+      echo "opcache.enable=1"; \
+      echo "opcache.enable_cli=0"; \
+      echo "opcache.validate_timestamps=0"; \
+      echo "opcache.max_accelerated_files=20000"; \
+      echo "opcache.memory_consumption=256"; \
+      echo "opcache.interned_strings_buffer=16"; \
+    } > /usr/local/etc/php/conf.d/opcache-prod.ini
+
+# Production PHP settings, carried over from the former php.ini plus
+# `error_log=/dev/stderr`: with no explicit destination PHP writes to the SAPI
+# default, which FrankenPHP does not surface on the container's stream — fatals
+# would otherwise vanish instead of reaching `docker logs`.
+RUN { \
+      echo "display_errors=Off"; \
+      echo "display_startup_errors=Off"; \
+      echo "log_errors=On"; \
+      echo "error_log=/dev/stderr"; \
+      echo "allow_url_include=Off"; \
+      echo "max_execution_time=30"; \
+      echo "session.use_strict_mode=On"; \
+      echo "realpath_cache_size=4096K"; \
+      echo "realpath_cache_ttl=3600"; \
+      echo "zend.detect_unicode=Off"; \
+      echo "upload_max_filesize=12M"; \
+      echo "post_max_size=13M"; \
+    } > /usr/local/etc/php/conf.d/prod.ini
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+ENV APP_ENV=prod \
+    COMPOSER_ALLOW_SUPERUSER=1
+
+# Full source, then reconcile vendor to the production set and dump an optimized
+# classmap. (Copying first, installing after, guarantees the image's vendor/ is
+# built here rather than inherited from the host.)
+COPY . .
+RUN composer install --no-dev --no-scripts --optimize-autoloader --no-interaction \
+    && composer dump-autoload --no-dev --classmap-authoritative --no-scripts
+
+# Compiled front assets from the Node stage.
+COPY --from=assets /app/public/build ./public/build
+
+# Ship the production Caddyfile + boot entrypoint inside the image.
+COPY docker/frankenphp/Caddyfile.prod /etc/frankenphp/Caddyfile
+COPY docker/frankenphp/entrypoint.prod.sh /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker-entrypoint \
+    && mkdir -p var/cache var/log var/sessions public/documents/CV public/images/personal_projects \
+    && chown -R www-data:www-data var public/documents public/images/personal_projects
+
+# No Docker-level HEALTHCHECK: the base image ships no curl, and Coolify probes
+# /healthz (docker/frankenphp/Caddyfile.prod) over HTTP from outside the container.
+
+ENTRYPOINT ["docker-entrypoint"]
+EXPOSE 8080

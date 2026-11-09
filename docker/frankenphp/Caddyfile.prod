@@ -1,0 +1,29 @@
+# FrankenPHP Caddyfile — PRODUCTION (shipped inside the image at
+# /etc/frankenphp/Caddyfile). Coolify's reverse proxy forwards traffic to :8080.
+{
+	auto_https off
+	frankenphp
+	order php_server before file_server
+}
+
+:8080 {
+	root * /app/public
+	encode zstd br gzip
+
+	log {
+		output stdout
+		format json
+	}
+
+	# Readiness probe. The entrypoint runs migrations + cache warmup BEFORE
+	# binding :8080, so any served response already means the app is booted.
+	handle /healthz {
+		respond "OK" 200
+	}
+
+	# php_server serves static files under public/ and routes everything else
+	# to public/index.php.
+	handle {
+		php_server
+	}
+}
