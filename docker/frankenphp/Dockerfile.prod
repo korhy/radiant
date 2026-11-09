@@ -84,6 +84,13 @@ COPY . .
 RUN composer install --no-dev --no-scripts --optimize-autoloader --no-interaction \
     && composer dump-autoload --no-dev --classmap-authoritative --no-scripts
 
+# --no-scripts above skips composer.json's auto-scripts (cache:clear needs a live
+# DATABASE_URL, not available at build time — the entrypoint handles it at boot
+# instead). assets:install has no such dependency and must still run here: it
+# copies bundle-published assets (EasyAdminBundle's CSS/JS) into public/bundles/,
+# which is gitignored and otherwise absent from the image.
+RUN php bin/console assets:install public --no-interaction
+
 # Compiled front assets from the Node stage.
 COPY --from=assets /app/public/build ./public/build
 
