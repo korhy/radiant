@@ -11,9 +11,10 @@ paths:
 # Backend PHP / Symfony
 
 ## Base
-- **PHP 8.2 is the floor.** `composer.json` requires `>=8.2` and **CI runs 8.2**, while the Docker
-  image ships 8.3. Anything newer than 8.2 syntax breaks the build — no `#[\Override]`, no typed
-  class constants, no `json_validate()`.
+- **PHP 8.2 is the floor.** `composer.json` requires `>=8.2.35` (the patched release fixing
+  CVE-2026-109618 / CVE-2026-109619) and **CI runs 8.2**, while the Docker image ships 8.3.36.
+  Anything newer than 8.2 syntax breaks the build — no `#[\Override]`, no typed class constants, no
+  `json_validate()`.
 - `declare(strict_types=1)` at the top of **every** PHP file. Most of the existing `src/` predates
   this rule: add it to any file you touch.
 - Strict typing on params and returns; typed properties.
