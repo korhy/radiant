@@ -40,8 +40,9 @@ framework:
 #        # Available in version 1.2
 #        cache: true
 
-# public/build/ is git-ignored and ci.yml never builds the assets (only
-# deploy.yml runs npm run build). Without this, any functional test rendering a
+# public/build/ is git-ignored and ci.yml's own jobs never build the assets
+# (only Dockerfile.prod's Node stage runs npm run build, as part of the image
+# built by the build-images job). Without this, any functional test rendering a
 # template fails on a missing entrypoints.json.
 when@test:
     webpack_encore:

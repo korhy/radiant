@@ -194,7 +194,8 @@ the package **and** declares the bundle, but the host gets only the declaration 
 then dies on a missing class. Run `composer install` on the host afterwards (or the reverse), and
 say which side you ran it on.
 
-> Assets ship from **CI**, not from your machine: `deploy.yml` runs `npm ci && npm run build` and
-> uploads `public/build/` (which is git-ignored). Locally use `npm run dev` / `npm run watch` —
-> `npm run build` is the production build, which enables versioning and emits hashed filenames;
-> it isn't destructive, but re-run `npm run dev` afterwards to get back to a dev-shaped build.
+> Assets ship from **CI**, not from your machine: `docker/frankenphp/Dockerfile.prod`'s Node stage
+> runs `npm run build` as part of the image `ci.yml` pushes to GHCR (`public/build/` is
+> git-ignored, never committed). Locally use `npm run dev` / `npm run watch` — `npm run build` is
+> the production build, which enables versioning and emits hashed filenames; it isn't destructive,
+> but re-run `npm run dev` afterwards to get back to a dev-shaped build.

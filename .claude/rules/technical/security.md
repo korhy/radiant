@@ -54,8 +54,8 @@ paths:
   into `CookbookApiService`. The JWT it obtains is cached under `cookbook_api_token`. Never log the
   credentials or the token, never echo them into a template or an exception message, and never widen
   their injection beyond that service.
-- Deploy secrets (`SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY`, `DEPLOY_PATH`) live in GitHub Actions
-  secrets — never inline them in a workflow.
+- Production secrets (`APP_SECRET`, `DATABASE_URL`, `MAILER_DSN`, `COOKBOOK_API_*`) are runtime
+  environment variables set in Coolify's UI — never inline them in a workflow or the image.
 
 ## Output / templates
 - Rely on Twig auto-escaping; only use `|raw` on content sanitized server-side.

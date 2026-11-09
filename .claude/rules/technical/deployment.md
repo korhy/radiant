@@ -10,9 +10,10 @@ paths:
 
 # Deployment, CI & releases
 
-Three workflows in `.github/workflows/`: **CI** (`ci.yml`, which also builds and pushes the
-production image), **Deploy** (`deploy.yml`, SSH to the OVH dedicated server — the live production
-path; see the note at the bottom), and **Release** (`release.yml`).
+Two workflows in `.github/workflows/`: **CI** (`ci.yml`, which also builds and pushes the
+production image) and **Release** (`release.yml`). Production runs on **Coolify**, pulling the
+image CI pushes — see [docs/deploy/coolify.md](../../docs/deploy/coolify.md) for the full resource
+configuration.
 
 ## CI (`ci.yml`)
 Runs on push/PR to `main`: php-cs-fixer `--dry-run`, twig-cs-fixer, PHPStan, PHPUnit (job `ci`), and
@@ -88,11 +89,13 @@ Runs on **every** container start, before binding `:8080`:
    and `public/documents/CV/`. They are not in git and not in the image; a container is rebuilt on
    every deploy, so without a mounted volume a redeploy would wipe them. Never write code that
    assumes a clean rebuild, and never add a deploy step that touches those directories directly.
+4. **Never drop a file into those directories by hand** (terminal, `docker cp`, Coolify's file
+   browser) to "fix" a missing upload. Vich stores the **exact filename** in the database
+   (`SiteContent::$cvFileName`, `PersonalProject::$fileName`); a file on disk under any other name
+   is invisible to the app and 404s. Always upload through the admin (`/admin`), which keeps the
+   filename and the DB row in sync.
 
-## Where the production image is not yet deployed
-- Nothing pulls `ghcr.io/korhy/radiant/frankenphp` into production. **`deploy.yml`** (SSH, OVH
-  dedicated server, no Docker) is the live deploy path — see
-  [docs/deploy/coolify.md](../../docs/deploy/coolify.md) for the Coolify configuration to activate.
+## Inactive paths
 - **`.platform.app.yaml` / `.platform/`** (Platform.sh) are legacy and unused.
 
-Touching either without a decision is wasted work; say so rather than "fixing" them silently.
+Touching it without a decision is wasted work; say so rather than "fixing" it silently.

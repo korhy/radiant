@@ -1,5 +1,4 @@
 ![CI](https://github.com/korhy/radiant/actions/workflows/ci.yml/badge.svg)
-![Deploy](https://github.com/korhy/radiant/actions/workflows/deploy.yml/badge.svg)
 ![Version](https://img.shields.io/github/v/tag/korhy/radiant?label=version)
 
 # Radiant — Personal Portfolio
@@ -25,7 +24,7 @@ The site is a professional showcase, so the quality of the code and of the deliv
 | Quality | PHP-CS-Fixer, twig-cs-fixer, PHPStan level 5, PHPUnit — all gated in CI |
 | App server | FrankenPHP (PHP 8.3 + Caddy) |
 | Local | Docker Compose (app, PostgreSQL, Mailpit) |
-| Production | OVH VPS, deployed by GitHub Actions over SSH |
+| Production | Coolify, pulling the image from GHCR |
 
 ## Features
 
@@ -172,15 +171,11 @@ make ci                  # exactly what .github/workflows/ci.yml runs
 
 ## Deployment
 
-Every green CI run on `main` triggers `deploy.yml`, which:
-
-1. builds the assets on the runner (`npm ci && npm run build`) and uploads `public/build/` over SCP —
-   the directory is git-ignored, so it never lives in the repository;
-2. connects over SSH and runs `composer install --no-dev --optimize-autoloader`;
-3. runs `doctrine:migrations:migrate --no-interaction`.
-
-**Migrations therefore run themselves in production.** They must be backward-safe and
-non-interactive. Deploy credentials live in GitHub Actions secrets, never in the workflow file.
+`ci.yml`'s `build-images` job builds the FrankenPHP production image and pushes it to
+`ghcr.io/korhy/radiant/frankenphp` on every green run on `main`. Coolify pulls that image and runs
+it — **migrations and cache warmup execute themselves at container boot**, so they must stay
+backward-safe and non-interactive. See [docs/deploy/coolify.md](docs/deploy/coolify.md) for the
+full deployment configuration.
 
 `release.yml` parses the commit subject to auto-tag semver — `feat:` bumps the minor, `fix:` the
 patch, `type!:` the major. Commit subjects are load-bearing; write them deliberately.
